@@ -58,6 +58,8 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
+import { EntityVisualAppInterfaceContent } from '@internal/backstage-plugin-visual-app-interface';
+
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
@@ -221,6 +223,11 @@ const defaultEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
+
+    <EntityLayout.Route path="/visual-app-interface" title="App Interface">
+      <EntityVisualAppInterfaceContent />
+    </EntityLayout.Route>
+
   </EntityLayout>
 );
 
@@ -235,6 +242,8 @@ const componentPage = (
     </EntitySwitch.Case>
 
     <EntitySwitch.Case>{defaultEntityPage}</EntitySwitch.Case>
+
+
   </EntitySwitch>
 );
 

@@ -50,6 +50,9 @@ proxy:
   #   '/test':
   #     target: 'https://example.com'
   #     changeOrigin: true
+  endpoints:
+    '/visual-app-interface': 'https://app-interface.apps.appsrep05ue1.zqxk.p1.openshiftapps.com/'
+
 
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
 # Note: After experimenting with basic setup, use CI/CD to generate docs
