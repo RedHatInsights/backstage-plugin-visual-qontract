@@ -12,3 +12,13 @@ yarn dev
 ```
 
 Before you do, you'll likely want to have catalog entries to see the plugin working on. Check out AppStage for that.
+
+## Build the Dynmaic Plugin
+
+```sh
+yarn workspace @internal/backstage-plugin-visual-app-interface export-dynamic
+cd plugins/visual-app-interface/
+npm pack
+```
+
+this will create `internal-backstage-plugin-visual-app-interface-X.Y.Z.tgz` in the `plugins/visual-app-interface/` directory.
