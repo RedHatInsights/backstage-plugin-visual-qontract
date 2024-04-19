@@ -60,6 +60,8 @@ import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
 import { EntityVisualAppInterfaceContent } from '@internal/backstage-plugin-visual-app-interface';
 
+import { EntityHelloEntityContent } from '@internal/backstage-plugin-hello-entity';
+
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
@@ -224,8 +226,12 @@ const defaultEntityPage = (
       {techdocsContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/visual-app-interface" title="App Interface">
+    <EntityLayout.Route path="/visual-app-interface" title="Visual App Interface">
       <EntityVisualAppInterfaceContent />
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/hello-entity" title="Hello Entity">
+      <EntityHelloEntityContent />
     </EntityLayout.Route>
 
   </EntityLayout>

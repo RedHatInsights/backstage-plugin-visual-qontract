@@ -1,0 +1,11 @@
+{
+  "name": "internal.backstage-plugin-hello-entity",
+  "version": "0.1.0",
+  "extensions": [],
+  "registrationMethod": "callback",
+  "baseURL": "auto",
+  "loadScripts": [
+    "internal.backstage-plugin-hello-entity.e7710c54674268ca2d5b.js"
+  ],
+  "buildHash": "e7710c54674268ca2d5b2288471d48d4"
+}

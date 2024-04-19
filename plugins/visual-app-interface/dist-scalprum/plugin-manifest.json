@@ -1,0 +1,11 @@
+{
+  "name": "internal.backstage-plugin-visual-app-interface",
+  "version": "0.1.0",
+  "extensions": [],
+  "registrationMethod": "callback",
+  "baseURL": "auto",
+  "loadScripts": [
+    "internal.backstage-plugin-visual-app-interface.2cc41571cd95ae448994.js"
+  ],
+  "buildHash": "2cc41571cd95ae448994d05fd1faa821"
+}

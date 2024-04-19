@@ -44,13 +44,9 @@ integrations:
     #   token: ${GHE_TOKEN}
 
 proxy:
-  ### Example for how to add a proxy endpoint for the frontend.
-  ### A typical reason to do this is to handle HTTPS and CORS for internal services.
-  # endpoints:
-  #   '/test':
-  #     target: 'https://example.com'
-  #     changeOrigin: true
   endpoints:
+    '/hello-entity': 
+      target: https://httpbin.org/anything
     '/visual-app-interface': 'https://app-interface.apps.appsrep05ue1.zqxk.p1.openshiftapps.com/'
 
 

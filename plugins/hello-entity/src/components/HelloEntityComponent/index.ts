@@ -1,0 +1,1 @@
+export { HelloEntityComponent  } from './HelloEntityComponent';
