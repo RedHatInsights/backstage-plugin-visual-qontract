@@ -63,10 +63,6 @@ export const VisualAppInterfaceComponent = () => {
     return `/services/${platform}/${service}/app.yml`
   }
 
-  const friendlyAppName = () => {
-    return app.name.charAt(0).toUpperCase() + app.name.slice(1)
-  }
-
   const DependencyTable = () => {
     return <Grid item>
       <Typography variant="button">
@@ -278,20 +274,16 @@ export const VisualAppInterfaceComponent = () => {
     </Page>
   }
 
-  return <Page themeId="tool">
-    <Content>
-      <InfoCard title={friendlyAppName()}>
-        <Grid container spacing={3} direction="column">
-          <Description />
-          <GrafanaURLs />
-          <OnBoardingStatus />
-          <ServiceOwners />
-          <EscalationPolicy />
-          <SlackUserGroups />
-          <NextEscalationPolicy />
-          <DependencyTable />
-        </Grid>
-      </InfoCard>
-    </Content>
-  </Page>
+  return <InfoCard title="App Interface">
+    <Grid container spacing={3} direction="column">
+      <Description />
+      <GrafanaURLs />
+      <OnBoardingStatus />
+      <ServiceOwners />
+      <EscalationPolicy />
+      <SlackUserGroups />
+      <NextEscalationPolicy />
+      <DependencyTable />
+    </Grid>
+  </InfoCard>
 }
