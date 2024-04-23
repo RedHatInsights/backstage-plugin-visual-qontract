@@ -1,1 +1,1 @@
-export { VisualAppInterfaceComponent as ExampleComponent } from './VisualAppInterfaceComponent';
+export { VisualAppInterfaceComponent } from './VisualAppInterfaceComponent';

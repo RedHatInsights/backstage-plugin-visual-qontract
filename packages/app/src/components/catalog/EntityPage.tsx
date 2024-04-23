@@ -58,7 +58,12 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
-import { EntityVisualAppInterfaceContent } from '@internal/backstage-plugin-visual-app-interface';
+import { 
+  EntityVisualAppInterfaceContent,
+  EntityAppInterfaceDependenciesContent,
+  EntityAppInterfaceNamespacesContent,
+  EntityCodeComponentsContent
+} from '@internal/backstage-plugin-visual-app-interface';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -138,6 +143,15 @@ const overviewContent = (
     </Grid>
     <Grid item md={8} xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" />
+    </Grid>
+    <Grid item md={6}>
+      <EntityAppInterfaceDependenciesContent />
+    </Grid>
+    <Grid item md={6}>
+      <EntityAppInterfaceNamespacesContent />
+    </Grid>
+    <Grid item md={6}>
+      <EntityCodeComponentsContent />
     </Grid>
   </Grid>
 );
@@ -241,7 +255,10 @@ const componentPage = (
       {websiteEntityPage}
     </EntitySwitch.Case>
 
+
+
     <EntitySwitch.Case>{defaultEntityPage}</EntitySwitch.Case>
+
 
 
   </EntitySwitch>

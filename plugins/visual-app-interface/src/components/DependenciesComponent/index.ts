@@ -1,0 +1,1 @@
+export { DependenciesComponent } from './DependenciesComponent';

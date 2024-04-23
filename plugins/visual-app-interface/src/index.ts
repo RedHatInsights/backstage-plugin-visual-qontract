@@ -1,1 +1,7 @@
-export { visualAppInterfacePlugin, EntityVisualAppInterfaceContent } from './plugin';
+export { 
+    visualAppInterfacePlugin, 
+    EntityVisualAppInterfaceContent, 
+    EntityAppInterfaceDependenciesContent,
+    EntityAppInterfaceNamespacesContent,
+    EntityCodeComponentsContent
+} from './plugin';
