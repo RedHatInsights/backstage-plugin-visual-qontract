@@ -1,2 +1,0 @@
-(self.webpackChunkinternal_backstage_plugin_hello_entity=self.webpackChunkinternal_backstage_plugin_hello_entity||[]).push([[1895],{59611:n=>{n.exports=function(n){return{aliases:["pycon"],contains:[{className:"meta",starts:{end:/ |$/,starts:{end:"$",subLanguage:"python"}},variants:[{begin:/^>>>(?=[ ]|$)/},{begin:/^\.\.\.(?=[ ]|$)/}]}]}}}}]);
-//# sourceMappingURL=react-syntax-highlighter_languages_highlight_pythonRepl.4da9087b.chunk.js.map
