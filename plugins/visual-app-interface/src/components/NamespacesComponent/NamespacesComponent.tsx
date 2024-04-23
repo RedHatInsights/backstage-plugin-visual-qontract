@@ -29,6 +29,40 @@ export const NamespacesComponent = () => {
         return `${appInterfaceBaseURL}${path}`
     }
 
+    const clusterMap = {
+        'crcd01ue1': {
+            url: 'https://console-openshift-console.apps.crcs02ue1.urby.p1.openshiftapps.com/k8s/cluster/projects/',
+            name: "CRCD"
+        },
+        'crc-eph': {
+            url: 'https://console-openshift-console.apps.crc-eph.r9lp.p1.openshiftapps.com/k8s/cluster/projects/',
+            name: "Ephemeral"
+        },
+        'crcp01ue1': {
+            url: 'https://console-openshift-console.apps.crcp01ue1.o9m8.p1.openshiftapps.com/k8s/cluster/projects/',
+            name: "Production"
+        },
+        'crcs02ue1': {
+            url: 'https://console-openshift-console.apps.crcs02ue1.urby.p1.openshiftapps.com/k8s/cluster/projects/',
+            name: "Stage"
+        },
+    }
+
+    const getClusterName = (cluster: string) => {
+        if (clusterMap[cluster as keyof typeof clusterMap]) {
+            return clusterMap[cluster as keyof typeof clusterMap].name
+        }
+        return cluster
+    }
+
+    const getClusterLink = (cluster: string, namespace: string, fallback: string) => {
+        if (clusterMap[cluster as keyof typeof clusterMap]) {
+            return `${clusterMap[cluster as keyof typeof clusterMap].url}${namespace}`
+        }
+        return getAppInterfaceLink(fallback)
+    }
+
+
     const NamespacesTable = () => {
         return <Grid item>
             <TableContainer component={Paper}>
@@ -36,7 +70,6 @@ export const NamespacesComponent = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
-                            <TableCell>Path</TableCell>
                             <TableCell>Cluster</TableCell>
                             <TableCell>Description</TableCell>
                         </TableRow>
@@ -44,15 +77,14 @@ export const NamespacesComponent = () => {
                     <TableBody>
                         {result.apps_v1[0].namespaces.map((namespace: any, key: any) => (
                             <TableRow key={key}>
-                                <TableCell>{namespace.name}</TableCell>
                                 <TableCell>
-                                    <Link target="_blank" href={getAppInterfaceLink(namespace.path)}>
-                                        {namespace.path}
+                                <Link target="_blank" href={getAppInterfaceLink(namespace.path)}>
+                                        {namespace.name}
                                     </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <Link target="_blank" href={getAppInterfaceLink(namespace.cluster.path)}>
-                                        {namespace.cluster.name}
+                                    <Link target="_blank" href={ getClusterLink(namespace.cluster.name, namespace.name, namespace.cluster.path) }>
+                                        { getClusterName(namespace.cluster.name) }
                                     </Link>
                                 </TableCell>
                                 <TableCell>{namespace.description}</TableCell>
