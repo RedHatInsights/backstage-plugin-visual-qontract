@@ -1,6 +1,8 @@
 # macOS
 .DS_Store
 
+plugins/*/*.tgz
+plugins/*/dist*
 
 catalog/*
 # Logs
