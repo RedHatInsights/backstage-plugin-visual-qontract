@@ -21,7 +21,7 @@ export const CodeComponentsComponent = () => {
 
     const { result, loaded, error } = QueryAppInterface(CodeComponentsQuery)
 
-    const title = "Code Components"
+    const title = "Code Repositories"
 
     const CodeComponentsTable = () => {
         return <Grid item>
@@ -30,20 +30,14 @@ export const CodeComponentsComponent = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
-                            <TableCell>Resource</TableCell>
-                            <TableCell>URL</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {result.apps_v1[0].codeComponents.map((component: any, key: any) => (
                             <TableRow key={key}>
-                                <TableCell>{component.name}</TableCell>
-                                <TableCell>
-                                    {component.resource}
-                                </TableCell>
                                 <TableCell>
                                     <Link target="_blank" href={component.url}>
-                                        {component.url}
+                                        {component.name}
                                     </Link>
                                 </TableCell>
                             </TableRow>

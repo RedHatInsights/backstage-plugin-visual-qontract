@@ -3,5 +3,6 @@ export {
     EntityVisualAppInterfaceContent, 
     EntityAppInterfaceDependenciesContent,
     EntityAppInterfaceNamespacesContent,
-    EntityCodeComponentsContent
+    EntityAppInterfaceCodeComponentsContent,
+    EntityAppInterfacePipelinesComponent
 } from './plugin';

@@ -34,11 +34,20 @@ export const EntityAppInterfaceNamespacesContent = visualAppInterfacePlugin.prov
   }),
 );
 
-export const EntityCodeComponentsContent = visualAppInterfacePlugin.provide(
+export const EntityAppInterfaceCodeComponentsContent = visualAppInterfacePlugin.provide(
   createComponentExtension({
-    name: 'EntityCodeComponentsContent',
+    name: 'EntityAppInterfaceCodeComponentsContent',
     component: {
       lazy: () => import('./components/CodeComponentsComponent').then(m => m.CodeComponentsComponent),
+    }
+  }),
+);
+
+export const EntityAppInterfacePipelinesComponent = visualAppInterfacePlugin.provide(
+  createComponentExtension({
+    name: 'EntityAppInterfacePipelinesComponent',
+    component: {
+      lazy: () => import('./components/PipelinesComponent').then(m => m.PipelinesComponent),
     }
   }),
 );

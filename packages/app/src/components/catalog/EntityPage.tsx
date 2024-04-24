@@ -62,7 +62,8 @@ import {
   EntityVisualAppInterfaceContent,
   EntityAppInterfaceDependenciesContent,
   EntityAppInterfaceNamespacesContent,
-  EntityCodeComponentsContent
+  EntityAppInterfaceCodeComponentsContent,
+  EntityAppInterfacePipelinesComponent
 } from '@internal/backstage-plugin-visual-app-interface';
 
 const techdocsContent = (
@@ -151,7 +152,10 @@ const overviewContent = (
       <EntityAppInterfaceNamespacesContent />
     </Grid>
     <Grid item md={6}>
-      <EntityCodeComponentsContent />
+      <EntityAppInterfaceCodeComponentsContent />
+    </Grid>
+    <Grid item md={6}>
+      <EntityAppInterfacePipelinesComponent />
     </Grid>
   </Grid>
 );

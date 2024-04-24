@@ -21,7 +21,7 @@ export const NamespacesComponent = () => {
 
     const {result, loaded, error} = QueryAppInterface(NSQuery)
 
-    const title = "Namespaces"
+    const title = "Clusters & Namespaces"
 
     const appInterfaceBaseURL = `https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/`
 
