@@ -9,6 +9,10 @@
   "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "dist-types",
-    "rootDir": "."
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@redhatinsights/backstage-plugin-visual-qontract": ["./plugins/visual-qontract"]
+    }
   }
 }

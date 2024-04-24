@@ -15,11 +15,11 @@ import {
     InfoCard,
 } from '@backstage/core-components';
 import { CodeComponentsQuery } from './query';
-import QueryAppInterface from '../../common/QueryAppInterface';
+import QueryQontract from '../../common/QueryAppInterface';
 
 export const CodeComponentsComponent = () => {
 
-    const { result, loaded, error } = QueryAppInterface(CodeComponentsQuery)
+    const { result, loaded, error } = QueryQontract(CodeComponentsQuery)
 
     const title = "Code Repositories"
 

@@ -1,1 +1,0 @@
-export { VisualAppInterfaceComponent } from './VisualAppInterfaceComponent';

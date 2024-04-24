@@ -59,12 +59,12 @@ import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
 import { 
-  EntityVisualAppInterfaceContent,
-  EntityAppInterfaceDependenciesContent,
-  EntityAppInterfaceNamespacesContent,
-  EntityAppInterfaceCodeComponentsContent,
-  EntityAppInterfacePipelinesComponent
-} from '@internal/backstage-plugin-visual-app-interface';
+  EntityVisualQontractContent,
+  EntityQontractDependenciesContent,
+  EntityQontractNamespacesContent,
+  EntityQontractCodeComponentsContent,
+  EntityQontractPipelinesComponent
+} from '@redhatinsights/backstage-plugin-visual-qontract';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -146,16 +146,16 @@ const overviewContent = (
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
     <Grid item md={6}>
-      <EntityAppInterfaceDependenciesContent />
+      <EntityQontractDependenciesContent />
     </Grid>
     <Grid item md={6}>
-      <EntityAppInterfaceNamespacesContent />
+      <EntityQontractNamespacesContent />
     </Grid>
     <Grid item md={6}>
-      <EntityAppInterfaceCodeComponentsContent />
+      <EntityQontractCodeComponentsContent />
     </Grid>
     <Grid item md={6}>
-      <EntityAppInterfacePipelinesComponent />
+      <EntityQontractPipelinesComponent />
     </Grid>
   </Grid>
 );
@@ -243,7 +243,7 @@ const defaultEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/visual-app-interface" title="Visual App Interface">
-      <EntityVisualAppInterfaceContent />
+      <EntityVisualQontractContent />
     </EntityLayout.Route>
 
   </EntityLayout>

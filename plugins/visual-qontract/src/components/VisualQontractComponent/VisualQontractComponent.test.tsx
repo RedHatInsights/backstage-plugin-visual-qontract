@@ -1,5 +1,5 @@
 import React from 'react';
-import { VisualAppInterfaceComponent } from './VisualAppInterfaceComponent';
+import { VisualQontractComponent } from './VisualQontractComponent';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
@@ -21,7 +21,7 @@ describe('ExampleComponent', () => {
   });
 
   it('should render', async () => {
-    await renderInTestApp(<VisualAppInterfaceComponent />);
+    await renderInTestApp(<VisualQontractComponent />);
     expect(
       screen.getByText('Loading...'),
     ).toBeInTheDocument();

@@ -15,11 +15,11 @@ import {
     InfoCard,
 } from '@backstage/core-components';
 import { DepsQuery } from './query';
-import QueryAppInterface from '../../common/QueryAppInterface';
+import QueryQontract from '../../common/QueryAppInterface';
 
 export const DependenciesComponent = () => {
 
-    const {result, loaded, error} = QueryAppInterface(DepsQuery)
+    const {result, loaded, error} = QueryQontract(DepsQuery)
 
     const title = "Dependencies"
 

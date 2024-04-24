@@ -15,11 +15,11 @@ import {
     InfoCard,
 } from '@backstage/core-components';
 import { NSQuery } from './query';
-import QueryAppInterface from '../../common/QueryAppInterface';
+import QueryQontract from '../../common/QueryAppInterface';
 
 export const NamespacesComponent = () => {
 
-    const {result, loaded, error} = QueryAppInterface(NSQuery)
+    const {result, loaded, error} = QueryQontract(NSQuery)
 
     const title = "Clusters & Namespaces"
 

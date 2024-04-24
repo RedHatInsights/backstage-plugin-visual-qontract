@@ -7,10 +7,10 @@ You can find the plugin code in `plugins/visual-app-interface`
 ## Components
 This plugin provides multiple info card components that can be mounted on a catalog entry page.
 
-* `EntityAppInterfacePipelinesComponent`
-* `EntityAppInterfaceCodeComponentsContent`
-* `EntityAppInterfaceNamespacesContent`
-* `EntityAppInterfaceDependenciesContent`
+* `EntityQontractPipelinesComponent`
+* `EntityQontractCodeComponentsContent`
+* `EntityQontractNamespacesContent`
+* `EntityQontractDependenciesContent`
 
 ## Configuration
 In `app-config.yaml` first add the proxy:
@@ -18,16 +18,16 @@ In `app-config.yaml` first add the proxy:
 ```yaml
 proxy:
   endpoints:
-    '/visual-app-interface': 'https://app-interface.apps.appsrep05ue1.zqxk.p1.openshiftapps.com/'
+    '/visual-qontract': 'https://my.qontract.company.com/graphql'
 ```
 
-Also in `app-config.yaml` add `internal.backstage-plugin-visual-app-interface` and the card component configs into the dynamic plugins section.
+Also in `app-config.yaml` add `redhatinsights.backstage-plugin-visual-qontract` and the card component configs into the dynamic plugins section.
 
 
 ```yaml
 dynamicPlugins:
   frontend:
-    internal.backstage-plugin-visual-app-interface:
+    redhatinsights.backstage-plugin-visual-qontract:
       mountPoints:
         - mountPoint: entity.page.overview/cards
           importName: EntityAppInterfaceDependenciesContent
@@ -59,9 +59,9 @@ Before you do, you'll likely want to have catalog entries to see the plugin work
 ### Build the Dynamic Plugin
 
 ```sh
-yarn workspace @internal/backstage-plugin-visual-app-interface export-dynamic
+yarn workspace @redhatinsights/backstage-plugin-visual-qontract export-dynamic
 cd plugins/visual-app-interface/
 npm pack
 ```
 
-this will create `internal-backstage-plugin-visual-app-interface-X.Y.Z.tgz` in the `plugins/visual-app-interface/` directory.
+this will create `redhatinsights-backstage-plugin-visual-qontract-X.Y.Z.tgz` in the `plugins/visual-qontract/` directory.

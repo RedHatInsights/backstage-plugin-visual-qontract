@@ -16,11 +16,11 @@ import {
     InfoCard,
 } from '@backstage/core-components';
 import { PipelinesQuery } from './query';
-import QueryAppInterface from '../../common/QueryAppInterface';
+import QueryQontract from '../../common/QueryAppInterface';
 
 export const PipelinesComponent = () => {
 
-    const {result, loaded, error} = QueryAppInterface(PipelinesQuery)
+    const {result, loaded, error} = QueryQontract(PipelinesQuery)
     const [filteredPipelines, setFilteredPipelines] = React.useState<any[]>([])
 
     const title = "Pipelines"

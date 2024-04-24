@@ -3,8 +3,8 @@ import { request } from 'graphql-request';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
-const QueryAppInterface = (query: string) => {
-    type AppInterfaceApp = Record<string, any>;
+const QueryQontract = (query: string) => {
+    type QontractApp = Record<string, any>;
 
     // Get Backstage objects
     const config = useApi(configApiRef);
@@ -12,25 +12,24 @@ const QueryAppInterface = (query: string) => {
 
     // Constants
     const backendUrl = config.getString('backend.baseUrl');
-    const proxyUrl = `${backendUrl}/api/proxy/visual-app-interface/graphql`
+    const proxyUrl = `${backendUrl}/api/proxy/visual-qontract/graphql`
 
-    const [result, setResult] = useState<AppInterfaceApp>({});
+    const [result, setResult] = useState<QontractApp>({});
     const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
     // Function to get the app interface path
-    const getAppInterfacePath = () => {
+    const getQontractPath = () => {
         const platform = entity?.metadata?.labels?.platform
         const service = entity?.metadata?.labels?.service
         return `/services/${platform}/${service}/app.yml`
     }
 
-    // Get the app interface data on load
+    // Get the qontract data on load
     useEffect(() => {
-        const variables = { path: getAppInterfacePath() };
+        const variables = { path: getQontractPath() };
         request(proxyUrl, query, variables)
             .then((data: any) => {
-                //Set the app info from data as a AppInterfaceApp
                 setLoaded(true)
                 setResult(data)
             })
@@ -42,4 +41,4 @@ const QueryAppInterface = (query: string) => {
     return { result, loaded, error }
 }
 
-export default QueryAppInterface;
+export default QueryQontract;

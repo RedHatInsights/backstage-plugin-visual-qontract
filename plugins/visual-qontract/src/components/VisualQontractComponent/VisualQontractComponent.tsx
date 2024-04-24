@@ -22,10 +22,10 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { AppQuery } from './query';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
-export const VisualAppInterfaceComponent = () => {
+export const VisualQontractComponent = () => {
 
   //I'm not creating a type for the app object because it's a lot of fields and I'm not sure what they all are
-  type AppInterfaceApp = Record<string, any>;
+  type QontractApp = Record<string, any>;
 
   // Get Backstage objects
   const config = useApi(configApiRef);
@@ -33,11 +33,11 @@ export const VisualAppInterfaceComponent = () => {
 
   // Constants
   const backendUrl = config.getString('backend.baseUrl');
-  const proxyUrl = `${backendUrl}/api/proxy/visual-app-interface/graphql`
+  const proxyUrl = `${backendUrl}/api/proxy/visual-qontract/graphql`
   const gitlabBaseURL = `https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/`
 
   // Stage
-  const [app, setApp] = useState<AppInterfaceApp>({});
+  const [app, setApp] = useState<QontractApp>({});
   const [appLoaded, setAppLoaded] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
