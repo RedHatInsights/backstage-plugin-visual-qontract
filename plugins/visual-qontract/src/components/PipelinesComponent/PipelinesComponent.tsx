@@ -66,48 +66,6 @@ export const PipelinesComponent = () => {
     return urls;
   };
 
-  const PipelinesTable = () => {
-    return (
-      <Grid item>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>SaaS File</TableCell>
-                <TableCell>Provider</TableCell>
-                <TableCell>Pipelines</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredPipelines.map((pipeline: any, key: any) => (
-                <TableRow key={key}>
-                  <TableCell>
-                    <Link
-                      target="_blank"
-                      href={getAppInterfaceLink(pipeline.path)}
-                    >
-                      {pipeline.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{pipeline.pipelinesProvider.provider}</TableCell>
-                  <TableCell>
-                    {makePipelineURLs(pipeline).map((url: any) => (
-                      <Box>
-                        <Link target="_blank" href={url.url}>
-                          {url.title}
-                        </Link>
-                      </Box>
-                    ))}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Grid>
-    );
-  };
-
   const SaasFileLabel = ({ name, path }: { name: string; path: string }) => {
     return (
       <Grid>
@@ -136,46 +94,53 @@ export const PipelinesComponent = () => {
     );
   };
 
-  const PipelineHeader = ({pipeline}:{pipeline: any}) => {
-    return <Grid container direction="row">
-    <Grid item xs={4}>
-      <Typography variant="button">{pipeline.name}</Typography>
-    </Grid>
-    <Grid item xs={2}></Grid>
-    <Grid item xs={4}>
-      <SaasFileLabel name={pipeline.name} path={pipeline.path} />
-    </Grid>
-    <Grid item xs={2}>
-      <PipelineProvider
-        provider={pipeline.pipelinesProvider.provider}
-      />
-    </Grid>
-  </Grid>
-  }
+  const PipelineHeader = ({ pipeline }: { pipeline: any }) => {
+    return (
+      <Grid container direction="row">
+        <Grid item xs={4}>
+          <Typography variant="button">{pipeline.name}</Typography>
+        </Grid>
+        <Grid item xs={2}></Grid>
+        <Grid item xs={4}>
+          <SaasFileLabel name={pipeline.name} path={pipeline.path} />
+        </Grid>
+        <Grid item xs={2}>
+          <PipelineProvider provider={pipeline.pipelinesProvider.provider} />
+        </Grid>
+      </Grid>
+    );
+  };
 
-  const PipelineBody = ({pipeline}:{pipeline: any}) => {
-    return               <Table>
+  const PipelineBody = ({ pipeline }: { pipeline: any }) => {
+    return (
+      <Table size="small" >
         {makePipelineURLs(pipeline).map((url: any) => (
           <TableRow>
             <TableCell>
-              <Link target="_blank" href={url.url}>
-                {url.title}
-              </Link>
+              <Typography variant="subtitle2">
+                <Link target="_blank" href={url.url}>
+                  {url.title}
+                </Link>
+              </Typography>
             </TableCell>
           </TableRow>
         ))}
       </Table>
-  }
+    );
+  };
 
   const PipelinesAccordian = () => {
     return (
       <React.Fragment>
         {filteredPipelines.map((pipeline: any, key: any) => (
           <Accordion>
-            <AccordionSummary key={`${key}-summary`} expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              key={`${key}-summary`}
+              expandIcon={<ExpandMoreIcon />}
+            >
               <PipelineHeader pipeline={pipeline} />
             </AccordionSummary>
-            <AccordionDetails key={`${key}-details`} style={{padding: "0px"}}>
+            <AccordionDetails key={`${key}-details`} style={{ padding: '0px' }}>
               <PipelineBody pipeline={pipeline} />
             </AccordionDetails>
           </Accordion>
@@ -203,7 +168,7 @@ export const PipelinesComponent = () => {
   }
 
   return (
-    <InfoCard title={title} noPadding >
+    <InfoCard title={title} noPadding>
       <PipelinesAccordian />
     </InfoCard>
   );

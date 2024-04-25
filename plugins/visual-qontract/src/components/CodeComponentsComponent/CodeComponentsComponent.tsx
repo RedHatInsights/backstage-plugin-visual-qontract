@@ -24,12 +24,11 @@ export const CodeComponentsComponent = () => {
     const title = "Code Repositories"
 
     const CodeComponentsTable = () => {
-        return <Grid item>
-            <TableContainer component={Paper}>
-                <Table>
+        return  <TableContainer component={Paper} >
+                <Table size="small" >
                     <TableHead>
                         <TableRow>
-                            <TableCell>Name</TableCell>
+                            <TableCell><Typography variant="button">Name</Typography></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -45,7 +44,6 @@ export const CodeComponentsComponent = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-        </Grid>
     }
 
     if (error) {
@@ -65,9 +63,7 @@ export const CodeComponentsComponent = () => {
 
     }
 
-    return <InfoCard title={title}>
-        <Grid container spacing={3} direction="column">
+    return <InfoCard title={title} noPadding>
             <CodeComponentsTable />
-        </Grid>
     </InfoCard>
 }
