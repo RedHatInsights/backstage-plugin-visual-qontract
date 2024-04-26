@@ -60,7 +60,7 @@ export const DependenciesComponent = () => {
   if (error) {
     return (
       <InfoCard title={title}>
-        <Typography variant="body1">
+        <Typography align="center" variant="body1">
           Error loading the dependency information.
         </Typography>
       </InfoCard>
@@ -70,7 +70,15 @@ export const DependenciesComponent = () => {
   if (!loaded) {
     return (
       <InfoCard title={title}>
-        <Typography variant="body1">Loading...</Typography>
+        <Typography align="center" variant="body1">Loading...</Typography>
+      </InfoCard>
+    );
+  }
+
+  if (result.apps_v1.length === 0 || result.apps_v1[0].dependencies.length === 0) {
+    return (
+      <InfoCard title={title}>
+        <Typography align="center" variant="body1">No {title} found.</Typography>
       </InfoCard>
     );
   }

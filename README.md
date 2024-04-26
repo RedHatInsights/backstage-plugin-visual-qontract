@@ -69,5 +69,5 @@ this will create `redhatinsights-backstage-plugin-visual-qontract-X.Y.Z.tgz` in 
 And don't forget to generate the integrity!
 
 ```sh
-shasum -a 256 redhatinsights-backstage-plugin-visual-qontract-0.1.3.tgz | awk '{print $1}' | xxd -r -p | base64
+shasum -a 256 redhatinsights-backstage-plugin-visual-qontract-0.1.4.tgz | awk '{print $1}' | xxd -r -p | base64
 ```

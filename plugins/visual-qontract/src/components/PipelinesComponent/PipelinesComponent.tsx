@@ -28,6 +28,9 @@ export const PipelinesComponent = () => {
 
   useEffect(() => {
     if (result.saas_files_v2 && result.apps_v1) {
+      if (result.apps_v1.length === 0) {
+        return;
+      }
       const appName = result.apps_v1[0].name;
       const filtered = result.saas_files_v2.filter(
         (saas_file: any) => saas_file.app.name === appName,
@@ -163,6 +166,14 @@ export const PipelinesComponent = () => {
     return (
       <InfoCard title={title}>
         <Typography variant="body1">Loading...</Typography>
+      </InfoCard>
+    );
+  }
+
+  if (result.apps_v1.length === 0  ) {
+    return (
+      <InfoCard title={title}>
+        <Typography align="center" variant="body1">No {title} found.</Typography>
       </InfoCard>
     );
   }
