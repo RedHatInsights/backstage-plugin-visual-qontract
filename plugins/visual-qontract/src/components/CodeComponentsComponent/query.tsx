@@ -8,6 +8,7 @@ query App($path: String) {
       name
       resource
       url
+      imageBuildUrl
     }
   }
 }
