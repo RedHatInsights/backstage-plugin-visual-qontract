@@ -3,7 +3,7 @@ import { request } from 'graphql-request';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 
-const QueryQontract = (query: string) => {
+const QueryQontract = (query: string, path?: string) => {
     type QontractApp = Record<string, any>;
 
     // Get Backstage objects
@@ -20,6 +20,10 @@ const QueryQontract = (query: string) => {
 
     // Function to get the app interface path
     const getQontractPath = () => {
+        if (path) {
+            return path
+        }
+        
         const platform = entity?.metadata?.labels?.platform
         const service = entity?.metadata?.labels?.service
         return `/services/${platform}/${service}/app.yml`
