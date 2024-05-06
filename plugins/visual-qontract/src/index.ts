@@ -4,5 +4,6 @@ export {
     EntityQontractDependenciesContent,
     EntityQontractNamespacesContent,
     EntityQontractCodeComponentsContent,
-    EntityQontractPipelinesComponent
+    EntityQontractPipelinesComponent,
+    EntityQontractEscalationPolicyComponent
 } from './plugin';
