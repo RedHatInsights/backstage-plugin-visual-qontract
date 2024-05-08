@@ -21,10 +21,9 @@ const QueryQontract = (query: string) => {
     // Function to get the app interface path
     const getQontractPath = () => {
         // use 'visual-qontract/app-path' annotation if defined on the entity
-        if (entity?.metadata?.annotations !== undefined) {
-            if ("visual-qontract/app-path" in entity.metadata.annotations) {
-                return entity.metadata.annotations["visual-qontract/app-path"]
-            }
+        const appPath = entity?.metadata?.annotations?.["visual-qontract/app-path"];
+        if (appPath) {
+             return appPath
         }
 
         // otherwise fall back to making an educated guess at this entity's app path
