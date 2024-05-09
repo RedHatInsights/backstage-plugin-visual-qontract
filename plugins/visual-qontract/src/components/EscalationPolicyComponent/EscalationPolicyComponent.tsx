@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Typography,
   Grid,
@@ -19,13 +19,56 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { InfoCard } from '@backstage/core-components';
 import { EscalationPolicyQuery, NextEscalationPolicyQuery } from './query';
 import QueryQontract from '../../common/QueryAppInterface';
+import { request } from 'graphql-request';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { EscalationPolicyRow } from './NextEscalationPolicyRow';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
-export const EscalationPolicyComponent = () => {
-  const { result: app_result, loaded: app_loaded, error: app_error } = QueryQontract(EscalationPolicyQuery);
-
+export const EscalationPolicyComponent = ({ path }: { path: string }) => {
+  const { result: result, loaded: loaded, error: error } = QueryQontract(EscalationPolicyQuery);
   const title = 'Escalation Policy';
 
-  if (app_error) {
+  const [escalationPolicies, setEscalationPolicies] = useState<any[]>([]);
+  const [nextPath, setNextPath] = useState("");
+
+  // Get Backstage objects
+  const config = useApi(configApiRef);
+
+  // Constants
+  const backendUrl = config.getString('backend.baseUrl');
+  const proxyUrl = `${backendUrl}/api/proxy/visual-qontract/graphql`;
+
+  function GetEscalationPolicy(path: string) {
+    const variables = { path: path };
+    console.log(variables);
+    request(proxyUrl, NextEscalationPolicyQuery, variables)
+      .then((data: any) => {
+        if (data.escalation_policies_1.length !== 0) {
+          if (data.escalation_policies_1[0].channels?.nextEscalationPolicy?.path) {
+            setNextPath(data.escalation_policies_1[0].channels.nextEscalationPolicy.path);
+          }
+          setEscalationPolicies([...escalationPolicies, data.escalation_policies_1[0]]);
+        }
+      })
+      .catch((_error) => {
+        console.log("no work")
+      });
+  }
+
+  useEffect(() => {
+    if (!result.apps_v1 || result.apps_v1.length === 0) {
+      return;
+    }
+    if (result.apps_v1[0].escalationPolicy?.channels?.nextEscalationPolicy?.path) {
+      GetEscalationPolicy(result.apps_v1[0].escalationPolicy.channels.nextEscalationPolicy.path);
+    }
+  }, [result]);
+
+  useEffect(() => {
+    GetEscalationPolicy(nextPath)
+  }, [escalationPolicies]);
+
+  if (error) {
     return (
       <InfoCard title={title}>
         <Typography align="center" variant="body1">
@@ -35,7 +78,7 @@ export const EscalationPolicyComponent = () => {
     );
   }
 
-  if (!app_loaded) {
+  if (!loaded) {
     return (
       <InfoCard title={title}>
         <Typography align="center" variant="body1">Loading...</Typography>
@@ -43,39 +86,13 @@ export const EscalationPolicyComponent = () => {
     );
   }
 
-  if (app_result.apps_v1.length === 0) {
+  if (result.apps_v1.length === 0) {
     return (
       <InfoCard title={title}>
         <Typography align="center" variant="body1">No {title} found.</Typography>
       </InfoCard>
     );
   }
-
-  let eps: [any] = [app_result.apps_v1[0].escalationPolicy];
-
-  function getEscalationPolicies(path: string) {
-    const { result: nep_result, loaded: nep_loaded, error: nep_error } = QueryQontract(NextEscalationPolicyQuery, path);
-    console.log('ep:', path)
-
-    // Check if useful data was returned about our next escalation policy
-    if ((nep_error || !nep_loaded) || !(nep_result.escalation_policies_1.length === 0)) {
-      return
-    }
-
-    var nep = nep_result.escalation_policies_1[0]
-
-    // if this escalation policy has a next escalation policy
-    if (nep.channels.nextEscalationPolicy) {
-      // make sure we didn't already check this (avoid infinite recursion)
-      if (eps.some(e => e.channels.nextEscalationPolicy.path === nep.channels.nextEscalationPolicy.path)) {
-        return
-      }
-      eps.push(nep)
-      getEscalationPolicies(nep.channels.nextEscalationPolicy.path)
-    }
-  }
-
-  //getEscalationPolicies(ep_result.apps_v1[0].escalationPolicy.path)
 
   return (
     <InfoCard title={title} noPadding>
@@ -97,29 +114,7 @@ export const EscalationPolicyComponent = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <Typography>{app_result.apps_v1[0].escalationPolicy.name}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography>{app_result.apps_v1[0].escalationPolicy.description}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Grid item>
-                      <Grid container direction="column">
-                        <Grid item>
-                          <Typography >{app_result.apps_v1[0].escalationPolicy.channels.email}</Typography>
-                        </Grid>
-                        <Grid item>
-                          <Typography >{app_result.apps_v1[0].escalationPolicy.channels.slackUserGroup.handle}</Typography>
-                        </Grid>
-                        <Grid item>
-                          <Typography >{app_result.apps_v1[0].escalationPolicy.channels.jiraBoard.name}</Typography>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </TableCell>
-                </TableRow>
+                < EscalationPolicyRow ep={result.apps_v1[0].escalationPolicy} />
               </TableBody>
             </Table>
           </TableContainer>

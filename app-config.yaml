@@ -47,7 +47,7 @@ proxy:
   endpoints:
     '/hello-entity': 
       target: https://httpbin.org/anything
-    '/visual-qontract': 'https://app-interface.apps.appsrep05ue1.zqxk.p1.openshiftapps.com/'
+    '/visual-qontract': 'https://app-interface.apps.rosa.appsrep09ue1.03r5.p3.openshiftapps.com/'
 
 
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration

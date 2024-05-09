@@ -1,6 +1,5 @@
 import { gql } from 'graphql-request';
 
-
 export const EscalationPolicyQuery = gql`
 query App($path: String) {
   apps_v1(path: $path) {
