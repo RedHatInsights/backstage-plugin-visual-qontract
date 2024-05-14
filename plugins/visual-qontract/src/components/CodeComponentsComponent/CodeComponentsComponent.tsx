@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-
     Typography,
     IconButton,
     Link,
@@ -18,14 +17,61 @@ import {
     InfoCard,
 } from '@backstage/core-components';
 import { CodeComponentsQuery } from './query';
+import { RELATION_HAS_PART } from '@backstage/catalog-model';
+import { useEntity, useRelatedEntities } from '@backstage/plugin-catalog-react';
 import QueryQontract from '../../common/QueryAppInterface';
 
 
 export const CodeComponentsComponent = () => {
-
-    const { result, loaded, error } = QueryQontract(CodeComponentsQuery)
-
     const title = "Code Repositories"
+
+    const { entity } = useEntity();
+
+    const { entities: relatedEntities, loading: relatedEntitiesLoading, error: relatedEntitiesError } = useRelatedEntities(entity, {
+        type: RELATION_HAS_PART,
+        kind: "Component"
+    });
+
+    const { result: qontractResult, loaded: qontractLoaded, error: qontractError } = QueryQontract(CodeComponentsQuery);
+
+    if (relatedEntitiesError || qontractError) {
+        return <InfoCard title={title}>
+            <Typography align="center" variant="body1">
+                Error loading the {title} information.
+            </Typography>
+        </InfoCard>
+    }
+
+    if (relatedEntitiesLoading || !qontractLoaded) {
+        return <InfoCard title={title}>
+            <Typography align="center" variant="body1">
+                Loading...
+            </Typography>
+        </InfoCard>
+    }
+
+    if (qontractResult.apps_v1.length === 0 || qontractResult.apps_v1[0].codeComponents.length === 0) {
+        return (
+          <InfoCard title={title}>
+            <Typography align="center" variant="body1">No {title} found.</Typography>
+          </InfoCard>
+        );
+    }
+
+    // For each code component, try to locate a child entity which has a matching source code URL.
+    // If a match is found, use that entity's 'image-build-url' annotation value if defined
+    for (var component of qontractResult.apps_v1[0].codeComponents) {
+        if (relatedEntities) {
+            for (var relatedEntity of relatedEntities) {
+                if (relatedEntity.metadata.annotations?.["backstage.io/source-location"] == `url:${component.url}`) {
+                    var annotationBuildUrl = relatedEntity.metadata.annotations?.["visual-qontract/image-build-url"]
+                    if (annotationBuildUrl) {
+                        component.imageBuildUrl = annotationBuildUrl
+                    }
+                }
+            }
+        }
+    }
 
     const CodeComponentsTable = () => {
         return  <TableContainer component={Paper}>
@@ -37,7 +83,7 @@ export const CodeComponentsComponent = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {result.apps_v1[0].codeComponents.map((component: any, key: any) => (
+                        {qontractResult.apps_v1[0].codeComponents.map((component: any, key: any) => (
                             <TableRow key={key}>
                                 <TableCell scope="row">
                                     <Link target="_blank" href={component.url}>
@@ -58,31 +104,6 @@ export const CodeComponentsComponent = () => {
                 </Table>
             </TableContainer>
     }
-
-    if (error) {
-        return <InfoCard title={title}>
-            <Typography align="center" variant="body1">
-                Error loading the {title} information.
-            </Typography>
-        </InfoCard>
-    }
-
-    if (!loaded) {
-        return <InfoCard title={title}>
-            <Typography align="center" variant="body1">
-                Loading...
-            </Typography>
-        </InfoCard>
-
-    }
-
-    if (result.apps_v1.length === 0 || result.apps_v1[0].codeComponents.length === 0) {
-        return (
-          <InfoCard title={title}>
-            <Typography align="center" variant="body1">No {title} found.</Typography>
-          </InfoCard>
-        );
-      }
 
     return <InfoCard title={title} noPadding>
             <CodeComponentsTable />
