@@ -50,6 +50,9 @@ export const EscalationPolicyComponent = ({ path }: { path: string }) => {
             }
             setNextPath(data.escalation_policies_1[0].channels.nextEscalationPolicy.path);
           }
+          if (escalationPolicies.some(e => e.path === data.escalation_policies_1[0].path)) {
+            return;
+          }
           setEscalationPolicies([...escalationPolicies, data.escalation_policies_1[0]]);
         }
       })
@@ -57,7 +60,6 @@ export const EscalationPolicyComponent = ({ path }: { path: string }) => {
         console.log("no work")
       });
   }
-
 
   useEffect(() => {
     if (!result.apps_v1 || result.apps_v1.length === 0) {
