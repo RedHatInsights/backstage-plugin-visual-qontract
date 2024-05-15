@@ -58,22 +58,22 @@ export const CodeComponentsComponent = () => {
         );
     }
 
-    // For each code component, try to locate a child entity which has a matching source code URL.
-    // If a match is found, use that entity's 'image-build-url' annotation value if defined
-    for (var component of qontractResult.apps_v1[0].codeComponents) {
+    const CodeComponentsTable = () => {
+        // For each code component, try to locate a child entity which has a matching source code URL.
+        // If a match is found, use that entity's 'image-build-url' annotation value if defined
         if (relatedEntities) {
-            for (var relatedEntity of relatedEntities) {
-                if (relatedEntity.metadata.annotations?.["backstage.io/source-location"] == `url:${component.url}`) {
-                    var annotationBuildUrl = relatedEntity.metadata.annotations?.["visual-qontract/image-build-url"]
-                    if (annotationBuildUrl) {
-                        component.imageBuildUrl = annotationBuildUrl
+            for (var component of qontractResult.apps_v1[0].codeComponents) {
+                for (var relatedEntity of relatedEntities) {
+                    if (relatedEntity.metadata.annotations?.["backstage.io/source-location"] == `url:${component.url}`) {
+                        var annotationBuildUrl = relatedEntity.metadata.annotations?.["visual-qontract/image-build-url"]
+                        if (annotationBuildUrl) {
+                            component.imageBuildUrl = annotationBuildUrl
+                        }
                     }
                 }
             }
         }
-    }
 
-    const CodeComponentsTable = () => {
         return  <TableContainer component={Paper}>
                 <Table size="small">
                     <TableHead>
