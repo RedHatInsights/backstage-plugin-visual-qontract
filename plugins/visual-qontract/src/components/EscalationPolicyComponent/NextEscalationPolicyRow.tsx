@@ -3,22 +3,10 @@ import {
   Typography,
   Grid,
   Link,
-  Table,
-  TableContainer,
   TableRow,
-  TableBody,
-  TableHead,
   TableCell,
-  Paper,
   Box,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { InfoCard } from '@backstage/core-components';
-import { NextEscalationPolicyQuery } from './query';
-import QueryQontract from '../../common/QueryAppInterface';
 
 
 const appInterfaceBaseURL = `https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data`;
