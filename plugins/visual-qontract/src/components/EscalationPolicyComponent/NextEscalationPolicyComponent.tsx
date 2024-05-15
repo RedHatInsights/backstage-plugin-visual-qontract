@@ -20,7 +20,7 @@ import { InfoCard } from '@backstage/core-components';
 import { EscalationPolicyQuery } from './query';
 import { NextEscalationPolicyQuery } from './query';
 import QueryQontract from '../../common/QueryAppInterface';
-import { EscalationPolicyRow } from './NextEscalationPolicyRow';
+import { NextEscalationPolicyRow } from './NextEscalationPolicyRow';
 
 export const NextEscalationPolicyComponent = ({ path }: { path: string }) => {
   if(!path) {
@@ -83,7 +83,7 @@ export const NextEscalationPolicyComponent = ({ path }: { path: string }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                < EscalationPolicyRow ep={result.escalation_policies_1[0].escalationPolicy} />
+                < NextEscalationPolicyRow ep={result.escalation_policies_1[0].escalationPolicy} />
                 < NextEscalationPolicy nextEscalationPolicy={result.escalation_policies_1[0].escalationPolicy} />
               </TableBody>
             </Table>

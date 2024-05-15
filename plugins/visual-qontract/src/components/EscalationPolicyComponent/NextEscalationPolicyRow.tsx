@@ -27,8 +27,40 @@ const getAppInterfaceLink = (path: string) => {
   return `${appInterfaceBaseURL}${path}`;
 };
 
-export const EscalationPolicyRow = ({ep}: {ep: any}) => {
-  return (  
+export const ContactItem = ( {channel, href, text}: {channel: string, href: string, text: string} ) => {
+  return (
+    <Grid item>
+      <Typography >
+        <Box sx={{ alignItems: "baseline" }}>
+          {channel+":"}
+          {" "}
+          <Link target="_blank" href={href}>
+            {text}
+          </Link>
+        </Box>
+      </Typography>
+    </Grid>
+  );
+};
+
+export const NextEscalationPolicyRow = ({ ep }: { ep: any }) => {
+  let email: any;
+  let slack: any;
+  let jira: any;
+
+  if(ep?.channels?.email){
+    email = ep.channels.email;
+  }
+
+  if(ep?.channels?.slackUserGroup[0]){
+    slack = ep.channels.slackUserGroup[0];
+  }
+
+  if(ep?.channels?.jiraBoard[0]){
+    jira = ep.channels.jiraBoard[0];
+  }
+
+  return (
     <TableRow>
       <TableCell width="20%">
         <Typography>{ep.name}</Typography>
@@ -39,41 +71,9 @@ export const EscalationPolicyRow = ({ep}: {ep: any}) => {
       <TableCell width="25%">
         <Grid item>
           <Grid container direction="column">
-            <Grid item>
-              <Typography >
-                <Box sx={{ alignItems: "baseline" }}>
-                  email:
-                  {" "}
-                  <Link target="_blank" href={"mailto:"+ep.channels.email}>
-                    {ep.channels.email}
-                  </Link>
-                </Box>
-              </Typography>
-            </Grid>
-            { ep.channels.slackUserGroup[0].handle && 
-            <Grid item>
-              <Typography>
-                <Box sx={{ alignItems: "baseline" }}>
-                  Slack:
-                  {" "}
-                  <Link target="_blank" href={getAppInterfaceLink(ep.channels.slackUserGroup[0].path)}>
-                    {ep.channels.slackUserGroup[0].handle}
-                  </Link>
-                </Box>
-              </Typography>
-            </Grid>
-            }
-            <Grid item >
-              <Typography >{
-                <Box sx={{ alignItems: "baseline" }}>
-                  JIRA:
-                  {" "}
-                  <Link target="_blank" href={ep.channels.jiraBoard[0].server.serverUrl}>
-                    {ep.channels.jiraBoard[0].name}
-                  </Link>
-                </Box>
-              }</Typography>
-            </Grid>
+            {email && < ContactItem channel='email' href={"mailto:" + email} text={email} />}
+            {slack.path && slack.name && < ContactItem channel='Slack' href={getAppInterfaceLink(slack.path)} text={slack.name} />}
+            {jira.server?.serverUrl && jira.name && < ContactItem channel='JIRA' href={jira.server.serverUrl} text={jira.name} />}
           </Grid>
         </Grid>
       </TableCell>

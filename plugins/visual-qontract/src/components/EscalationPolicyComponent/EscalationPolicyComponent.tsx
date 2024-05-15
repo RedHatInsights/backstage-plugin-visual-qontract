@@ -20,7 +20,7 @@ import { InfoCard } from '@backstage/core-components';
 import { EscalationPolicyQuery, NextEscalationPolicyQuery } from './query';
 import QueryQontract from '../../common/QueryAppInterface';
 import { request } from 'graphql-request';
-import { EscalationPolicyRow } from './NextEscalationPolicyRow';
+import { NextEscalationPolicyRow } from './NextEscalationPolicyRow';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 export const EscalationPolicyComponent = ({ path }: { path: string }) => {
@@ -120,9 +120,9 @@ export const EscalationPolicyComponent = ({ path }: { path: string }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <EscalationPolicyRow ep={result.apps_v1[0].escalationPolicy}  />
+                <NextEscalationPolicyRow ep={result.apps_v1[0].escalationPolicy}  />
                 {escalationPolicies.map((component: any, key: any) => (
-                  < EscalationPolicyRow ep={component} />
+                  < NextEscalationPolicyRow ep={component} />
                 ))}
               </TableBody>
             </Table>
