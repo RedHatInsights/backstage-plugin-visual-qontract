@@ -44,6 +44,10 @@ export const EscalationPolicyComponent = ({ path }: { path: string }) => {
       .then((data: any) => {
         if (data.escalation_policies_1.length !== 0) {
           if (data.escalation_policies_1[0].channels?.nextEscalationPolicy?.path) {
+            // catch any circularly connected policies to avoid infinite recursion
+            if (escalationPolicies.some(e => e.path === data.escalation_policies_1[0].channels.nextEscalationPolicy.path)) {
+              return;
+            }
             setNextPath(data.escalation_policies_1[0].channels.nextEscalationPolicy.path);
           }
           setEscalationPolicies([...escalationPolicies, data.escalation_policies_1[0]]);
@@ -53,6 +57,7 @@ export const EscalationPolicyComponent = ({ path }: { path: string }) => {
         console.log("no work")
       });
   }
+
 
   useEffect(() => {
     if (!result.apps_v1 || result.apps_v1.length === 0) {

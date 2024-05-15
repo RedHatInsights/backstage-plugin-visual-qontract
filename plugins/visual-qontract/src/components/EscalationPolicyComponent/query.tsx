@@ -17,6 +17,9 @@ query App($path: String) {
         jiraBoard {
           name
           path
+          server {
+            serverUrl
+          }
         }
         email
         pagerduty {
@@ -49,6 +52,9 @@ query EP($path: String) {
         jiraBoard {
           name
           path
+          server {
+            serverUrl
+          }
         }
         email
         pagerduty {
