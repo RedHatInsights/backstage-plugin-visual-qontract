@@ -10,12 +10,7 @@ import {
   TableHead,
   TableCell,
   Paper,
-  Box,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { InfoCard } from '@backstage/core-components';
 import { EscalationPolicyQuery, NextEscalationPolicyQuery } from './query';
 import QueryQontract from '../../common/QueryAppInterface';
@@ -29,6 +24,7 @@ export const EscalationPolicyComponent = ({ path }: { path: string }) => {
 
   const [escalationPolicies, setEscalationPolicies] = useState<any[]>([]);
   const [nextPath, setNextPath] = useState("");
+  const [requestError, setRequestError] = useState<boolean>(false);
 
   // Get Backstage objects
   const config = useApi(configApiRef);
@@ -39,7 +35,6 @@ export const EscalationPolicyComponent = ({ path }: { path: string }) => {
 
   function GetEscalationPolicy(path: string) {
     const variables = { path: path };
-    console.log(variables);
     request(proxyUrl, NextEscalationPolicyQuery, variables)
       .then((data: any) => {
         if (data.escalation_policies_1.length !== 0) {
@@ -57,7 +52,7 @@ export const EscalationPolicyComponent = ({ path }: { path: string }) => {
         }
       })
       .catch((_error) => {
-        console.log("no work")
+        setRequestError(true);
       });
   }
 
@@ -74,7 +69,7 @@ export const EscalationPolicyComponent = ({ path }: { path: string }) => {
     GetEscalationPolicy(nextPath)
   }, [escalationPolicies]);
 
-  if (error) {
+  if (error || requestError) {
     return (
       <InfoCard title={title}>
         <Typography align="center" variant="body1">
@@ -122,7 +117,7 @@ export const EscalationPolicyComponent = ({ path }: { path: string }) => {
               <TableBody>
                 <NextEscalationPolicyRow ep={result.apps_v1[0].escalationPolicy}  />
                 {escalationPolicies.map((component: any, key: any) => (
-                  < NextEscalationPolicyRow ep={component} />
+                  < NextEscalationPolicyRow key={key} ep={component} />
                 ))}
               </TableBody>
             </Table>
