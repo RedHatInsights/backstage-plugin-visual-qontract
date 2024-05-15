@@ -73,7 +73,7 @@ export const PipelinesComponent = () => {
     return (
       <Grid>
         <Grid item>
-          <Typography variant="overline">SaSS File</Typography>
+          <Typography variant="overline">SaaS File</Typography>
         </Grid>
         <Grid item>
           <Link target="_blank" href={getAppInterfaceLink(path)}>
