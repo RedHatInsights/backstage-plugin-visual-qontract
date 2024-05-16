@@ -1,0 +1,9 @@
+#!/bin/bash
+
+yarn workspace @redhatinsights/backstage-plugin-visual-qontract export-dynamic
+cd plugins/visual-qontract
+rm *.tgz
+npm pack
+cd ../..
+mv plugins/visual-qontract/*.tgz .
+shasum -a 256 *.tgz | awk '{print $1}' | xxd -r -p | base64
