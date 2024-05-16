@@ -31,6 +31,10 @@ export const ContactItem = ( {channel, href, text}: {channel: string, href: stri
   );
 };
 
+export const getJiraLink = ( server: string, project: string ) => {
+  return `${server}/projects/${project}/issues`;
+}
+
 export const NextEscalationPolicyRow = ({ ep }: { ep: any }) => {
   let email: any;
   let slack: any;
@@ -61,7 +65,7 @@ export const NextEscalationPolicyRow = ({ ep }: { ep: any }) => {
           <Grid container direction="column">
             {email && < ContactItem channel='email' href={"mailto:" + email} text={email} />}
             {slack.path && slack.name && < ContactItem channel='Slack' href={getAppInterfaceLink(slack.path)} text={slack.name} />}
-            {jira.server?.serverUrl && jira.name && < ContactItem channel='JIRA' href={jira.server.serverUrl} text={jira.name} />}
+            {jira.server?.serverUrl && jira.name && < ContactItem channel='JIRA' href={getJiraLink(jira.server.serverUrl, jira.name)} text={jira.name} />}
           </Grid>
         </Grid>
       </TableCell>

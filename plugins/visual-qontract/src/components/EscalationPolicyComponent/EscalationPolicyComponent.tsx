@@ -1,8 +1,7 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Typography,
   Grid,
-  Link,
   Table,
   TableContainer,
   TableRow,
@@ -18,7 +17,7 @@ import { request } from 'graphql-request';
 import { NextEscalationPolicyRow } from './NextEscalationPolicyRow';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
-export const EscalationPolicyComponent = ({ path }: { path: string }) => {
+export const EscalationPolicyComponent = () => {
   const { result: result, loaded: loaded, error: error } = QueryQontract(EscalationPolicyQuery);
   const title = 'Escalation Policy';
 
