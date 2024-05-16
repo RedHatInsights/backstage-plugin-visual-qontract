@@ -64,6 +64,7 @@ import {
   EntityQontractNamespacesContent,
   EntityQontractCodeComponentsContent,
   EntityQontractPipelinesComponent,
+  EntityQontractSLOComponent,
   EntityQontractEscalationPolicyComponent
 } from '@redhatinsights/backstage-plugin-visual-qontract';
 
@@ -158,8 +159,13 @@ const overviewContent = (
     <Grid item md={6}>
       <EntityQontractPipelinesComponent />
     </Grid>
+
+    <Grid item md={6}>
+      <EntityQontractSLOComponent />
+    </Grid>
     <Grid item md={12}>
       <EntityQontractEscalationPolicyComponent />
+
     </Grid>
   </Grid>
 );

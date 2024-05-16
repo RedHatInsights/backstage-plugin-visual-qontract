@@ -5,5 +5,6 @@ export {
     EntityQontractNamespacesContent,
     EntityQontractCodeComponentsContent,
     EntityQontractPipelinesComponent,
+    EntityQontractSLOComponent,
     EntityQontractEscalationPolicyComponent
 } from './plugin';
