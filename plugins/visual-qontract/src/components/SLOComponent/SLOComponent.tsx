@@ -42,7 +42,7 @@ export const SLOComponent = () => {
     });
   }, [result, entity]);
 
-  const title = '30 Day SLIs';
+  const title = 'SLIs [28 day rolling window]';
 
   if (error) {
     return (

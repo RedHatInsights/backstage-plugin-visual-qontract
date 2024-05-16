@@ -50,7 +50,7 @@ export const CodeComponentsComponent = () => {
         </InfoCard>
     }
 
-    if (qontractResult.apps_v1.length === 0 || qontractResult.apps_v1[0].codeComponents.length === 0) {
+    if (qontractResult.apps_v1.length === 0 || qontractResult.apps_v1[0].codeComponents.length === 0 ) {
         return (
           <InfoCard title={title}>
             <Typography align="center" variant="body1">No {title} found.</Typography>
@@ -61,6 +61,15 @@ export const CodeComponentsComponent = () => {
     const CodeComponentsTable = () => {
         // For each code component, try to locate a child entity which has a matching source code URL.
         // If a match is found, use that entity's 'image-build-url' annotation value if defined
+
+        if ( !qontractResult.apps_v1[0].codeComponents) {
+            return (
+                <InfoCard title={title}>
+                    <Typography align="center" variant="body1">No {title} found.</Typography>
+                </InfoCard>
+            );
+        }
+
         if (relatedEntities) {
             for (var component of qontractResult.apps_v1[0].codeComponents) {
                 for (var relatedEntity of relatedEntities) {
@@ -83,7 +92,7 @@ export const CodeComponentsComponent = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {qontractResult.apps_v1[0].codeComponents.map((component: any, key: any) => (
+                        {qontractResult.apps_v1[0].codeComponents?.map((component: any, key: any) => (
                             <TableRow key={key}>
                                 <TableCell scope="row">
                                     <Link target="_blank" href={component.url}>

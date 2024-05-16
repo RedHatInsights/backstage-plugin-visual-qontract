@@ -52,7 +52,7 @@ proxy:
       target: "https://prometheus.crcs02ue1.devshift.net/api/v1/"
       allowedMethods: ['POST', 'GET']
       headers:
-        Authorization: "Bearer sha256~24D4PLmAOVXulyhaCIzrTrl7s9jmevcauGG7BJD4Cs8"
+        Authorization: "Bearer sha256~FTcOlFmuwseT1M9oOSEF40IZDb2tAIVXQWQGExJJLVA"
 
 
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration

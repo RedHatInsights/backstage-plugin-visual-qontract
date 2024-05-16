@@ -21,7 +21,7 @@ export const SLOVisual = ({ query }: { query: string }) => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const adjustedQuery = query.replace(/{{window}}/g, '30d');
+        const adjustedQuery = query.replace(/{{window}}/g, '28d');
         const queryString = new URLSearchParams({
           query: adjustedQuery,
         }).toString();
@@ -73,11 +73,7 @@ export const SLOVisual = ({ query }: { query: string }) => {
 
   if (noResultsFound) {
     return (
-      <Box>
-        <Typography variant="h6" color="error">
-          SLI query returned no results.
-        </Typography>
-      </Box>
+      <React.Fragment/>
     );
   }
 
