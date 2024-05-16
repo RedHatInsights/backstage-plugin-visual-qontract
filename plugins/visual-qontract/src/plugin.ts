@@ -51,3 +51,12 @@ export const EntityQontractPipelinesComponent = visualQontractPlugin.provide(
     }
   }),
 );
+
+export const EntityQontractSLOComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'EntityQontractSLOComponent',
+    component: {
+      lazy: () => import('./components/SLOComponent').then(m => m.SLOComponent),
+    }
+  }),
+);
