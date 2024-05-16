@@ -58,5 +58,14 @@ export const EntityQontractSLOComponent = visualQontractPlugin.provide(
     component: {
       lazy: () => import('./components/SLOComponent').then(m => m.SLOComponent),
     }
+  }),    
+);
+
+export const EntityQontractEscalationPolicyComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'EntityQontractEscalationPolicyComponent',
+    component: {
+      lazy: () => import('./components/EscalationPolicyComponent').then(m => m.EscalationPolicyComponent),
+    }
   }),
 );
