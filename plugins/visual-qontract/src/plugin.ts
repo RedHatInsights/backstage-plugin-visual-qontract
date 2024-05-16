@@ -51,3 +51,12 @@ export const EntityQontractPipelinesComponent = visualQontractPlugin.provide(
     }
   }),
 );
+
+export const EntityQontractEscalationPolicyComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'EntityQontractEscalationPolicyComponent',
+    component: {
+      lazy: () => import('./components/EscalationPolicyComponent').then(m => m.EscalationPolicyComponent),
+    }
+  }),
+);
