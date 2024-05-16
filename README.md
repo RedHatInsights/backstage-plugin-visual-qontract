@@ -1,16 +1,18 @@
-# Visual App Interface Dynamic Plugin
+# Visual Qontract Dynamic Plugin
 
-This is a development mono-repo for the Visual App Interface plugin. This mono-repo was created using @backstage/create-app to provide a backend and frontend for the plugin to integrate with.
+This is a development mono-repo for the Visual Qontract Interface plugin. This mono-repo was created using @backstage/create-app to provide a backend and frontend for the plugin to integrate with.
 
-You can find the plugin code in `plugins/visual-app-interface`
+You can find the plugin code in `plugins/visual-qontract`
 
 ## Components
 This plugin provides multiple info card components that can be mounted on a catalog entry page.
 
-* `EntityQontractPipelinesComponent`
-* `EntityQontractCodeComponentsContent`
-* `EntityQontractNamespacesContent`
-* `EntityQontractDependenciesContent`
+* `EntityQontractDependenciesContent`: Shows CI and code dependencies along with links to status pages and SLOs
+* `EntityQontractNamespacesContent`: Shows namespaces and clusters, with links, where an app is running
+* `EntityQontractCodeComponentsContent`: Shows code repositories and build jobs
+* `EntityQontractPipelinesComponent`: Shows deploy pipelines with links out to the deploy privders
+* `EntityQontractSLOComponent`: Shows cards with gauges for SLIs
+* `EntityQontractEscalationPolicyComponent`: Show's escalation policies for an app
 
 ## Configuration
 In `app-config.yaml` first add the proxy:
@@ -20,9 +22,17 @@ proxy:
   endpoints:
     '/visual-qontract': 'https://my.qontract.company.com/graphql'
 ```
+if you want to use the SLO gauge you need to add an additional proxy to prometheus:
+
+```yaml
+    '/prometheus':
+      target: "https://prometheus.crcs02ue1.devshift.net/api/v1/"
+      allowedMethods: ['POST', 'GET']
+      headers:
+        Authorization: "Bearer ${PROMETHEUS_TOKEN}"
+```
 
 Also in `app-config.yaml` add `redhatinsights.backstage-plugin-visual-qontract` and the card component configs into the dynamic plugins section.
-
 
 ```yaml
 dynamicPlugins:
@@ -57,17 +67,4 @@ yarn dev
 Before you do, you'll likely want to have catalog entries to see the plugin working on. Check out AppStage for that. 
 
 ### Build the Dynamic Plugin
-
-```sh
-yarn workspace @redhatinsights/backstage-plugin-visual-qontract export-dynamic
-cd plugins/visual-app-interface/
-npm pack
-```
-
-this will create `redhatinsights-backstage-plugin-visual-qontract-X.Y.Z.tgz` in the `plugins/visual-qontract/` directory.
-
-And don't forget to generate the integrity!
-
-```sh
-shasum -a 256 redhatinsights-backstage-plugin-visual-qontract-0.1.4.tgz | awk '{print $1}' | xxd -r -p | base64
-```
+Run `./build` - the packed tarball for the release along with its integrity sha will be generated.
