@@ -4,7 +4,7 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
-export const SLOVisual = ({ query }: { query: string }) => {
+export const SLOGauge = ({ query }: { query: string }) => {
   const [percentage, setPercentage] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<boolean>(false);
@@ -73,7 +73,29 @@ export const SLOVisual = ({ query }: { query: string }) => {
 
   if (noResultsFound) {
     return (
-      <React.Fragment/>
+      <Gauge
+        value={0}
+        color={'#343434'}
+        startAngle={-110}
+        endAngle={110}
+        height={200}
+        width={200}
+        valueField="value"
+        text={
+          ({value}) => `No Results`
+        }
+        sx={(theme) => ({
+          [`& .${gaugeClasses.valueText}`]: {
+            fontSize: 25,
+          },
+          [`& .${gaugeClasses.valueArc}`]: {
+            fill: getColor(percentage),
+          },
+          [`& .${gaugeClasses.referenceArc}`]: {
+            fill: theme.palette.text.disabled,
+          },
+        })}
+      />
     );
   }
 

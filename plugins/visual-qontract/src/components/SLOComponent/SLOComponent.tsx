@@ -12,7 +12,7 @@ import { InfoCard } from '@backstage/core-components';
 import { SLOQuery } from './query';
 import QueryQontract from '../../common/QueryAppInterface';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { SLOVisual } from './SLOVisual';
+import { SLOGauge } from './SLOGauge';
 
 export const SLOComponent = () => {
   const { result, loaded, error } = QueryQontract(SLOQuery);
@@ -83,13 +83,27 @@ export const SLOComponent = () => {
     return name.replace(/([a-z])([A-Z])|([A-Z])([A-Z][a-z])/g, '$1$3 $2$4').trim();
   };
 
+  const dashboardLink = (dashboard: string) => {
+    try {
+      new URL(dashboard);
+      return ( <CardActions>
+      <Link target="_blank" href={dashboard}>
+        View Dashboard
+      </Link>
+    </CardActions> )
+    } catch (e) {
+      return <React.Fragment/>
+    }
+
+  }
+
   return (
     <InfoCard title={title}>
       <Box display="flex" flexWrap="wrap" justifyContent="center">
         {filteredResult.slos.map((slo: any, key: number) => (
             <Card key={key} style={{ maxWidth: '18em', maxHeight: '30em', margin: '1em', flexGrow: 1 }}>
               <CardContent>
-                <SLOVisual query={slo.expr} />
+                <SLOGauge query={slo.expr} />
                 <Typography variant="button">{splitName(slo.name)}</Typography>
                 <Typography variant="body2">{slo.SLISpecification}</Typography>
               </CardContent>
