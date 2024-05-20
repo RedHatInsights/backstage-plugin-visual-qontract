@@ -63,7 +63,11 @@ export const PipelinesComponent = () => {
         (t: { namespace: any }) => t.namespace,
       )) {
         const url = `${pp_cluster_console_url}/k8s/ns/${pp_ns_name}/tekton.dev~v1~Pipeline/${pipeline_name}`;
-        urls.push({ url, title: target.namespace.environment.name });
+        const title = target.namespace.environment.name;
+        //ensure no duplicates by title
+        if (!urls.find((u: { title: any }) => u.title === title)) {
+         urls.push({ url, title });
+        }
       }
     }
     return urls;
