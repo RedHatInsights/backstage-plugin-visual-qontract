@@ -69,3 +69,12 @@ export const EntityQontractEscalationPolicyComponent = visualQontractPlugin.prov
     }
   }),
 );
+
+export const EntityQontractHomePageComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'EntityQontractHomePageComponent',
+    component: {
+      lazy: () => import('./components/HomeComponent').then(m => m.HomeComponent),
+    }
+  }),
+);
