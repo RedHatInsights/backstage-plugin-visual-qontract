@@ -3,8 +3,6 @@ import {
   Typography,
   Grid,
   Link,
-  TableRow,
-  TableCell,
   Box,
   Accordion,
   AccordionSummary,
@@ -21,16 +19,15 @@ const getAppInterfaceLink = (path: string) => {
 
 export const ContactItem = ({ channel, href, text }: { channel: string, href: string, text: string }) => {
   return (
-    <Grid item>
-      <Typography >
-        <Box sx={{ alignItems: "baseline" }}>
-          {channel + ":"}
-          {" "}
-          <Link target="_blank" href={href}>
-            {text}
-          </Link>
-        </Box>
-      </Typography>
+    <Grid>
+      <Grid item>
+        <Typography variant="overline">{channel}</Typography>
+      </Grid>
+      <Grid item>
+        <Link target="_blank" href={href}>
+          {text}
+        </Link>
+      </Grid>
     </Grid>
   );
 };
@@ -59,16 +56,17 @@ export const NextEscalationPolicyRow = ({ ep }: { ep: any }) => {
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Grid item xs={4}>
-          <Typography>{ep.name}</Typography>
+        <Grid item xs={5}>
+          <Typography variant="button">{ep.name}</Typography>
         </Grid>
-        <Grid item xs={2}></Grid>
-        <Grid item xs={6}>
-          <Grid container direction="column">
-            {email && < ContactItem channel='email' href={"mailto:" + email} text={email} />}
-            {slack.path && slack.name && < ContactItem channel='Slack' href={getAppInterfaceLink(slack.path)} text={slack.name} />}
-            {jira.server?.serverUrl && jira.name && < ContactItem channel='JIRA' href={getJiraLink(jira.server.serverUrl, jira.name)} text={jira.name} />}
-          </Grid>
+        <Grid item xs={4}>
+          {email && < ContactItem channel='email' href={"mailto:" + email} text={email} />}
+        </Grid>
+        <Grid item xs={4}>
+          {slack.path && slack.name && < ContactItem channel='Slack' href={getAppInterfaceLink(slack.path)} text={slack.name} />}
+        </Grid>
+        <Grid item xs={1}>
+          {jira.server?.serverUrl && jira.name && < ContactItem channel='JIRA' href={getJiraLink(jira.server.serverUrl, jira.name)} text={jira.name} />}
         </Grid>
       </AccordionSummary>
       <AccordionDetails>
