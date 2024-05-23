@@ -119,6 +119,7 @@ export const SLOGauge = ({ query }: { query: string }) => {
         sx={(theme) => ({
           [`& .${gaugeClasses.valueText}`]: {
             fontSize: 40,
+            fill: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
           },
           [`& .${gaugeClasses.valueArc}`]: {
             fill: getColor(percentage),
