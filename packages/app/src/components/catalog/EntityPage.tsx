@@ -163,7 +163,7 @@ const overviewContent = (
     <Grid item md={6}>
       <EntityQontractSLOComponent />
     </Grid>
-    <Grid item md={12}>
+    <Grid item md={6}>
       <EntityQontractEscalationPolicyComponent />
 
     </Grid>

@@ -98,29 +98,10 @@ export const EscalationPolicyComponent = () => {
     <InfoCard title={title} noPadding>
       <Grid container spacing={3} direction="column">
         <Grid item>
-          <TableContainer component={Paper}>
-            <Table size='small'>
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <Typography variant="button">Name</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant='button' paragraph>Description</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="button">Contact</Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <NextEscalationPolicyRow ep={result.apps_v1[0].escalationPolicy}  />
-                {escalationPolicies.map((component: any, key: any) => (
-                  < NextEscalationPolicyRow key={key} ep={component} />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <NextEscalationPolicyRow ep={result.apps_v1[0].escalationPolicy}  />
+          {escalationPolicies.map((component: any, key: any) => (
+            < NextEscalationPolicyRow key={key} ep={component} />
+          ))}
         </Grid>
       </Grid>
     </InfoCard>
