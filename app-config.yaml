@@ -53,6 +53,18 @@ proxy:
       allowedMethods: ['POST', 'GET']
       headers:
         Authorization: "Bearer ${PROMETHEUS_TOKEN}"
+    '/developer-hub':
+      target: 'http://localhost:8000'
+      pathRewrite:
+        '^/api/proxy/developer-hub': '/resources/json/homepage.json'
+      changeOrigin: true
+      secure: false
+    '/inscope-resources':
+      target: 'http://localhost:8000'
+      changeOrigin: true
+      secure: false
+
+
 
 
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
