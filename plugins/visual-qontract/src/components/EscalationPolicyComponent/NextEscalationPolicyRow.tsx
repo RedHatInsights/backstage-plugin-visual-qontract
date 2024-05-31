@@ -3,10 +3,12 @@ import {
   Typography,
   Grid,
   Link,
-  TableRow,
-  TableCell,
   Box,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 const appInterfaceBaseURL = `https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data`;
@@ -15,23 +17,22 @@ const getAppInterfaceLink = (path: string) => {
   return `${appInterfaceBaseURL}${path}`;
 };
 
-export const ContactItem = ( {channel, href, text}: {channel: string, href: string, text: string} ) => {
+export const ContactItem = ({ channel, href, text }: { channel: string, href: string, text: string }) => {
   return (
-    <Grid item>
-      <Typography >
-        <Box sx={{ alignItems: "baseline" }}>
-          {channel+":"}
-          {" "}
-          <Link target="_blank" href={href}>
-            {text}
-          </Link>
-        </Box>
-      </Typography>
+    <Grid>
+      <Grid item>
+        <Typography variant="overline">{channel}</Typography>
+      </Grid>
+      <Grid item>
+        <Link target="_blank" href={href}>
+          {text}
+        </Link>
+      </Grid>
     </Grid>
   );
 };
 
-export const getJiraLink = ( server: string, project: string ) => {
+export const getJiraLink = (server: string, project: string) => {
   return `${server}/projects/${project}/issues`;
 }
 
@@ -40,35 +41,39 @@ export const NextEscalationPolicyRow = ({ ep }: { ep: any }) => {
   let slack: any;
   let jira: any;
 
-  if(ep?.channels?.email){
+  if (ep?.channels?.email) {
     email = ep.channels.email;
   }
 
-  if(ep?.channels?.slackUserGroup[0]){
+  if (ep?.channels?.slackUserGroup[0]) {
     slack = ep.channels.slackUserGroup[0];
   }
 
-  if(ep?.channels?.jiraBoard[0]){
+  if (ep?.channels?.jiraBoard[0]) {
     jira = ep.channels.jiraBoard[0];
   }
 
   return (
-    <TableRow>
-      <TableCell width="20%">
-        <Typography>{ep.name}</Typography>
-      </TableCell>
-      <TableCell width="55%">
-        <Typography>{ep.description}</Typography>
-      </TableCell>
-      <TableCell width="25%">
-        <Grid item>
-          <Grid container direction="column">
-            {email && < ContactItem channel='email' href={"mailto:" + email} text={email} />}
-            {slack.path && slack.name && < ContactItem channel='Slack' href={getAppInterfaceLink(slack.path)} text={slack.name} />}
-            {jira.server?.serverUrl && jira.name && < ContactItem channel='JIRA' href={getJiraLink(jira.server.serverUrl, jira.name)} text={jira.name} />}
-          </Grid>
+    <Accordion>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Grid item xs={5}>
+          <Typography variant="button">{ep.name}</Typography>
         </Grid>
-      </TableCell>
-    </TableRow>
+        <Grid item xs={4}>
+          {email && < ContactItem channel='email' href={"mailto:" + email} text={email} />}
+        </Grid>
+        <Grid item xs={4}>
+          {slack.path && slack.name && < ContactItem channel='Slack' href={getAppInterfaceLink(slack.path)} text={slack.name} />}
+        </Grid>
+        <Grid item xs={1}>
+          {jira.server?.serverUrl && jira.name && < ContactItem channel='JIRA' href={getJiraLink(jira.server.serverUrl, jira.name)} text={jira.name} />}
+        </Grid>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Grid item>
+          <Typography>{ep.description}</Typography>
+        </Grid>
+      </AccordionDetails>
+    </Accordion>
   );
 };
