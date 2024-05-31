@@ -1,0 +1,1 @@
+export  { NewsComponent } from './NewsComponent';

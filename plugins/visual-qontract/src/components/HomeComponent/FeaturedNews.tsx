@@ -5,13 +5,11 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Grid,
   Typography,
   Link,
   CardMedia,
   CardActionArea,
   makeStyles,
-  CardActions,
 } from '@material-ui/core';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import AnnouncementIcon from '@material-ui/icons/Announcement';
@@ -107,14 +105,21 @@ export const FeaturedNews = () => {
   }
 
   return (
-    <Card className={classes.outerCard} xs="12">
+    <Card className={classes.outerCard}>
       <CardHeader
         title="Featured News"
         titleTypographyProps={{
           variant: 'h6',
         }}
+        children={
+          <Link href="/news" target="_blank">
+            <Typography variant="button">View All News</Typography>
+          </Link>
+        }
         avatar={<AnnouncementIcon />}
       />
+
+
       <CardContent className={classes.horizontalOverflow}>
         <FeaturedNewsList />
       </CardContent>

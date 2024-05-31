@@ -2,7 +2,6 @@ import React, { useEffect, ReactNode, useState } from 'react';
 import {
   CardActions,
   CardHeader,
-  Container,
   Link,
   Typography,
 } from '@material-ui/core';
@@ -10,8 +9,8 @@ import {
   useStarredEntities,
   EntityRefLink,
 } from '@backstage/plugin-catalog-react';
-import { Content, Header, Page, Avatar } from '@backstage/core-components';
-import { Box, Grid } from '@material-ui/core';
+import { Content, Header, Page } from '@backstage/core-components';
+import { Grid } from '@material-ui/core';
 import { HomePageSearchBar } from '@backstage/plugin-search';
 import { Card, CardContent } from '@material-ui/core';
 import { makeStyles } from 'tss-react/mui';
@@ -130,7 +129,7 @@ export const HomeComponent = () => {
             index: React.Key | null | undefined,
           ) => (
             <React.Fragment key={index}>
-              <Grid item xs="12">
+              <Grid item xs={12}>
                 <Typography variant="overline">{group.title}</Typography>
               </Grid>
               <Grid item>

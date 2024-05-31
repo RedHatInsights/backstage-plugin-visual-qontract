@@ -78,3 +78,12 @@ export const EntityQontractHomePageComponent = visualQontractPlugin.provide(
     }
   }),
 );
+
+export const EntityQontractNewsComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'EntityQontractNewsComponent',
+    component: {
+      lazy: () => import('./components/NewsComponent').then(m => m.NewsComponent),
+    }
+  }),
+);
