@@ -1,10 +1,5 @@
 import React, { useEffect, ReactNode, useState } from 'react';
-import {
-  CardActions,
-  CardHeader,
-  Link,
-  Typography,
-} from '@material-ui/core';
+import { CardActions, CardHeader, Link, Typography } from '@material-ui/core';
 import {
   useStarredEntities,
   EntityRefLink,
@@ -21,7 +16,7 @@ import OpenInNew from '@material-ui/icons/OpenInNew';
 import LinkIcon from '@material-ui/icons/Link';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { FeaturedNews } from './FeaturedNews';
-import { StatusMiniComponent } from '../StatusMiniComponent'; 
+import { StatusMiniComponent } from '../StatusMiniComponent';
 
 export const HomeComponent = () => {
   const { starredEntities } = useStarredEntities();
@@ -47,6 +42,7 @@ export const HomeComponent = () => {
   const useStyles = makeStyles()(theme => ({
     topcard: {
       minHeight: '16em',
+      flex: '0 0 auto',
     },
     infocard: {
       minHeight: '7em',
@@ -135,7 +131,7 @@ export const HomeComponent = () => {
               <Grid item>
                 <Grid container spacing={1} direction="column">
                   {group.links.map((link, idx) => (
-                    <Grid item >
+                    <Grid item>
                       &nbsp;&nbsp;&nbsp;&nbsp;
                       <Link href={link.url} key={idx}>
                         {link.label}
@@ -152,6 +148,27 @@ export const HomeComponent = () => {
   };
 
   const FavoritesCard = () => {
+    let Output = <Typography variant="body1">Loading...</Typography>;
+    const StarredEntities = [...starredEntities].map(entity => (
+      <StarredEntity entityRef={entity} key={entity.toString()} />
+    ));
+    if (StarredEntities.length === 0) {
+      Output = (
+        <React.Fragment>
+          <Grid item xs={3}></Grid>
+          <Grid xs={6} item>
+            <Typography variant="body1">You have no favorites set. Visit the catalog and hit the star icon to add a favorite..</Typography>
+          </Grid>
+          <Grid item xs={3}></Grid>
+        </React.Fragment>
+      );
+    } else {
+      Output = (
+        <Grid container direction="row"> 
+          {StarredEntities}
+        </Grid>
+      );
+    }
     return (
       <Card classes={{ root: classes.infocard }}>
         <CardHeader
@@ -163,9 +180,7 @@ export const HomeComponent = () => {
         />
         <CardContent>
           <Grid container direction="row">
-            {[...starredEntities].map(entity => (
-              <StarredEntity entityRef={entity} key={entity.toString()} />
-            ))}
+            {Output}
           </Grid>
         </CardContent>
       </Card>
@@ -226,7 +241,7 @@ export const HomeComponent = () => {
           <TopCard
             title="Create"
             avatar={<CreateIcon />}
-            body="Guided templates automate complex tasks and help you get started quickly. Boot strap a new app, onboard with Konflux, or generate App Interface YAML."
+            body="Guided templates automate complex tasks and help you get started quickly. "
             link="/create"
             linkText="Templates"
           />
@@ -235,7 +250,7 @@ export const HomeComponent = () => {
           <TopCard
             title="Explore"
             avatar={<Explore />}
-            body="Everything you need to know about your apps and services: pipelines, tests, vulnerabilities, deployments, code, and more."
+            body="Everything you need to know about your apps and services."
             link="/catalog"
             linkText="Catalog"
           />
@@ -244,7 +259,7 @@ export const HomeComponent = () => {
           <TopCard
             title="Learn"
             avatar={<LibraryBooks />}
-            body="Search and read documentation for all apps and services."
+            body="Search and read documentation for all apps and services in a single, unified view."
             link="/docs"
             linkText="Docs"
           />
@@ -255,7 +270,7 @@ export const HomeComponent = () => {
 
   return (
     <Page themeId="home">
-      <Header title="inScope"/>
+      <Header title="inScope" />
       <Content>
         <Grid container direction="column">
           <Grid item>

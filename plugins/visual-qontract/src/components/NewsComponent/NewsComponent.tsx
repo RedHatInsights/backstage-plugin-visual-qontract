@@ -271,7 +271,7 @@ export const NewsComponent = () => {
 
   const NewsStoryCard = (story: any) => {
     return (
-      <Grid item key={story.id}>
+      <Grid item key={story.id} xs={4}>
         <Card raised className={classes.newsCard}>
           <CardActionArea>
             <CardMedia
@@ -331,9 +331,9 @@ export const NewsComponent = () => {
 
   return (
     <Page themeId="home">
-      <Header title="inScope News" />
+      <Header title="News" />
       <Content>
-        <Grid container direction="row">
+        <Grid container direction="row" spacing={4}>
           <Grid item xs={3}>
             <FilterMenu />
           </Grid>
