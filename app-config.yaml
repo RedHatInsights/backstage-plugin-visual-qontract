@@ -63,6 +63,10 @@ proxy:
       target: 'http://localhost:8000'
       changeOrigin: true
       secure: false
+    '/status':
+      target: 'https://status.redhat.com/api/v2/summary.json'
+      changeOrigin: true
+      secure: false
 
 
 

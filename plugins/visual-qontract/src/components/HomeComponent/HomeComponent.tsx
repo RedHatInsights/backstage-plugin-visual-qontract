@@ -21,6 +21,7 @@ import OpenInNew from '@material-ui/icons/OpenInNew';
 import LinkIcon from '@material-ui/icons/Link';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { FeaturedNews } from './FeaturedNews';
+import { StatusMiniComponent } from '../StatusMiniComponent'; 
 
 export const HomeComponent = () => {
   const { starredEntities } = useStarredEntities();
@@ -269,7 +270,14 @@ export const HomeComponent = () => {
                 <LinksCard />
               </Grid>
               <Grid item xs={12} md={6}>
-                <FavoritesCard />
+                <Grid container>
+                  <Grid item xs={12}>
+                    <StatusMiniComponent />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FavoritesCard />
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

@@ -17,6 +17,8 @@ import AnnouncementIcon from '@material-ui/icons/Announcement';
 export const FeaturedNews = () => {
   const [news, setNews] = useState<any[]>([]);
   const [featuredNews, setFeaturedNews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   // Get Backstage objects
   const config = useApi(configApiRef);
@@ -49,9 +51,18 @@ export const FeaturedNews = () => {
   });
   const classes = useStyles();
   useEffect(() => {
+    setLoading(true);
     fetch(`${proxyUrl}/resources/json/hotnews.json`)
       .then(response => response.json())
-      .then(json => setNews(json));
+      .then(json => { 
+        setNews(json)
+        setLoading(false)
+      })
+      .catch(error => {
+        setError(true)
+        console.error('Error fetching News:', error)
+        setLoading(false) 
+      })
   }, []);
 
   useEffect(() => {
@@ -104,6 +115,20 @@ export const FeaturedNews = () => {
     return <Typography variant="body2">Loading...</Typography>;
   }
 
+  var MainFragment = FeaturedNewsList;
+
+  if (loading) {
+    MainFragment = () => (
+      <Typography variant="body2">Loading...</Typography>
+    );
+  }
+
+  if (error) {
+    MainFragment = () => (
+      <Typography variant="body2">Error fetching news...</Typography>
+    );
+  }
+
   return (
     <Card className={classes.outerCard}>
       <CardHeader
@@ -118,10 +143,8 @@ export const FeaturedNews = () => {
         }
         avatar={<AnnouncementIcon />}
       />
-
-
       <CardContent className={classes.horizontalOverflow}>
-        <FeaturedNewsList />
+        <MainFragment />
       </CardContent>
     </Card>
   );

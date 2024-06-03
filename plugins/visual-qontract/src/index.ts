@@ -8,5 +8,6 @@ export {
     EntityQontractSLOComponent,
     EntityQontractEscalationPolicyComponent,
     EntityQontractHomePageComponent,
-    EntityQontractNewsComponent
+    EntityQontractNewsComponent,
+    EntityQontractStatusMiniComponent,
 } from './plugin';

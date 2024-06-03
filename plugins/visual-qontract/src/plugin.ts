@@ -87,3 +87,12 @@ export const EntityQontractNewsComponent = visualQontractPlugin.provide(
     }
   }),
 );
+
+export const EntityQontractStatusMiniComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'EntityQontractStatusMiniComponent',
+    component: {
+      lazy: () => import('./components/StatusMiniComponent').then(m => m.StatusMiniComponent),
+    }
+  }),
+)
