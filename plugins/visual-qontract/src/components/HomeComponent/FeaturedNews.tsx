@@ -115,7 +115,7 @@ export const FeaturedNews = () => {
     return <Typography variant="body2">Loading...</Typography>;
   }
 
-  var MainFragment = FeaturedNewsList;
+  let MainFragment = FeaturedNewsList;
 
   if (loading) {
     MainFragment = () => (

@@ -11,6 +11,7 @@ import {
   Typography,
   makeStyles,
   Button,
+  CardActions,
 } from '@material-ui/core';
 import { Content, Header, Page } from '@backstage/core-components';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
@@ -22,6 +23,8 @@ export const NewsComponent = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [sections, setSections] = useState<any[]>([]);
   const [selectedSection, setSelectedSection] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   // Get Backstage objects
   const config = useApi(configApiRef);
@@ -45,10 +48,17 @@ export const NewsComponent = () => {
 
   //On mount fetch the news data
   useEffect(() => {
+    setLoading(true);
     fetch(`${proxyUrl}/resources/json/hotnews.json`)
       .then(response => response.json())
       .then(json => {
         setNews(json);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(true);
+        console.error('Error fetching News:', error);
+        setLoading(false);
       });
   }, []);
 
@@ -65,6 +75,7 @@ export const NewsComponent = () => {
 
   useEffect(() => {
     filterStories();
+    generateSections();
   }, [selectedTags]);
 
   useEffect(() => {
@@ -106,10 +117,15 @@ export const NewsComponent = () => {
   const generateSections = () => {
     const sections = new Set<string>();
     news.forEach(section => {
-      sections.add(section.title);
+      const hasStoryWithSelectedTags = section.stories.some((story: any) =>
+        selectedTags.every(tag => story.tags.includes(tag))
+      );
+      if (hasStoryWithSelectedTags || selectedTags.length === 0) {
+        sections.add(section.title);
+      }
     });
     setSections(Array.from(sections));
-  }
+  };
 
   const Tag = (tag: string) => {
     const handleClick = (
@@ -147,11 +163,34 @@ export const NewsComponent = () => {
         {section}
       </Button>
     );
+  };
+
+  const clearAllFilters = () => {
+    setSelectedSection('');
+    setSelectedTags([]);
+  };
+
+  const showClearAll = () => { 
+    return selectedSection !== '' || selectedTags.length > 0;
+  }
+
+  const FilterCardActions = () => {
+    if (showClearAll()) {
+      return (
+        <CardActions>
+          <Button onClick={clearAllFilters}>Clear All Filters</Button>
+        </CardActions>
+      );
+    }
+    return null;
   }
 
   const FilterMenu = () => {
     return (
       <Card>
+        <CardContent>
+          <Typography variant="h5">Filters</Typography>
+        </CardContent>
         <CardContent>
           <Grid container direction="column">
             <Grid item>
@@ -176,6 +215,7 @@ export const NewsComponent = () => {
             </Grid>
           </Grid>
         </CardContent>
+        <FilterCardActions />
       </Card>
     );
   };
@@ -210,20 +250,36 @@ export const NewsComponent = () => {
     return <Typography variant="body2">Loading...</Typography>;
   }
 
+  let NewsPage = () => {
+    return (
+      <Grid container direction="row">
+        <Grid item xs={3}>
+          <FilterMenu />
+        </Grid>
+        <Grid item xs={9}>
+          <Grid container direction="row" xs={12}>
+            {filteredNews.map((story, _index) => NewsStoryCard(story))}
+          </Grid>
+        </Grid>
+      </Grid>
+    );
+  };
+
+  if (loading) {
+    NewsPage = () => <Typography variant="body2">Loading...</Typography>;
+  }
+
+  if (error) {
+    NewsPage = () => (
+      <Typography variant="body2">Error fetching News</Typography>
+    );
+  }
+
   return (
     <Page themeId="home">
       <Header title="inScope News"></Header>
       <Content>
-        <Grid container direction="row">
-          <Grid item xs={3}>
-            <FilterMenu />
-          </Grid>
-          <Grid item xs={9}>
-            <Grid container direction="row" xs={12}>
-              {filteredNews.map((story, _index) => NewsStoryCard(story))}
-            </Grid>
-          </Grid>
-        </Grid>
+        <NewsPage />
       </Content>
     </Page>
   );
