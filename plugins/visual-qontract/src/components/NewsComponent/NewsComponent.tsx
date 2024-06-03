@@ -1,6 +1,4 @@
-//Create a basic hello world component
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Card,
   CardActionArea,
@@ -12,9 +10,11 @@ import {
   makeStyles,
   Button,
   CardActions,
+  TextField,
 } from '@material-ui/core';
 import { Content, Header, Page } from '@backstage/core-components';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import levenshtein from 'js-levenshtein'; // Import the Levenshtein distance library
 
 export const NewsComponent = () => {
   const [news, setNews] = useState<any[]>([]);
@@ -25,6 +25,7 @@ export const NewsComponent = () => {
   const [selectedSection, setSelectedSection] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Get Backstage objects
   const config = useApi(configApiRef);
@@ -76,16 +77,38 @@ export const NewsComponent = () => {
   useEffect(() => {
     filterStories();
     generateSections();
-  }, [selectedTags]);
+  }, [selectedTags, searchQuery]);
 
   useEffect(() => {
     filterStories();
   }, [selectedSection]);
 
+  const tokenize = (text: string) => {
+    return text.toLowerCase().split(/\s+/);
+  };
+
+  const searchStories = (query: string, stories: any[]) => {
+    if (!query) return stories;
+    const tokens = tokenize(query);
+    return stories.filter(story => {
+      const titleTokens = tokenize(story.title);
+      const bodyTokens = tokenize(story.body);
+      const tagTokens = story.tags.map((tag: string) => tag.toLowerCase());
+      const allTokens = [...titleTokens, ...bodyTokens, ...tagTokens];
+      return tokens.some(token =>
+        allTokens.some(storyToken => {
+          return (
+            storyToken.includes(token) || levenshtein(storyToken, token) < 3
+          );
+        }),
+      );
+    });
+  };
+
   const filterStories = () => {
-    const stories: React.SetStateAction<any[]> = [];
+    let stories: React.SetStateAction<any[]> = [];
     news.forEach(section => {
-      //First filter by section
+      // First filter by section
       if (selectedSection !== '' && section.title !== selectedSection) {
         return;
       }
@@ -103,6 +126,7 @@ export const NewsComponent = () => {
         });
       }
     });
+    stories = searchStories(searchQuery, stories);
     setFilteredNews(stories);
   };
 
@@ -118,9 +142,16 @@ export const NewsComponent = () => {
     const sections = new Set<string>();
     news.forEach(section => {
       const hasStoryWithSelectedTags = section.stories.some((story: any) =>
-        selectedTags.every(tag => story.tags.includes(tag))
+        selectedTags.every(tag => story.tags.includes(tag)),
       );
-      if (hasStoryWithSelectedTags || selectedTags.length === 0) {
+      const hasStoryWithSearchQuery = section.stories.some(
+        (story: any) => searchStories(searchQuery, [story]).length > 0,
+      );
+      if (
+        hasStoryWithSelectedTags ||
+        selectedTags.length === 0 ||
+        hasStoryWithSearchQuery
+      ) {
         sections.add(section.title);
       }
     });
@@ -168,11 +199,14 @@ export const NewsComponent = () => {
   const clearAllFilters = () => {
     setSelectedSection('');
     setSelectedTags([]);
+    setSearchQuery('');
   };
 
-  const showClearAll = () => { 
-    return selectedSection !== '' || selectedTags.length > 0;
-  }
+  const showClearAll = () => {
+    return (
+      selectedSection !== '' || selectedTags.length > 0 || searchQuery !== ''
+    );
+  };
 
   const FilterCardActions = () => {
     if (showClearAll()) {
@@ -183,7 +217,7 @@ export const NewsComponent = () => {
       );
     }
     return null;
-  }
+  };
 
   const FilterMenu = () => {
     return (
@@ -192,14 +226,27 @@ export const NewsComponent = () => {
           <Typography variant="h5">Filters</Typography>
         </CardContent>
         <CardContent>
-          <Grid container direction="column">
+          <Grid container direction="column" xs={12}>
+            <Grid item xs={12}>
+              <TextField
+                autoFocus
+                label="Search"
+                variant="outlined"
+                size="small"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                style={{ width: '100%' }}
+              />
+            </Grid>
             <Grid item>
               <Typography variant="h6">News Streams</Typography>
             </Grid>
             <Grid item>
               <Grid container direction="column" spacing={1}>
                 {sections.map(section => (
-                  <Grid item>{Section(section)}</Grid>
+                  <Grid item key={section}>
+                    {Section(section)}
+                  </Grid>
                 ))}
               </Grid>
             </Grid>
@@ -209,7 +256,9 @@ export const NewsComponent = () => {
             <Grid item>
               <Grid container direction="row" spacing={1}>
                 {tags.map(tag => (
-                  <Grid item>{Tag(tag)}</Grid>
+                  <Grid item key={tag}>
+                    {Tag(tag)}
+                  </Grid>
                 ))}
               </Grid>
             </Grid>
@@ -222,7 +271,7 @@ export const NewsComponent = () => {
 
   const NewsStoryCard = (story: any) => {
     return (
-      <Grid item>
+      <Grid item key={story.id}>
         <Card raised className={classes.newsCard}>
           <CardActionArea>
             <CardMedia
@@ -246,40 +295,54 @@ export const NewsComponent = () => {
     );
   };
 
-  if (news.length === 0 || filteredNews.length === 0) {
-    return <Typography variant="body2">Loading...</Typography>;
-  }
-
-  let NewsPage = () => {
+  const LargeCenteredText = ({ text }: { text: string }) => {
     return (
-      <Grid container direction="row">
-        <Grid item xs={3}>
-          <FilterMenu />
-        </Grid>
-        <Grid item xs={9}>
-          <Grid container direction="row" xs={12}>
-            {filteredNews.map((story, _index) => NewsStoryCard(story))}
-          </Grid>
+      <Grid container direction="row" justify="center">
+        <Grid item>
+          <Typography variant="h3">{text}</Typography>
         </Grid>
       </Grid>
     );
   };
 
   if (loading) {
-    NewsPage = () => <Typography variant="body2">Loading...</Typography>;
+    return <LargeCenteredText text="Loading..." />;
   }
 
   if (error) {
-    NewsPage = () => (
-      <Typography variant="body2">Error fetching News</Typography>
-    );
+    return <LargeCenteredText text="Error fetching news..." />;
   }
+
+  const FilteredNewsCards = () => {
+    if (filteredNews.length === 0 && searchQuery !== '') {
+      return <LargeCenteredText text="No stories found" />;
+    }
+    if (filteredNews.length === 0) {
+      return (
+        <LargeCenteredText text="No stories found with selected filters" />
+      );
+    }
+    return (
+      <Grid container direction="row">
+        {filteredNews.map((story, _index) => NewsStoryCard(story))}
+      </Grid>
+    );
+  };
 
   return (
     <Page themeId="home">
-      <Header title="inScope News"></Header>
+      <Header title="inScope News" />
       <Content>
-        <NewsPage />
+        <Grid container direction="row">
+          <Grid item xs={3}>
+            <FilterMenu />
+          </Grid>
+          <Grid item xs={9}>
+            <Grid container direction="row" xs={12}>
+              <FilteredNewsCards />
+            </Grid>
+          </Grid>
+        </Grid>
       </Content>
     </Page>
   );

@@ -28,7 +28,6 @@
     "@backstage/core-components": "^0.14.3",
     "@backstage/core-plugin-api": "^1.9.1",
     "@backstage/plugin-home": "^0.7.4",
-    "@backstage/plugin-search": "^1.4.11",
     "@backstage/theme": "^0.5.2",
     "@janus-idp/cli": "^1.8.0",
     "@material-ui/core": "^4.9.13",
@@ -36,6 +35,7 @@
     "@material-ui/lab": "4.0.0-alpha.61",
     "@mui/x-charts": "^7.4.0",
     "graphql-request": "^6.1.0",
+    "js-levenshtein": "^1.1.6",
     "react-use": "^17.2.4",
     "tss-react": "^4.9.10"
   },
