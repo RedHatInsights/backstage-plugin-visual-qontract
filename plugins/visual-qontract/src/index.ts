@@ -6,5 +6,8 @@ export {
     EntityQontractCodeComponentsContent,
     EntityQontractPipelinesComponent,
     EntityQontractSLOComponent,
-    EntityQontractEscalationPolicyComponent
+    EntityQontractEscalationPolicyComponent,
+    EntityQontractHomePageComponent,
+    EntityQontractNewsComponent,
+    EntityQontractStatusMiniComponent,
 } from './plugin';

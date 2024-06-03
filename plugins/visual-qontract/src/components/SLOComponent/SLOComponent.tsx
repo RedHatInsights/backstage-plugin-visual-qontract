@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import {
   Typography,
-  Grid,
   Box,
   Link,
   Card,

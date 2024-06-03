@@ -1,0 +1,1 @@
+export { StatusMiniComponent } from './StatusMiniComponent';

@@ -69,3 +69,30 @@ export const EntityQontractEscalationPolicyComponent = visualQontractPlugin.prov
     }
   }),
 );
+
+export const EntityQontractHomePageComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'EntityQontractHomePageComponent',
+    component: {
+      lazy: () => import('./components/HomeComponent').then(m => m.HomeComponent),
+    }
+  }),
+);
+
+export const EntityQontractNewsComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'EntityQontractNewsComponent',
+    component: {
+      lazy: () => import('./components/NewsComponent').then(m => m.NewsComponent),
+    }
+  }),
+);
+
+export const EntityQontractStatusMiniComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'EntityQontractStatusMiniComponent',
+    component: {
+      lazy: () => import('./components/StatusMiniComponent').then(m => m.StatusMiniComponent),
+    }
+  }),
+)

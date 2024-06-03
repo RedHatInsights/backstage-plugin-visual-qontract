@@ -38,6 +38,12 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 
+import {
+  EntityQontractHomePageComponent,
+  EntityQontractNewsComponent,
+} from '@redhatinsights/backstage-plugin-visual-qontract';
+
+
 const app = createApp({
   apis,
   bindRoutes({ bind }) {
@@ -65,6 +71,8 @@ const app = createApp({
 const routes = (
   <FlatRoutes>
     <Route path="/" element={<Navigate to="catalog" />} />
+    <Route path="/home" element={<EntityQontractHomePageComponent />} />
+    <Route path="/news" element={<EntityQontractNewsComponent />} />
     <Route path="/catalog" element={<CatalogIndexPage />} />
     <Route
       path="/catalog/:namespace/:kind/:name"
