@@ -11,7 +11,6 @@ import {
 } from '@backstage/plugin-catalog-react';
 import { Content, Header, Page } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
-import { HomePageSearchBar } from '@backstage/plugin-search';
 import { Card, CardContent } from '@material-ui/core';
 import { makeStyles } from 'tss-react/mui';
 import StarIcon from '@material-ui/icons/Star';
@@ -255,23 +254,7 @@ export const HomeComponent = () => {
 
   return (
     <Page themeId="home">
-      <Header title="inScope">
-        <Grid container direction="row">
-          <Grid item>
-            <HomePageSearchBar
-              placeholder="Search"
-              classes={{
-                root: classes.searchBar,
-              }}
-              InputProps={{
-                classes: {
-                  notchedOutline: classes.notchedOutline,
-                },
-              }}
-            />
-          </Grid>
-        </Grid>
-      </Header>
+      <Header title="inScope"/>
       <Content>
         <Grid container direction="column">
           <Grid item>
