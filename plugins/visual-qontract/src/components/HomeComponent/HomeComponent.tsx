@@ -1,5 +1,5 @@
 import React, { useEffect, ReactNode, useState } from 'react';
-import { CardActions, CardHeader, Link, Typography } from '@material-ui/core';
+import { CardHeader, Link, Typography } from '@material-ui/core';
 import {
   useStarredEntities,
   EntityRefLink,
@@ -12,11 +12,11 @@ import StarIcon from '@material-ui/icons/Star';
 import CreateIcon from '@material-ui/icons/Create';
 import Explore from '@material-ui/icons/Explore';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
-import OpenInNew from '@material-ui/icons/OpenInNew';
 import LinkIcon from '@material-ui/icons/Link';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { FeaturedNews } from './FeaturedNews';
 import { StatusMiniComponent } from '../StatusMiniComponent';
+import { InfoCard } from './InfoCard';
 
 export const HomeComponent = () => {
   const { starredEntities } = useStarredEntities();
@@ -199,46 +199,11 @@ export const HomeComponent = () => {
     );
   };
 
-  const TopCard = ({
-    title,
-    avatar,
-    body,
-    link,
-    linkText,
-  }: {
-    title: string;
-    avatar: ReactNode;
-    body: string;
-    link: string;
-    linkText?: string;
-  }) => {
-    return (
-      <Card classes={{ root: classes.topcard }}>
-        <CardHeader
-          title={title}
-          avatar={avatar}
-          titleTypographyProps={{
-            variant: 'h6',
-          }}
-        />
-        <CardContent>
-          <Typography variant="body1">{body}</Typography>
-        </CardContent>
-        <CardActions>
-          <OpenInNew />
-          <Link href={link}>
-            <Typography variant="button">{linkText}</Typography>
-          </Link>
-        </CardActions>
-      </Card>
-    );
-  };
-
   const TopCards = () => {
     return (
       <Grid container direction="row">
         <Grid item xs={12} md={4}>
-          <TopCard
+          <InfoCard
             title="Create"
             avatar={<CreateIcon />}
             body="Guided templates automate complex tasks and help you get started quickly. "
@@ -247,7 +212,7 @@ export const HomeComponent = () => {
           />
         </Grid>
         <Grid item xs={12} md={4}>
-          <TopCard
+          <InfoCard
             title="Explore"
             avatar={<Explore />}
             body="Everything you need to know about your apps and services."
@@ -256,7 +221,7 @@ export const HomeComponent = () => {
           />
         </Grid>
         <Grid item xs={12} md={4}>
-          <TopCard
+          <InfoCard
             title="Learn"
             avatar={<LibraryBooks />}
             body="Search and read documentation for all apps and services in a single, unified view."

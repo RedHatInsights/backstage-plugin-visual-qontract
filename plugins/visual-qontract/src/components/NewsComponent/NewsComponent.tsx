@@ -1,13 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
-  CardActionArea,
   CardContent,
-  CardMedia,
   Grid,
-  Link,
   Typography,
-  makeStyles,
   Button,
   CardActions,
   TextField,
@@ -15,6 +11,7 @@ import {
 import { Content, Header, Page } from '@backstage/core-components';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import levenshtein from 'js-levenshtein'; // Import the Levenshtein distance library
+import { NewsStoryCard } from './NewsStoryCard';
 
 export const NewsComponent = () => {
   const [news, setNews] = useState<any[]>([]);
@@ -32,20 +29,6 @@ export const NewsComponent = () => {
   // Constants
   const backendUrl = config.getString('backend.baseUrl');
   const proxyUrl = `${backendUrl}/api/proxy/inscope-resources`;
-
-  const useStyles = makeStyles({
-    root: {},
-    media: {
-      height: '10em',
-    },
-    horizontalOverflow: {},
-    newsCard: {
-      maxWidth: '24em',
-    },
-    outerCard: {},
-    cardBody: {},
-  });
-  const classes = useStyles();
 
   //On mount fetch the news data
   useEffect(() => {
@@ -106,7 +89,7 @@ export const NewsComponent = () => {
   };
 
   const filterStories = () => {
-    let stories: React.SetStateAction<any[]> = [];
+    let stories: any[] = [];
     news.forEach(section => {
       // First filter by section
       if (selectedSection !== '' && section.title !== selectedSection) {
@@ -269,28 +252,10 @@ export const NewsComponent = () => {
     );
   };
 
-  const NewsStoryCard = (story: any) => {
+  const NewsStoryCardGridItem = (story: any) => {
     return (
       <Grid item key={story.id} xs={4}>
-        <Card raised className={classes.newsCard}>
-          <CardActionArea>
-            <CardMedia
-              className={classes.media}
-              image={`${proxyUrl}/${story.image}`}
-              title={story.title}
-            />
-            <CardContent className={classes.cardBody}>
-              <Link
-                href={story.link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Typography variant="button">{story.title}</Typography>
-              </Link>
-              <Typography variant="body2">{story.body}</Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
+        <NewsStoryCard story={story} />
       </Grid>
     );
   };
@@ -324,7 +289,13 @@ export const NewsComponent = () => {
     }
     return (
       <Grid container direction="row">
-        {filteredNews.map((story, _index) => NewsStoryCard(story))}
+        {filteredNews.map((story, _index) => {
+          return (
+            <Grid item key={story.id} xs={4}>
+              <NewsStoryCard story={story} />
+            </Grid>
+          );
+        })}
       </Grid>
     );
   };
