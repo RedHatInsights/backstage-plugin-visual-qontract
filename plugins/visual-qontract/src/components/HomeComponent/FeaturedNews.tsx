@@ -13,7 +13,6 @@ import {
 } from '@material-ui/core';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import AnnouncementIcon from '@material-ui/icons/Announcement';
-import { NewsStoryCard } from '../NewsComponent';
 
 export const FeaturedNews = () => {
   const [news, setNews] = useState<any[]>([]);
@@ -92,7 +91,25 @@ export const FeaturedNews = () => {
     return (
       <React.Fragment>
         {featuredNews.map((story, _index) => (
-          <NewsStoryCard story={story} />
+          <Card raised className={classes.newsCard} onClick={() => {handleCardClick(story.link.url)}}>
+            <CardActionArea>
+              <CardMedia
+                className={classes.media}
+                image={`${proxyUrl}/${story.image}`}
+                title={story.title}
+              />
+              <CardContent className={classes.cardBody}>
+                <Link
+                  href={story.link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Typography variant="button">{story.title}</Typography>
+                </Link>
+                <Typography variant="body2">{story.body}</Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
         ))}
       </React.Fragment>
     );

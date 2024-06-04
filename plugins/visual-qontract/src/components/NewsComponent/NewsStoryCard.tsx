@@ -10,8 +10,7 @@ import {
 import CardMedia from '@material-ui/core/CardMedia';
 import React from 'react';
 
-export const NewsStoryCard = (props: any) => {
-  const story = props.story;
+export const NewsStoryCard = ({story}: {story: any}) => {
   const useStyles = makeStyles({
     root: {},
     media: {
