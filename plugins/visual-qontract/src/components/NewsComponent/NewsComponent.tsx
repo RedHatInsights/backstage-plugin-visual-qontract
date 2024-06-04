@@ -89,7 +89,7 @@ export const NewsComponent = () => {
   };
 
   const filterStories = () => {
-    let stories: React.SetStateAction<any[]> = [];
+    let stories: any[] = [];
     news.forEach(section => {
       // First filter by section
       if (selectedSection !== '' && section.title !== selectedSection) {
