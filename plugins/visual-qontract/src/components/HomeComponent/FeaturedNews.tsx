@@ -83,11 +83,15 @@ export const FeaturedNews = () => {
     return featured;
   };
 
+  const handleCardClick = (url: string) => {
+    window.open(url, '_blank');
+  }
+
   const FeaturedNewsList = () => {
     return (
       <React.Fragment>
         {featuredNews.map((story, _index) => (
-          <Card raised className={classes.newsCard}>
+          <Card raised className={classes.newsCard} onClick={() => {handleCardClick(story.link.url)}}>
             <CardActionArea>
               <CardMedia
                 className={classes.media}
@@ -110,10 +114,6 @@ export const FeaturedNews = () => {
       </React.Fragment>
     );
   };
-
-  if (featuredNews.length === 0 || news.length === 0) {
-    return <Typography variant="body2">Loading...</Typography>;
-  }
 
   let MainFragment = FeaturedNewsList;
 
