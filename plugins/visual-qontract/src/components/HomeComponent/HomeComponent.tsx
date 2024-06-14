@@ -9,7 +9,7 @@ import { Grid } from '@material-ui/core';
 import { Card, CardContent } from '@material-ui/core';
 import { makeStyles } from 'tss-react/mui';
 import StarIcon from '@material-ui/icons/Star';
-import CreateIcon from '@material-ui/icons/Create';
+import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import Explore from '@material-ui/icons/Explore';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import LinkIcon from '@material-ui/icons/Link';
@@ -204,11 +204,11 @@ export const HomeComponent = () => {
       <Grid container direction="row">
         <Grid item xs={12} md={4}>
           <InfoCard
-            title="Create"
-            avatar={<CreateIcon />}
-            body="Guided templates automate complex tasks and help you get started quickly. "
-            link="/create"
-            linkText="Templates"
+            title="Get Started"
+            avatar={<DirectionsRunIcon />}
+            body="Read the inScope User Guide and hit the ground running."
+            link="/catalog/default/component/backstage-app/docs/"
+            linkText="User Guide"
           />
         </Grid>
         <Grid item xs={12} md={4}>
