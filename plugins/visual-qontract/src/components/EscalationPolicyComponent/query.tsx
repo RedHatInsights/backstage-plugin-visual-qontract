@@ -43,7 +43,7 @@ query App($path: String) {
 
 export const NextEscalationPolicyQuery = gql`
 query EP($path: String) {
-  escalation_policies_1(path: $path) {
+  escalation_policies_v1(path: $path) {
     ... on AppEscalationPolicy_v1 {
       name
       path
