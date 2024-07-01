@@ -36,21 +36,22 @@ export const EscalationPolicyComponent = () => {
     const variables = { path: path };
     request(proxyUrl, NextEscalationPolicyQuery, variables)
       .then((data: any) => {
-        if (data.escalation_policies_1.length !== 0) {
-          if (data.escalation_policies_1[0].channels?.nextEscalationPolicy?.path) {
+        if (data.escalation_policies_v1.length !== 0) {
+          if (data.escalation_policies_v1[0].channels?.nextEscalationPolicy?.path) {
             // catch any circularly connected policies to avoid infinite recursion
-            if (escalationPolicies.some(e => e.path === data.escalation_policies_1[0].channels.nextEscalationPolicy.path)) {
+            if (escalationPolicies.some(e => e.path === data.escalation_policies_v1[0].channels.nextEscalationPolicy.path)) {
               return;
             }
-            setNextPath(data.escalation_policies_1[0].channels.nextEscalationPolicy.path);
+            setNextPath(data.escalation_policies_v1[0].channels.nextEscalationPolicy.path);
           }
-          if (escalationPolicies.some(e => e.path === data.escalation_policies_1[0].path)) {
+          if (escalationPolicies.some(e => e.path === data.escalation_policies_v1[0].path)) {
             return;
           }
-          setEscalationPolicies([...escalationPolicies, data.escalation_policies_1[0]]);
+          setEscalationPolicies([...escalationPolicies, data.escalation_policies_v1[0]]);
         }
       })
       .catch((_error) => {
+        debugger;
         setRequestError(true);
       });
   }
@@ -68,7 +69,9 @@ export const EscalationPolicyComponent = () => {
     GetEscalationPolicy(nextPath)
   }, [escalationPolicies]);
 
+
   if (error || requestError) {
+    debugger;
     return (
       <InfoCard title={title}>
         <Typography align="center" variant="body1">
