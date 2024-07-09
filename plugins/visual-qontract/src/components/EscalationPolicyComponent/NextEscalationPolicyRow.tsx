@@ -60,7 +60,7 @@ export const NextEscalationPolicyRow = ({ ep }: { ep: any }) => {
           <Typography variant="button">{ep.name}</Typography>
         </Grid>
         <Grid item xs={4}>
-          {email && < ContactItem channel='email' href={"mailto:" + email} text={email} />}
+          {email && < ContactItem channel='email' href={"mailto:" + email.join(',')} text={email.join('\n')} />}
         </Grid>
         <Grid item xs={4}>
           {slack.path && slack.name && < ContactItem channel='Slack' href={getAppInterfaceLink(slack.path)} text={slack.name} />}

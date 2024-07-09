@@ -71,7 +71,6 @@ export const EscalationPolicyComponent = () => {
 
 
   if (error || requestError) {
-    debugger;
     return (
       <InfoCard title={title}>
         <Typography align="center" variant="body1">
