@@ -71,7 +71,6 @@ export const EscalationPolicyComponent = () => {
 
 
   if (error || requestError) {
-    debugger;
     return (
       <InfoCard title={title}>
         <Typography align="center" variant="body1">
@@ -99,7 +98,7 @@ export const EscalationPolicyComponent = () => {
 
   return (
     <InfoCard title={title} noPadding>
-      <Grid container spacing={3} direction="column">
+      <Grid container spacing={2} direction="column">
         <Grid item>
           <NextEscalationPolicyRow ep={result.apps_v1[0].escalationPolicy}  />
           {escalationPolicies.map((component: any, key: any) => (

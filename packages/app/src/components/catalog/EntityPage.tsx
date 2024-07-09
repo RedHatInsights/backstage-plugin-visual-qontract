@@ -159,13 +159,11 @@ const overviewContent = (
     <Grid item md={6}>
       <EntityQontractPipelinesComponent />
     </Grid>
-
     <Grid item md={6}>
       <EntityQontractSLOComponent />
     </Grid>
     <Grid item md={6}>
       <EntityQontractEscalationPolicyComponent />
-
     </Grid>
   </Grid>
 );
