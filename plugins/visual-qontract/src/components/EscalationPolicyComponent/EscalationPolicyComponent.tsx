@@ -89,11 +89,7 @@ export const EscalationPolicyComponent = () => {
   }
 
   if (result.apps_v1.length === 0) {
-    return (
-      <InfoCard title={title}>
-        <Typography align="center" variant="body1">No {title} found.</Typography>
-      </InfoCard>
-    );
+    return null
   }
 
   return (

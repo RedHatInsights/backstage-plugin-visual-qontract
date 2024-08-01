@@ -23,7 +23,7 @@ import QueryQontract from '../../common/QueryAppInterface';
 
 
 export const CodeComponentsComponent = () => {
-    const title = "Code Repositories"
+    const title = "Code Repos & Build Jobs";
 
     const { entity } = useEntity();
 

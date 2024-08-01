@@ -4,13 +4,8 @@ import {
   Grid,
   Link,
   Table,
-  TableContainer,
   TableRow,
-  TableBody,
-  TableHead,
   TableCell,
-  Paper,
-  Box,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -23,6 +18,8 @@ import QueryQontract from '../../common/QueryAppInterface';
 export const PipelinesComponent = () => {
   const { result, loaded, error } = QueryQontract(PipelinesQuery);
   const [filteredPipelines, setFilteredPipelines] = React.useState<any[]>([]);
+
+  
 
   const title = 'Pipelines';
 
@@ -174,12 +171,8 @@ export const PipelinesComponent = () => {
     );
   }
 
-  if (result.apps_v1.length === 0  ) {
-    return (
-      <InfoCard title={title}>
-        <Typography align="center" variant="body1">No {title} found.</Typography>
-      </InfoCard>
-    );
+  if (filteredPipelines.length === 0  ) {
+    return null
   }
 
   return (
