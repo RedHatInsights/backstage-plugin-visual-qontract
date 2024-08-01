@@ -68,13 +68,7 @@ export const CodeComponentsComponent = () => {
     qontractResult.apps_v1.length === 0 ||
     qontractResult.apps_v1[0].codeComponents.length === 0
   ) {
-    return (
-      <InfoCard title={title}>
-        <Typography align="center" variant="body1">
-          No {title} found.
-        </Typography>
-      </InfoCard>
-    );
+    return null
   }
 
   const CodeComponentsTable = () => {
@@ -119,7 +113,18 @@ export const CodeComponentsComponent = () => {
       }
     };
 
-    console.log(qontractResult.apps_v1[0].codeComponents);
+    const getLastPathSegment = (url: string) => {
+      try {
+        if (!url.includes('/')) {
+          return url;
+        }
+        const segments = url.split('/');
+        return segments[segments.length - 1] || url;
+      } catch (error) {
+        console.error('Error processing URL:', error);
+        return url;
+      }
+    };
 
     const RepoTableCell = (props: any) => {
       const { component } = props;
@@ -140,11 +145,7 @@ export const CodeComponentsComponent = () => {
     const CodeComponentsTable = (props: any) => {
       const { component } = props;
       if (!component.imageBuildUrl) {
-        return (
-          <TableCell>
-            Not found.
-          </TableCell>
-        );
+        return <TableCell></TableCell>;
       }
       return (
         <TableCell align="center">
@@ -152,7 +153,7 @@ export const CodeComponentsComponent = () => {
             <Icon path={mdiApplicationExport} size={1} />
             <Box ml={1}>
               <Link target="_blank" href={component.imageBuildUrl}>
-                {component.name}
+                {getLastPathSegment(component.imageBuildUrl)}
               </Link>
             </Box>
           </Box>
@@ -168,7 +169,7 @@ export const CodeComponentsComponent = () => {
               <TableCell>
                 <Typography variant="button">Name</Typography>
               </TableCell>
-              <TableCell >
+              <TableCell>
                 <Typography variant="button">Build Job</Typography>
               </TableCell>
             </TableRow>
@@ -180,7 +181,7 @@ export const CodeComponentsComponent = () => {
                   <RepoTableCell component={component} />
                   <CodeComponentsTable component={component} />
                 </TableRow>
-              )
+              ),
             )}
           </TableBody>
         </Table>

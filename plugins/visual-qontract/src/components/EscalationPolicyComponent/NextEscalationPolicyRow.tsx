@@ -56,18 +56,20 @@ export const NextEscalationPolicyRow = ({ ep }: { ep: any }) => {
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Grid item xs={5}>
+      <Grid container direction='row'>
+        <Grid item xs={3}>
           <Typography variant="button">{ep.name}</Typography>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           {email && < ContactItem channel='email' href={"mailto:" + email.join(',')} text={email.join('\n')} />}
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           {slack.path && slack.name && < ContactItem channel='Slack' href={getAppInterfaceLink(slack.path)} text={slack.name} />}
         </Grid>
-        <Grid item xs={1}>
+        <Grid item xs={3}>
           {jira.server?.serverUrl && jira.name && < ContactItem channel='JIRA' href={getJiraLink(jira.server.serverUrl, jira.name)} text={jira.name} />}
         </Grid>
+      </Grid>
       </AccordionSummary>
       <AccordionDetails>
         <Grid item>
