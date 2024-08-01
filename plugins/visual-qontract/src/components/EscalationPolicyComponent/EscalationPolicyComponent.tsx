@@ -18,11 +18,15 @@ import { NextEscalationPolicyRow } from './NextEscalationPolicyRow';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 export const EscalationPolicyComponent = () => {
-  const { result: result, loaded: loaded, error: error } = QueryQontract(EscalationPolicyQuery);
+  const {
+    result: result,
+    loaded: loaded,
+    error: error,
+  } = QueryQontract(EscalationPolicyQuery);
   const title = 'Escalation Policy';
 
   const [escalationPolicies, setEscalationPolicies] = useState<any[]>([]);
-  const [nextPath, setNextPath] = useState("");
+  const [nextPath, setNextPath] = useState('');
   const [requestError, setRequestError] = useState<boolean>(false);
 
   // Get Backstage objects
@@ -37,20 +41,38 @@ export const EscalationPolicyComponent = () => {
     request(proxyUrl, NextEscalationPolicyQuery, variables)
       .then((data: any) => {
         if (data.escalation_policies_v1.length !== 0) {
-          if (data.escalation_policies_v1[0].channels?.nextEscalationPolicy?.path) {
+          if (
+            data.escalation_policies_v1[0].channels?.nextEscalationPolicy?.path
+          ) {
             // catch any circularly connected policies to avoid infinite recursion
-            if (escalationPolicies.some(e => e.path === data.escalation_policies_v1[0].channels.nextEscalationPolicy.path)) {
+            if (
+              escalationPolicies.some(
+                e =>
+                  e.path ===
+                  data.escalation_policies_v1[0].channels.nextEscalationPolicy
+                    .path,
+              )
+            ) {
               return;
             }
-            setNextPath(data.escalation_policies_v1[0].channels.nextEscalationPolicy.path);
+            setNextPath(
+              data.escalation_policies_v1[0].channels.nextEscalationPolicy.path,
+            );
           }
-          if (escalationPolicies.some(e => e.path === data.escalation_policies_v1[0].path)) {
+          if (
+            escalationPolicies.some(
+              e => e.path === data.escalation_policies_v1[0].path,
+            )
+          ) {
             return;
           }
-          setEscalationPolicies([...escalationPolicies, data.escalation_policies_v1[0]]);
+          setEscalationPolicies([
+            ...escalationPolicies,
+            data.escalation_policies_v1[0],
+          ]);
         }
       })
-      .catch((_error) => {
+      .catch(_error => {
         debugger;
         setRequestError(true);
       });
@@ -60,15 +82,18 @@ export const EscalationPolicyComponent = () => {
     if (!result.apps_v1 || result.apps_v1.length === 0) {
       return;
     }
-    if (result.apps_v1[0].escalationPolicy?.channels?.nextEscalationPolicy?.path) {
-      GetEscalationPolicy(result.apps_v1[0].escalationPolicy.channels.nextEscalationPolicy.path);
+    if (
+      result.apps_v1[0].escalationPolicy?.channels?.nextEscalationPolicy?.path
+    ) {
+      GetEscalationPolicy(
+        result.apps_v1[0].escalationPolicy.channels.nextEscalationPolicy.path,
+      );
     }
   }, [result]);
 
   useEffect(() => {
-    GetEscalationPolicy(nextPath)
+    GetEscalationPolicy(nextPath);
   }, [escalationPolicies]);
-
 
   if (error || requestError) {
     return (
@@ -83,29 +108,25 @@ export const EscalationPolicyComponent = () => {
   if (!loaded) {
     return (
       <InfoCard title={title}>
-        <Typography align="center" variant="body1">Loading...</Typography>
+        <Typography align="center" variant="body1">
+          Loading...
+        </Typography>
       </InfoCard>
     );
   }
 
   if (result.apps_v1.length === 0) {
-    return (
-      <InfoCard title={title}>
-        <Typography align="center" variant="body1">No {title} found.</Typography>
-      </InfoCard>
-    );
+    return null;
   }
 
   return (
     <InfoCard title={title} noPadding>
-      <Grid container spacing={3} direction="column">
-        <Grid item>
-          <NextEscalationPolicyRow ep={result.apps_v1[0].escalationPolicy}  />
+
+          <NextEscalationPolicyRow ep={result.apps_v1[0].escalationPolicy} />
           {escalationPolicies.map((component: any, key: any) => (
-            < NextEscalationPolicyRow key={key} ep={component} />
+            <NextEscalationPolicyRow key={key} ep={component} />
           ))}
-        </Grid>
-      </Grid>
+
     </InfoCard>
   );
 };

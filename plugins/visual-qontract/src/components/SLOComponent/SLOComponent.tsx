@@ -67,13 +67,7 @@ export const SLOComponent = () => {
     Object.keys(filteredResult).length === 0 ||
     Object.keys(result).length === 0
   ) {
-    return (
-      <InfoCard title={title}>
-        <Typography align="center" variant="body1">
-          No SLI quieries found for this application.
-        </Typography>
-      </InfoCard>
-    );
+    return null
   }
 
   const splitName = (name: string) => {
@@ -97,10 +91,10 @@ export const SLOComponent = () => {
   }
 
   return (
-    <InfoCard title={title}>
-      <Box display="flex" flexWrap="wrap" justifyContent="center">
+
+      <Box display="flex" flexWrap="wrap" justifyContent="left">
         {filteredResult.slos.map((slo: any, key: number) => (
-            <Card key={key} style={{ maxWidth: '18em', maxHeight: '30em', margin: '1em', flexGrow: 1 }}>
+            <Card key={key} style={{ maxWidth: '18em', maxHeight: '30em', marginRight: '1em', flexGrow: 1 }}>
               <CardContent>
                 <SLOGauge query={slo.expr} />
                 <Typography variant="button">{splitName(slo.name)}</Typography>
@@ -114,6 +108,6 @@ export const SLOComponent = () => {
             </Card>
         ))}
       </Box>
-    </InfoCard>
+
   );
 };
