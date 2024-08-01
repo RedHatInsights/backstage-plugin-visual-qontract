@@ -67,13 +67,7 @@ export const SLOComponent = () => {
     Object.keys(filteredResult).length === 0 ||
     Object.keys(result).length === 0
   ) {
-    return (
-      <InfoCard title={title}>
-        <Typography align="center" variant="body1">
-          No SLI quieries found for this application.
-        </Typography>
-      </InfoCard>
-    );
+    return null
   }
 
   const splitName = (name: string) => {
