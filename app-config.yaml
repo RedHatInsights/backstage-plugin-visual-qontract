@@ -67,6 +67,21 @@ proxy:
       target: 'https://status.redhat.com/api/v2/summary.json'
       changeOrigin: true
       secure: false
+    '/webrca/api':
+      target: '${WEBRCA_URL}'
+      changeOrigin: true
+      secure: false
+      allowedHeaders:
+        - 'Authorization'
+    '/webrca/oauth':
+      target: "${SSO_URL}"
+      headers:
+        Authorization: "Basic ${WEBRCA_OAUTH_BASIC_AUTH}" # Encoded client_id:client_secret
+      changeOrigin: true
+      allowedMethods: ['POST']
+      secure: false
+
+
 
 
 
