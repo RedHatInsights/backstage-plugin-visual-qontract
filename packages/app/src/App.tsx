@@ -42,8 +42,6 @@ import {
   EntityQontractHomePageComponent,
   EntityQontractNewsComponent,
 } from '@redhatinsights/backstage-plugin-visual-qontract';
-import { WebrcaFrontendPage } from '@redhatinsights/backstage-plugin-webrca-frontend';
-
 
 const app = createApp({
   apis,
@@ -109,9 +107,6 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-
-
-<Route path="/webrca-frontend" element={<WebrcaFrontendPage />} />
   </FlatRoutes>
 );
 
