@@ -75,13 +75,13 @@ proxy:
       changeOrigin: true
       secure: false
     '/web-rca':
-      target: 'https://api.stage.openshift.com/api/web-rca/v1'
+      target: ${WEB_RCA_API}
       allowedHeaders: ['Authorization']
     '/status-board':
-      target: 'https://api.stage.openshift.com/api/status-board/v1'
+      target: ${STATUS_BOARD_API}
       allowedHeaders: ['Authorization']
     '/sso-redhat':
-      target: 'https://sso.redhat.com'
+      target: ${SSO_URL}
       allowedHeaders: ['Content-Type']
 
 

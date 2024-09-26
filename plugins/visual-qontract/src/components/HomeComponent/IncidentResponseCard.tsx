@@ -33,72 +33,18 @@ export const IncidentResponseCard = () => {
   const [webRCAResponse, setWebRCAResponse] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
-  const [oauthToken, setOauthToken] = React.useState(null);
-  const [oauthTokenTimeout, setOauthTokenTimeout] = React.useState(0);
   const [selectedTab, setSelectedTab] = React.useState(0);
 
-  // Effect that runs when the token changes
   useEffect(() => {
-    // If the token is null, fetch a new token
-    if (oauthToken === null) {
-      fetchAndSetOAuthToken();
-      return;
-    }
-    // If the token is not null, fetch the incidents
     fetchIncidents();
-  }, [oauthToken]);
+  }, []);
 
-  // Effect that runs when the token timeout changes
-  useEffect(() => {
-    // If the timeout is 0, return
-    // this is the default state
-    if (oauthTokenTimeout === 0) {
-      return;
-    }
-    // Set a timeout to clear the token after the timeout
-    const timeout = setTimeout(() => {
-      setOauthToken(null);
-    }, oauthTokenTimeout * 1000);
-    // When the component unmounts, clear the timeout
-    return () => clearTimeout(timeout);
-  }, [oauthTokenTimeout]);
-
-  const fetchAndSetOAuthToken = async () => {
-    fetchOAuthToken().then(response => {
-      setOauthToken(response.access_token);
-      setOauthTokenTimeout(response.expires_in);
-    });
-  };
-
-  const fetchOAuthToken = async () => {
-    setError(false);
-    try {
-      const response = await fetch(oauthUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'grant_type=client_credentials', // You may add more parameters if necessary.
-      });
-
-      const data = await response.json();
-      return data; // Assuming the response includes the access_token.
-    } catch (error) {
-      console.error('Error fetching OAuth token:', error);
-      setError(true);
-    }
-  };
 
   const fetchIncidents = () => {
     setLoading(true);
     setError(false);
     fetch(
-      `${proxyUrl}/?status=ongoing&invalid=false&order_by=created_at desc`,
-      {
-        headers: {
-          Authorization: `Bearer ${oauthToken}`,
-        },
-      },
+      `${config.getString('backend.baseUrl')}/api/plugin-web-rca-backend/incidents/public`
     )
       .then(response => {
         if (!response.ok) {
@@ -107,6 +53,9 @@ export const IncidentResponseCard = () => {
         return response.json();
       })
       .then(json => {
+        if (json.kind == "Error") {
+          throw new Error('Something went wrong talking to WebRCA');
+        }
         setWebRCAResponse(json);
         setLoading(false);
       })

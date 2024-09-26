@@ -5,7 +5,7 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { lookupProduct } from './ocm/status-board';
 import { refresh } from './ocm/token';
-import { listIncidents } from './ocm/web-rca';
+import { listIncidents, listPublicIncidents } from './ocm/web-rca';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -69,6 +69,27 @@ export async function createRouter(
 
     // TODO: Filter by status? Add a toggle?
     let incident_list = await listIncidents(config.getString('backend.baseUrl'), default_token, products);
+    response.status(200);
+
+    if (incident_list.errorMsg) {
+      logger.error('Unsuccessful parse: ' + incident_list.errorMsg);
+      response.status(400).json({ error: incident_list.errorMsg });
+      return;
+    }
+
+    response.json(incident_list);
+  });
+
+  router.get('/incidents/public', async (req, response) => {
+    response.setHeader('Content-Type', 'application/json');
+
+    const default_token = await getToken(config, logger);
+    if (default_token === 'Invalid token') {
+      response.status(500).json({ error: 'Failed to retrieve access token' });
+      return;
+    }
+
+    let incident_list = await listPublicIncidents(config.getString('backend.baseUrl'), default_token);
     response.status(200);
 
     if (incident_list.errorMsg) {

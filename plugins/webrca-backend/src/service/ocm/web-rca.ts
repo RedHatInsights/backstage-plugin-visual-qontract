@@ -29,3 +29,16 @@ export async function listIncidents(url: string, token: string, product_id: stri
     ).catch(e => e)
     .then(resp => resp.json()) as Promise<IncidentList>;
 }
+
+export async function listPublicIncidents(url: string, token: string): Promise<IncidentList> {
+  // TODO: Filter by status?  Add a toggle?
+  return fetch(
+    `${url}/api/proxy/web-rca/incidents?status=ongoing&invalid=false&public=true&order_by=created_at desc`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    }
+  ).catch(e => e)
+  .then(resp => resp.json()) as Promise<IncidentList>;
+}
