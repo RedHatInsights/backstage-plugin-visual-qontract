@@ -12,6 +12,27 @@ export interface RouterOptions {
   config: Config;
 }
 
+// Utility function to get the token
+async function getToken(config: Config, logger: LoggerService): Promise<string> {
+  try {
+    const token = await refresh(
+      config.getString('backend.baseUrl'),
+      config.getString('ocm.clientId'),
+      config.getString('ocm.clientSecret'),
+    );
+
+    if (token.error) {
+      logger.error('Error: ', token.error);
+      return 'Invalid token';
+    }
+
+    return token.access_token;
+  } catch (e) {
+    logger.error('Error: ', e);
+    return 'Invalid token';
+  }
+}
+
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -28,27 +49,11 @@ export async function createRouter(
   router.post('/incidents', async (req, response) => {
     response.setHeader('Content-Type', 'application/json');
 
-    let default_token = await refresh(
-      config.getString('backend.baseUrl'),
-      config.getString('ocm.clientId'),
-      config.getString('ocm.clientSecret'),
-    ).catch((e) => {
-      logger.error("Error: ", e);
-      response.status(500);
-      response.json({error: e})
-      return "Invalid token";
+    const default_token = await getToken(config, logger);
+    if (default_token === 'Invalid token') {
+      response.status(500).json({ error: 'Failed to retrieve access token' });
+      return;
     }
-    ).then((token) => {
-      if (token.error) {
-        logger.error("Error: ", token.error);
-        response.status(400);
-        response.json({error: token.error})
-        return 'Invalid token'
-      } else {
-        return token.access_token;
-      }
-    });
-
 
     let products = '';
     let product_list = await lookupProduct(config.getString('backend.baseUrl'), default_token, req.body.products);
@@ -58,21 +63,18 @@ export async function createRouter(
 
     if (products === '') {
       const msg = 'No product based on entity';
-
-      response.status(400);
-      response.json({error: msg})
-
+      response.status(400).json({ error: msg });
       return;
     }
 
-    // TODO: Filter by status?  Add a toggle?
+    // TODO: Filter by status? Add a toggle?
     let incident_list = await listIncidents(config.getString('backend.baseUrl'), default_token, products);
     response.status(200);
 
     if (incident_list.errorMsg) {
       logger.error('Unsuccessful parse: ' + incident_list.errorMsg);
-
-      response.status(400);
+      response.status(400).json({ error: incident_list.errorMsg });
+      return;
     }
 
     response.json(incident_list);
