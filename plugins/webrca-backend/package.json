@@ -24,6 +24,7 @@
     "postpack": "backstage-cli package postpack",
     "export-dynamic": "janus-cli package export-dynamic-plugin"
   },
+  "configSchema": "config.d.ts",
   "dependencies": {
     "@backstage/backend-common": "^0.21.6",
     "@backstage/backend-defaults": "^0.2.16",

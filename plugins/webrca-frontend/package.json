@@ -37,6 +37,10 @@
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
+
+  
+  
+  "configSchema": "config.d.ts",
   "devDependencies": {
     "@backstage/cli": "^0.26.2",
     "@backstage/core-app-api": "^1.12.3",

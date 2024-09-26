@@ -68,6 +68,8 @@ import {
   EntityQontractEscalationPolicyComponent
 } from '@redhatinsights/backstage-plugin-visual-qontract';
 
+import { WebRCAFetchComponent } from '@redhatinsights/backstage-plugin-webrca-frontend';
+
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
@@ -164,6 +166,9 @@ const overviewContent = (
     </Grid>
     <Grid item md={6}>
       <EntityQontractEscalationPolicyComponent />
+    </Grid>
+    <Grid item md={6}>
+      <WebRCAFetchComponent />
     </Grid>
   </Grid>
 );

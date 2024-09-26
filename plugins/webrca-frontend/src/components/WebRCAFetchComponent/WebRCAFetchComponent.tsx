@@ -106,6 +106,7 @@ const PRODUCT_ANNOTATION_KEY = 'web-rca/product-name';
 
 export const WebRCAFetchComponent = ({ product }: FetchProps) => {
   const config = useApi(configApiRef);
+  debugger
   // const user = useApi(identityApiRef);
   const entity = useEntity();
 
@@ -171,7 +172,7 @@ export const WebRCAFetchComponent = ({ product }: FetchProps) => {
       />
     );
   }
-
+  
   if (typeof value === 'string') {
     return (
       <DenseTable

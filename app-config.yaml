@@ -2,6 +2,13 @@ app:
   title: Scaffolded Backstage App
   baseUrl: http://localhost:3000
 
+# Web RCA Config
+ocm:
+  webRcaUrl: https://web-rca.stage.devshift.net
+  webRcaUIUrl: https://web-rca.stage.devshift.net
+  clientId: ${WEB_RCA_CLIENT_ID}
+  clientSecret: ${WEB_RCA_CLIENT_SECRET}
+
 organization:
   name: My Company
 
@@ -67,19 +74,15 @@ proxy:
       target: 'https://status.redhat.com/api/v2/summary.json'
       changeOrigin: true
       secure: false
-    '/webrca/api':
-      target: '${WEBRCA_URL}'
-      changeOrigin: true
-      secure: false
-      allowedHeaders:
-        - 'Authorization'
-    '/webrca/oauth':
-      target: "${SSO_URL}"
-      headers:
-        Authorization: "Basic ${WEBRCA_OAUTH_BASIC_AUTH}" # Encoded client_id:client_secret
-      changeOrigin: true
-      allowedMethods: ['POST']
-      secure: false
+    '/web-rca':
+      target: 'https://api.stage.openshift.com/api/web-rca/v1'
+      allowedHeaders: ['Authorization']
+    '/status-board':
+      target: 'https://api.stage.openshift.com/api/status-board/v1'
+      allowedHeaders: ['Authorization']
+    '/sso-redhat':
+      target: 'https://sso.redhat.com'
+      allowedHeaders: ['Content-Type']
 
 
 
