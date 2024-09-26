@@ -1,7 +1,7 @@
-import { webrcaFrontendPlugin } from './plugin';
+import { webRcaPlugin } from './plugin';
 
-describe('webrca-frontend', () => {
+describe('web-rca', () => {
   it('should export plugin', () => {
-    expect(webrcaFrontendPlugin).toBeDefined();
+    expect(webRcaPlugin).toBeDefined();
   });
 });

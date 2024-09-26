@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExampleComponent } from './ExampleComponent';
+import { WebRCAComponent } from './WebRCAComponent';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
@@ -8,7 +8,7 @@ import {
   renderInTestApp,
 } from '@backstage/test-utils';
 
-describe('ExampleComponent', () => {
+describe('WebRCAComponent', () => {
   const server = setupServer();
   // Enable sane handlers for network requests
   setupRequestMockHandlers(server);
@@ -21,9 +21,7 @@ describe('ExampleComponent', () => {
   });
 
   it('should render', async () => {
-    await renderInTestApp(<ExampleComponent />);
-    expect(
-      screen.getByText('Welcome to webrca-frontend!'),
-    ).toBeInTheDocument();
+    await renderInTestApp(<WebRCAComponent />);
+    expect(screen.getByText('Welcome to web-rca!')).toBeInTheDocument();
   });
 });

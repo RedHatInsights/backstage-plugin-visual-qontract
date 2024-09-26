@@ -5,18 +5,19 @@ import {
 
 import { rootRouteRef } from './routes';
 
-export const webrcaFrontendPlugin = createPlugin({
-  id: 'webrca-frontend',
+export const webRcaPlugin = createPlugin({
+  id: 'web-rca',
   routes: {
     root: rootRouteRef,
   },
 });
 
-export const WebrcaFrontendPage = webrcaFrontendPlugin.provide(
+export const WebRcaPage = webRcaPlugin.provide(
   createRoutableExtension({
-    name: 'WebrcaFrontendPage',
+    name: 'WebRcaPage',
     component: () =>
-      import('./components/ExampleComponent').then(m => m.ExampleComponent),
+      import('./components/WebRCAComponent').then(m => m.WebRCAComponent),
+    // import('./components/WebRCAFetchComponent').then(m => m.WebRCAFetchComponent),
     mountPoint: rootRouteRef,
   }),
 );

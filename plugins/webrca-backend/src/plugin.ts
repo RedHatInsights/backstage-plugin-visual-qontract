@@ -1,33 +1,36 @@
-import {
-  coreServices,
-  createBackendPlugin,
-} from '@backstage/backend-plugin-api';
+// import { loggerToWinstonLogger } from '@backstage/backend-common';
+import { coreServices, createBackendPlugin } from '@backstage/backend-plugin-api';
+
 import { createRouter } from './service/router';
 
 /**
- * webrcaBackendPlugin backend plugin
+ * The web-rca-backend backend plugin.
  *
- * @public
+ * @alpha
  */
-export const webrcaBackendPlugin = createBackendPlugin({
-  pluginId: 'webrcaBackendPlugin',
+export const web_rca_backendPlugin = createBackendPlugin({
+  pluginId: 'plugin-web-rca-backend',
   register(env) {
     env.registerInit({
       deps: {
-        httpRouter: coreServices.httpRouter,
         logger: coreServices.logger,
+        config: coreServices.rootConfig,
+        httpRouter: coreServices.httpRouter,
       },
-      async init({
-        httpRouter,
-        logger,
-      }) {
+      async init({ config, logger, httpRouter }) {
+        // http.use(() => createRouter({...config, logger: loggerToWinstonLogger(logger)}));
         httpRouter.use(
           await createRouter({
             logger,
+            config,
           }),
         );
         httpRouter.addAuthPolicy({
           path: '/health',
+          allow: 'unauthenticated',
+        });
+        httpRouter.addAuthPolicy({
+          path: '/incidents',
           allow: 'unauthenticated',
         });
       },
