@@ -13,6 +13,7 @@
   "backstage": {
     "role": "backend-plugin"
   },
+  "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start",
     "build": "backstage-cli package build",
@@ -20,13 +21,15 @@
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack"
+    "postpack": "backstage-cli package postpack",
+    "export-dynamic": "janus-cli package export-dynamic-plugin"
   },
   "dependencies": {
     "@backstage/backend-common": "^0.21.6",
     "@backstage/backend-defaults": "^0.2.16",
     "@backstage/backend-plugin-api": "^0.6.16",
     "@backstage/config": "^1.2.0",
+    "@janus-idp/cli": "^1.8.0",
     "@types/express": "*",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
@@ -43,6 +46,7 @@
     "msw": "^1.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "dist-scalprum"
   ]
 }
