@@ -36,10 +36,6 @@ interface IncidentList {
   errorMsg?: string;
 }
 
-interface FetchProps {
-  product?: string;
-}
-
 export const DenseTable = ({
   incidents,
   web_rca_url,
@@ -104,7 +100,7 @@ export const DenseTable = ({
 
 const PRODUCT_ANNOTATION_KEY = 'web-rca/product-name';
 
-export const WebRCAFetchComponent = ({ product }: FetchProps) => {
+export const WebRCAFetchComponent = () => {
   const config = useApi(configApiRef);
   // const user = useApi(identityApiRef);
   const entity = useEntity();
@@ -115,10 +111,7 @@ export const WebRCAFetchComponent = ({ product }: FetchProps) => {
       // TODO: Should we limit to owner/mine?
 
       let products = '';
-      if (product) {
-        // Product name can be passed in when used from page component
-        products = product;
-      }
+
       if (entity) {
         // Default to entity name
         products = entity.entity.metadata.name;

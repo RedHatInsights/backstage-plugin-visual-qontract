@@ -26,9 +26,6 @@ export const IncidentResponseCard = () => {
   // Get Backstage objects
   const config = useApi(configApiRef);
   // Constants
-  const backendUrl = config.getString('backend.baseUrl');
-  const proxyUrl = `${backendUrl}/api/proxy/webrca/api`;
-  const oauthUrl = `${backendUrl}/api/proxy/webrca/oauth`;
 
   const [webRCAResponse, setWebRCAResponse] = React.useState({});
   const [loading, setLoading] = React.useState(true);
