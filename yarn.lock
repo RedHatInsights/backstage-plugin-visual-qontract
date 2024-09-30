@@ -6921,21 +6921,6 @@
     "@react-spring/shared" "~9.7.3"
     "@react-spring/types" "~9.7.3"
 
-"@redhatinsights/backstage-plugin-visual-qontract@^0.1.0":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@redhatinsights/backstage-plugin-visual-qontract/-/backstage-plugin-visual-qontract-0.1.2.tgz#ea898f0b4f87cceace341e0e3b16e7f8ad1de0aa"
-  integrity sha512-/U7MB2GoC0RmPWivdPbMZzfCyuyJjPlTfObqbWn+TfbiTkGBWtgvvqQvXFTNZBVfWdRmqu/rniQ89WX7TPJl6Q==
-  dependencies:
-    "@backstage/core-components" "^0.14.3"
-    "@backstage/core-plugin-api" "^1.9.1"
-    "@backstage/theme" "^0.5.2"
-    "@janus-idp/cli" "^1.8.0"
-    "@material-ui/core" "^4.9.13"
-    "@material-ui/icons" "^4.9.1"
-    "@material-ui/lab" "4.0.0-alpha.61"
-    graphql-request "^6.1.0"
-    react-use "^17.2.4"
-
 "@remix-run/router@1.15.3":
   version "1.15.3"
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.15.3.tgz#d2509048d69dbb72d5389a14945339f1430b2d3c"
@@ -10109,8 +10094,8 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     "@backstage/theme" "^0.5.2"
     "@material-ui/core" "^4.12.2"
     "@material-ui/icons" "^4.9.1"
-    "@redhatinsights/backstage-plugin-visual-qontract" "^0.1.0"
-    "@redhatinsights/backstage-plugin-webrca-frontend" "^0.1.0"
+    "@redhatinsights/backstage-plugin-visual-qontract" "^1.1.1"
+    "@redhatinsights/backstage-plugin-webrca-frontend" "^1.1.2"
     history "^5.0.0"
     react "^18.0.2"
     react-dom "^18.0.2"
