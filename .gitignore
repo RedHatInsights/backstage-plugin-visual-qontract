@@ -3,6 +3,8 @@
 
 *.tgz
 
+build/*
+
 plugins/*/*.tgz
 plugins/*/dist*
 

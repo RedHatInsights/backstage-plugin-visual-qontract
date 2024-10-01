@@ -43,7 +43,6 @@ import {
   EntityQontractNewsComponent,
 } from '@redhatinsights/backstage-plugin-visual-qontract';
 
-
 const app = createApp({
   apis,
   bindRoutes({ bind }) {
@@ -108,8 +107,6 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-
-
   </FlatRoutes>
 );
 

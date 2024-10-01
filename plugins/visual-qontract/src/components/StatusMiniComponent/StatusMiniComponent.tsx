@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardActionArea, CardActions, CardContent, Grid, Link, Typography, makeStyles } from '@material-ui/core';
+import {
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Grid,
+  Link,
+  Typography,
+  makeStyles,
+} from '@material-ui/core';
 import { Content, Header, InfoCard, Page } from '@backstage/core-components';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -9,7 +19,7 @@ import NewReleasesIcon from '@material-ui/icons/NewReleases';
 import HelpIcon from '@material-ui/icons/Help';
 import { red, green, yellow, orange } from '@material-ui/core/colors';
 import OpenInNew from '@material-ui/icons/OpenInNew';
-
+import CloudDoneIcon from '@material-ui/icons/CloudDone';
 
 const useStyles = makeStyles({
   root: {
@@ -28,10 +38,11 @@ const useStyles = makeStyles({
 export const StatusMiniComponent = () => {
   const classes = useStyles();
 
-  const [status, setStatus] = useState({status: {indicator: 'unknown', description: 'Unknown'}});
+  const [status, setStatus] = useState({
+    status: { indicator: 'unknown', description: 'Unknown' },
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-
 
   // Get Backstage objects
   const config = useApi(configApiRef);
@@ -44,14 +55,14 @@ export const StatusMiniComponent = () => {
     fetch(proxyUrl)
       .then(response => response.json())
       .then(json => {
-        setStatus(json)
-        setLoading(false)
+        setStatus(json);
+        setLoading(false);
       })
       .catch(error => {
-        setError(true)
-        console.error('Error fetching Status Page:', error)
-        setLoading(false) 
-      })
+        setError(true);
+        console.error('Error fetching Status Page:', error);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
@@ -84,7 +95,6 @@ export const StatusMiniComponent = () => {
     );
   }
 
-
   const StatusIndicatorIcon = () => {
     const icons: { [key: string]: JSX.Element } = {
       none: <CheckCircleIcon style={{ color: green[500] }} />,
@@ -92,24 +102,22 @@ export const StatusMiniComponent = () => {
       minor: <WarningIcon style={{ color: yellow[500] }} />,
       critical: <NewReleasesIcon style={{ color: red[500] }} />,
       unknown: <HelpIcon />,
-    }
-    return (
-      icons[status.status?.indicator || 'unknown']
-    )
-  }
-
+    };
+    return icons[status.status?.indicator || 'unknown'];
+  };
 
   return (
     <Card className={classes.infocard}>
-      <CardContent>
-        <Typography variant="h5" component="h2">
-          Red Hat Service Status
-        </Typography>
-      </CardContent>
+      <CardHeader
+        titleTypographyProps={{
+          variant: 'h6',
+        }}
+        title="Red Hat Service Status"
+        avatar={<CloudDoneIcon />}
+      ></CardHeader>
       <CardContent>
         <Grid container>
-          <Grid item xs={3}>
-          </Grid>
+          <Grid item xs={3}></Grid>
           <Grid item>
             <StatusIndicatorIcon />
           </Grid>
@@ -118,16 +126,15 @@ export const StatusMiniComponent = () => {
               {status.status?.description || 'Status Unknown'}
             </Typography>
           </Grid>
-          <Grid item xs={3}>
-          </Grid>
+          <Grid item xs={3}></Grid>
         </Grid>
       </CardContent>
       <CardActions>
-          <OpenInNew />
-          <Link href={"https://status.redhat.com"} target='_new'>
-            <Typography variant="button">Status Page</Typography>
-          </Link>
-        </CardActions>
+        <OpenInNew />
+        <Link href={'https://status.redhat.com'} target="_new">
+          <Typography variant="button">Status Page</Typography>
+        </Link>
+      </CardActions>
     </Card>
   );
 };

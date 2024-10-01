@@ -1,4 +1,4 @@
-import React, { useEffect, ReactNode, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CardHeader, Link, Typography } from '@material-ui/core';
 import {
   useStarredEntities,
@@ -17,6 +17,7 @@ import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { FeaturedNews } from './FeaturedNews';
 import { StatusMiniComponent } from '../StatusMiniComponent';
 import { InfoCard } from './InfoCard';
+import { IncidentResponseCard } from './IncidentResponseCard';
 
 export const HomeComponent = () => {
   const { starredEntities } = useStarredEntities();
@@ -233,6 +234,8 @@ export const HomeComponent = () => {
     );
   };
 
+
+
   return (
     <Page themeId="home">
       <Header title="inScope" />
@@ -247,15 +250,22 @@ export const HomeComponent = () => {
           <Grid item>
             <Grid container direction="row">
               <Grid item xs={12} md={6}>
-                <LinksCard />
+                <Grid container direction="column">
+                  <Grid item xs={12}>
+                    <IncidentResponseCard />
+                  </Grid>
+                </Grid>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Grid container>
                   <Grid item xs={12}>
                     <StatusMiniComponent />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <FavoritesCard />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <LinksCard />
                   </Grid>
                 </Grid>
               </Grid>
