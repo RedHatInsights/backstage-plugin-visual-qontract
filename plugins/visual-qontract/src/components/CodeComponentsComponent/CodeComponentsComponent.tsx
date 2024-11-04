@@ -11,7 +11,6 @@ import {
   Paper,
   Box,
 } from '@material-ui/core';
-import NotListedLocationIcon from '@material-ui/icons/NotListedLocation';
 import { InfoCard } from '@backstage/core-components';
 import { CodeComponentsQuery } from './query';
 import { RELATION_HAS_PART } from '@backstage/catalog-model';
@@ -21,7 +20,6 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import QueryQontract from '../../common/QueryAppInterface';
 import Icon from '@mdi/react';
 import { mdiGitlab } from '@mdi/js';
-import { mdiPipe } from '@mdi/js';
 import { mdiApplicationExport } from '@mdi/js';
 
 export const CodeComponentsComponent = () => {

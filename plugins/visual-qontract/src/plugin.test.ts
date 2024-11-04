@@ -1,7 +1,7 @@
-import { visualAppInterfacePlugin } from './plugin';
+import { visualQontractPlugin } from './plugin';
 
 describe('visual-app-interface', () => {
   it('should export plugin', () => {
-    expect(visualAppInterfacePlugin).toBeDefined();
+    expect(visualQontractPlugin).toBeDefined();
   });
 });
