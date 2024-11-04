@@ -52,7 +52,7 @@ export const IncidentsTable = ({ incidents }: { incidents: any }) => {
           </TableHead>
           <TableBody>
             {visibleRows.map(incident => (
-              <TableRow key={incident.name}>
+              <TableRow key={incident.name} key={incident.name}>
                 <TableCell>
                   <Link
                     href={`https://web-rca.devshift.net/incident/${incident.incident_id}`}
@@ -67,7 +67,7 @@ export const IncidentsTable = ({ incidents }: { incidents: any }) => {
                 <TableCell>{incident.severity}</TableCell>
                 <TableCell>
                   {incident.external_coordination?.map(link => (
-                    <ExternalCoordinationButton link={link} />
+                    <ExternalCoordinationButton link={link} key={link}/>
                   ))}
                 </TableCell>
               </TableRow>

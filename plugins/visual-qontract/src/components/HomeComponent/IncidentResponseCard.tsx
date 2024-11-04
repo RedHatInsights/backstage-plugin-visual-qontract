@@ -59,7 +59,7 @@ export const IncidentResponseCard = () => {
       .catch(error => {
         setError(true);
         setLoading(false);
-        console.error('Error fetching incidents:', error);
+        //console.log('Error fetching incidents:', error);
       });
   };
 
