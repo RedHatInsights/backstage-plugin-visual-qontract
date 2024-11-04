@@ -31,10 +31,6 @@ export const HomeComponent = () => {
   const proxyUrl = `${backendUrl}/api/proxy/developer-hub`;
 
   useEffect(() => {
-    console.log(starredEntities);
-  }, [starredEntities]);
-
-  useEffect(() => {
     fetch(proxyUrl)
       .then(response => response.json())
       .then(json => setLinks(json));

@@ -58,9 +58,8 @@ export const FeaturedNews = () => {
         setNews(json)
         setLoading(false)
       })
-      .catch(error => {
+      .catch(_error => {
         setError(true)
-        console.error('Error fetching News:', error)
         setLoading(false) 
       })
   }, []);
@@ -90,8 +89,8 @@ export const FeaturedNews = () => {
   const FeaturedNewsList = () => {
     return (
       <React.Fragment>
-        {featuredNews.map((story, _index) => (
-          <Card raised className={classes.newsCard} onClick={() => {handleCardClick(story.link.url)}}>
+        {featuredNews.map((story, index) => (
+          <Card raised key={index} className={classes.newsCard} onClick={() => {handleCardClick(story.link.url)}}>
             <CardActionArea>
               <CardMedia
                 className={classes.media}

@@ -59,7 +59,7 @@ export const IncidentResponseCard = () => {
       .catch(error => {
         setError(true);
         setLoading(false);
-        console.error('Error fetching incidents:', error);
+        //console.log('Error fetching incidents:', error);
       });
   };
 
@@ -85,7 +85,7 @@ export const IncidentResponseCard = () => {
       return (
         <Grid container justifyContent="center">
           <Grid item>
-            <CircularProgress />
+            <CircularProgress role="progressbar"/>
           </Grid>
         </Grid>
       );
