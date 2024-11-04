@@ -8,6 +8,7 @@ import { act, waitFor } from '@testing-library/react';
 
 // This is a minimal test because the functionality is all basically in the children
 
+
 // Mock useApi to return the necessary config methods
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
@@ -21,6 +22,8 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
     starredEntities: [], // Mocked starred entities, can add actual entities if needed
   })),
 }));
+
+
 
 describe('<HomeComponent />', () => {
   beforeEach(() => {

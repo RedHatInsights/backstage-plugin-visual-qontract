@@ -85,7 +85,7 @@ export const IncidentResponseCard = () => {
       return (
         <Grid container justifyContent="center">
           <Grid item>
-            <CircularProgress />
+            <CircularProgress role="progressbar"/>
           </Grid>
         </Grid>
       );
