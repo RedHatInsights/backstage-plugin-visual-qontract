@@ -96,3 +96,12 @@ export const EntityQontractStatusMiniComponent = visualQontractPlugin.provide(
     }
   }),
 )
+
+export const ChangelogPageComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'ChangelogPageComponent',
+    component: {
+      lazy: () => import('./components/ChangelogComponent').then(m => m.ChangelogComponent),
+    }
+  }),
+);

@@ -41,6 +41,7 @@ import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/
 import {
   EntityQontractHomePageComponent,
   EntityQontractNewsComponent,
+  ChangelogPageComponent,
 } from '@redhatinsights/backstage-plugin-visual-qontract';
 
 const app = createApp({
@@ -72,6 +73,7 @@ const routes = (
     <Route path="/" element={<Navigate to="catalog" />} />
     <Route path="/home" element={<EntityQontractHomePageComponent />} />
     <Route path="/news" element={<EntityQontractNewsComponent />} />
+    <Route path="/changelog" element={<ChangelogPageComponent />} />
     <Route path="/catalog" element={<CatalogIndexPage />} />
     <Route
       path="/catalog/:namespace/:kind/:name"
