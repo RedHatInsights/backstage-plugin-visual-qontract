@@ -130,7 +130,7 @@ export const DenseTable = ({ changes }: DenseTableProps) => {
 
   return (
     <Table
-      options={{ search: true, paging: true, pageSize: 10 }}
+      options={{ search: false, paging: true, pageSize: 10 }}
       columns={columns}
       data={data}
     />
