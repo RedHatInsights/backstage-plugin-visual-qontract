@@ -22,6 +22,6 @@ describe('ExampleComponent', () => {
 
   it('should render', async () => {
     await renderInTestApp(<ChangelogComponent />);
-    expect(screen.getByText('Welcome to changelog!')).toBeInTheDocument();
+    expect(screen.getByText('Changelog')).toBeInTheDocument();
   });
 });
