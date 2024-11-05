@@ -104,10 +104,10 @@ export const DenseTable = ({ changes }: DenseTableProps) => {
       title: 'Change Succeeded',
       field: 'error',
       render: rowData =>
-        rowData.error == 'false' ? (
-          <CancelIcon color="error" />
+        rowData.error === false ?  (
+          <CheckCircleIcon color="primary" data-testid="change-succeeded-icon" aria-label="Change succeeded" />
         ) : (
-          <CheckCircleIcon color="primary" />
+          <CancelIcon color="error" data-testid="change-failed-icon" aria-label="Change failed" />
         ),
     },
     {
