@@ -10,4 +10,5 @@ export {
     EntityQontractHomePageComponent,
     EntityQontractNewsComponent,
     EntityQontractStatusMiniComponent,
+    ChangelogPageComponent,
 } from './plugin';

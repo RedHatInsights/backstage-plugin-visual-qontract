@@ -24,6 +24,7 @@ We also provide 3 pages that can extend the functionality of Janus IDP / RHDH.
 * `EntityQontractHomePageComponent`: A more feature and information rich homepage than ships with Janus / RHDH by default
 * `EntityQontractNewsComponent`: A news page with searching, filters, etc
 * `WebRCAFetchComponent`: A page to show WebRCA Incidents
+* `ChangelogPageComponent`: A page to show App SRE Changelog
 
 ## Dependencies 
 You'll need to have the `inscope-resources` pod running. This pod contains the resources like new stories used on the front page.
@@ -112,6 +113,11 @@ Here's an example of how to configure all of the various plugins in your dynmaic
             dynamicRoutes:
               - path: /
                 importName: EntityQontractHomePageComponent
+              - path: /changelog
+                importName: ChangelogPageComponent
+                menuItem:
+                  icon: system
+                  text: Changelog
               - path: /news
                 importName: EntityQontractNewsComponent
                 menuItem:
