@@ -63,6 +63,77 @@ describe('DenseTable component', () => {
     expect(screen.getByText(/Oct 26,? 2024/)).toBeInTheDocument();
   });
 
+
+  it('clears the search text when the clear button is clicked', () => {
+    render(
+      <MemoryRouter>
+        <DenseTable changes={testData} />
+      </MemoryRouter>,
+    );
+  
+    const searchInput = screen.getByPlaceholderText('Search');
+    fireEvent.change(searchInput, { target: { value: 'Update' } });
+    expect(searchInput).toHaveValue('Update');
+  
+    // Locate the clear button within the search input field
+    const clearButton = screen.getByRole('button', { name: '' }); // Using an empty name as placeholder might not have an aria-label
+    fireEvent.click(clearButton);
+    expect(searchInput).toHaveValue(''); // Ensure search text is cleared
+  });
+  
+  it('removes a filter when the "x" icon is clicked on a filter pill', async () => {
+    render(
+      <MemoryRouter initialEntries={['/?filters=type%3AUpdate,app%3AApp1']}>
+        <DenseTable changes={testData} />
+      </MemoryRouter>,
+    );
+  
+    // Ensure both filter pills are present initially in the filter box
+    expect(screen.getByTestId('active-filter-app-pill-App1')).toBeInTheDocument();
+    expect(screen.getByTestId('active-filter-type-pill-Update')).toBeInTheDocument();
+  
+    // Click the "×" button on the "App1" filter pill to remove it
+    fireEvent.click(screen.getByTestId('active-filter-remove-app-pill-App1'));
+  
+    // Verify "App1" filter is removed and URL is updated accordingly
+    await waitFor(() =>
+      expect(navigateMock).toHaveBeenLastCalledWith(
+        { search: 'filters=type%3AUpdate' },
+        { replace: true },
+      ),
+    );
+  
+    // Verify the "App1" pill is no longer in the document
+    expect(screen.queryByTestId('active-filter-app-pill-App1')).not.toBeInTheDocument();
+  });
+  
+  it('clears all filters when "Clear All Filters" button is clicked', async () => {
+    render(
+      <MemoryRouter initialEntries={['/?filters=type%3AUpdate,app%3AApp1']}>
+        <DenseTable changes={testData} />
+      </MemoryRouter>,
+    );
+  
+    // Ensure both filter pills are present initially in the filter box
+    expect(screen.getByTestId('active-filter-app-pill-App1')).toBeInTheDocument();
+    expect(screen.getByTestId('active-filter-type-pill-Update')).toBeInTheDocument();
+  
+    // Click "Clear All Filters" button
+    fireEvent.click(screen.getByTestId('clear-all-filters'));
+  
+    // Verify all filters are cleared and URL is updated
+    await waitFor(() =>
+      expect(navigateMock).toHaveBeenLastCalledWith(
+        { search: '' },
+        { replace: true },
+      ),
+    );
+  
+    // Verify that filter pills are no longer displayed
+    expect(screen.queryByTestId('active-filter-app-pill-App1')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('active-filter-type-pill-Update')).not.toBeInTheDocument();
+  });
+  
   it('renders change types and apps as pills with correct styling', () => {
     render(
       <MemoryRouter>

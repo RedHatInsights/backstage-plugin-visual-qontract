@@ -47,16 +47,20 @@ const getTextColor = (bgColor: string) => {
   return l > 60 ? 'black' : 'white';
 };
 
+// Modify the PillList and ActiveFilterPills components to add data-testid
+
 const PillList = ({
   items,
   field,
   onClick,
   removable = false,
+  dataTestIdPrefix = '', // Optional prefix for data-testid
 }: {
   items: string[];
   field: string;
   onClick: (field: string, item: string) => void;
   removable?: boolean;
+  dataTestIdPrefix?: string;
 }) => (
   <Box display="flex" flexWrap="wrap" gap={1}>
     {items.map(item => {
@@ -67,6 +71,11 @@ const PillList = ({
       return (
         <Box
           key={normalizedItem}
+          data-testid={
+            dataTestIdPrefix
+              ? `${dataTestIdPrefix}-${field}-pill-${normalizedItem}`
+              : undefined // Only add data-testid when a prefix is provided
+          }
           sx={{
             backgroundColor: bgColor,
             color: textColor,
@@ -78,18 +87,23 @@ const PillList = ({
             display: 'flex',
             alignItems: 'center',
             marginBottom: '8px',
-            cursor: 'pointer', // Show hand cursor for clickable pills
+            cursor: 'pointer',
           }}
-          onClick={() => !removable && onClick(field, normalizedItem)} // Only add filter from table pills
+          onClick={() => !removable && onClick(field, normalizedItem)}
         >
           <span>{normalizedItem}</span>
           {removable && (
             <IconButton
               size="small"
               onClick={e => {
-                e.stopPropagation(); // Prevent triggering parent onClick
+                e.stopPropagation();
                 onClick(field, normalizedItem);
               }}
+              data-testid={
+                dataTestIdPrefix
+                  ? `${dataTestIdPrefix}-remove-${field}-pill-${normalizedItem}`
+                  : undefined
+              }
               sx={{ marginLeft: '4px', padding: 0, color: textColor }}
             >
               ×
@@ -125,6 +139,7 @@ const ActiveFilterPills = ({
             variant="outlined"
             size="small"
             style={{ marginLeft: 'auto' }}
+            data-testid="clear-all-filters"
           >
             Clear All Filters
           </Button>
@@ -142,6 +157,7 @@ const ActiveFilterPills = ({
             field="app"
             onClick={(field, value) => onRemove({ field, value })}
             removable
+            dataTestIdPrefix="active-filter" // Only assign data-testid for active filters
           />
         </Box>
       )}
@@ -157,6 +173,7 @@ const ActiveFilterPills = ({
             field="type"
             onClick={(field, value) => onRemove({ field, value })}
             removable
+            dataTestIdPrefix="active-filter"
           />
         </Box>
       )}
