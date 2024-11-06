@@ -9,7 +9,17 @@ import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { useNavigate, useLocation } from 'react-router-dom'; // Updated import
+import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  Box,
+  Grid,
+  Paper,
+  Typography,
+  Button,
+  TextField,
+  IconButton,
+} from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
 
 type Change = {
   commit: string;
@@ -39,22 +49,25 @@ const getTextColor = (bgColor: string) => {
 
 const PillList = ({
   items,
+  field,
   onClick,
+  removable = false,
 }: {
   items: string[];
-  onClick: (item: string) => void;
+  field: string;
+  onClick: (field: string, item: string) => void;
+  removable?: boolean;
 }) => (
-  <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+  <Box display="flex" flexWrap="wrap" gap={1}>
     {items.map(item => {
       if (!item) return null;
       const normalizedItem = item.trim();
       const bgColor = stringToColor(normalizedItem);
       const textColor = getTextColor(bgColor);
       return (
-        <span
+        <Box
           key={normalizedItem}
-          onClick={() => onClick(normalizedItem)}
-          style={{
+          sx={{
             backgroundColor: bgColor,
             color: textColor,
             padding: '4px 8px',
@@ -62,14 +75,30 @@ const PillList = ({
             fontSize: '0.8em',
             fontWeight: 'bold',
             textTransform: 'uppercase',
-            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '8px',
+            cursor: 'pointer', // Show hand cursor for clickable pills
           }}
+          onClick={() => !removable && onClick(field, normalizedItem)} // Only add filter from table pills
         >
-          {normalizedItem}
-        </span>
+          <span>{normalizedItem}</span>
+          {removable && (
+            <IconButton
+              size="small"
+              onClick={e => {
+                e.stopPropagation(); // Prevent triggering parent onClick
+                onClick(field, normalizedItem);
+              }}
+              sx={{ marginLeft: '4px', padding: 0, color: textColor }}
+            >
+              ×
+            </IconButton>
+          )}
+        </Box>
       );
     })}
-  </div>
+  </Box>
 );
 
 const ActiveFilterPills = ({
@@ -77,87 +106,119 @@ const ActiveFilterPills = ({
   onRemove,
   onClearAll,
 }: {
-  filters: string[];
-  onRemove: (item: string) => void;
+  filters: { field: string; value: string }[];
+  onRemove: (filter: { field: string; value: string }) => void;
   onClearAll: () => void;
-}) => (
-  <div
-    style={{
-      marginBottom: '10px',
-      display: 'flex',
-      gap: '8px',
-      alignItems: 'center',
-    }}
-  >
-    {filters.map(filter => (
-      <span
-        key={filter}
-        onClick={() => onRemove(filter)}
-        style={{
-          backgroundColor: stringToColor(filter),
-          color: getTextColor(stringToColor(filter)),
-          padding: '4px 8px',
-          borderRadius: '12px',
-          fontSize: '0.8em',
-          fontWeight: 'bold',
-          textTransform: 'uppercase',
-          cursor: 'pointer',
-        }}
-      >
-        {filter} &times;
-      </span>
-    ))}
-    {filters.length > 0 && (
-      <button onClick={onClearAll} style={{ marginLeft: '10px' }}>
-        Clear All Filters
-      </button>
-    )}
-  </div>
-);
+}) => {
+  const hasAppFilters = filters.some(filter => filter.field === 'app');
+  const hasTypeFilters = filters.some(filter => filter.field === 'type');
+
+  return (
+    <Box mb={2}>
+      {filters.length > 0 && (
+        <Box display="flex" alignItems="center" mb={2}>
+          <Typography variant="button" sx={{ fontWeight: 'bold' }}>
+            Active Filters
+          </Typography>
+          <Button
+            onClick={onClearAll}
+            variant="outlined"
+            size="small"
+            style={{ marginLeft: 'auto' }}
+          >
+            Clear All Filters
+          </Button>
+        </Box>
+      )}
+      {hasAppFilters && (
+        <Box mb={1}>
+          <Typography variant="button" sx={{ fontWeight: 'bold' }}>
+            Apps
+          </Typography>
+          <PillList
+            items={filters
+              .filter(filter => filter.field === 'app')
+              .map(filter => filter.value)}
+            field="app"
+            onClick={(field, value) => onRemove({ field, value })}
+            removable
+          />
+        </Box>
+      )}
+      {hasTypeFilters && (
+        <Box mb={1}>
+          <Typography variant="button" sx={{ fontWeight: 'bold' }}>
+            Change Types
+          </Typography>
+          <PillList
+            items={filters
+              .filter(filter => filter.field === 'type')
+              .map(filter => filter.value)}
+            field="type"
+            onClick={(field, value) => onRemove({ field, value })}
+            removable
+          />
+        </Box>
+      )}
+    </Box>
+  );
+};
 
 export const DenseTable = ({ changes }: DenseTableProps) => {
-  const [filters, setFilters] = useState<string[]>([]);
+  const [filters, setFilters] = useState<{ field: string; value: string }[]>(
+    [],
+  );
+  const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Function to update URL with current filters
-  const updateQueryString = (filters: string[]) => {
+  const updateQueryString = (filters: { field: string; value: string }[]) => {
     const queryParams = new URLSearchParams(location.search);
-    if (filters.length > 0) {
-      queryParams.set('filters', filters.join(','));
+    const filterStrings = filters.map(
+      filter => `${filter.field}:${filter.value}`,
+    );
+    if (filterStrings.length > 0) {
+      queryParams.set('filters', filterStrings.join(','));
     } else {
       queryParams.delete('filters');
     }
     navigate({ search: queryParams.toString() }, { replace: true });
   };
 
-  // Add filter and update URL
-  const addFilter = (filter: string) => {
-    const normalizedFilter = filter.trim();
-    setFilters(prevFilters =>
-      prevFilters.includes(normalizedFilter)
+  const addFilter = (field: string, value: string) => {
+    setFilters(prevFilters => {
+      const newFilter = { field, value };
+      return prevFilters.some(f => f.field === field && f.value === value)
         ? prevFilters
-        : [...prevFilters, normalizedFilter],
+        : [...prevFilters, newFilter];
+    });
+  };
+
+  const removeFilter = (filter: { field: string; value: string }) => {
+    setFilters(prevFilters =>
+      prevFilters.filter(
+        f => f.field !== filter.field || f.value !== filter.value,
+      ),
     );
   };
 
-  // Remove filter and update URL
-  const removeFilter = (filter: string) => {
-    const normalizedFilter = filter.trim();
-    setFilters(prevFilters => prevFilters.filter(f => f !== normalizedFilter));
-  };
-
-  // Clear all filters
   const clearAllFilters = () => {
     setFilters([]);
   };
 
-  // Sync filters with URL on load and when filters change
+  const handleSearchClear = () => {
+    setSearchText('');
+  };
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const filtersFromQuery = queryParams.get('filters');
     if (filtersFromQuery) {
-      setFilters(filtersFromQuery.split(',').map(f => f.trim()));
+      const parsedFilters = filtersFromQuery.split(',').map(filterStr => {
+        const [field, value] = filterStr.split(':');
+        return { field, value };
+      });
+      setFilters(parsedFilters);
     }
   }, [location.search]);
 
@@ -210,42 +271,79 @@ export const DenseTable = ({ changes }: DenseTableProps) => {
       title: 'Change Types',
       field: 'change_types',
       render: rowData => (
-        <PillList items={rowData.change_types} onClick={addFilter} />
+        <PillList
+          items={rowData.change_types}
+          field="type"
+          onClick={addFilter}
+        />
       ),
     },
     {
       title: 'Apps',
       field: 'apps',
-      render: rowData => <PillList items={rowData.apps} onClick={addFilter} />,
+      render: rowData => (
+        <PillList items={rowData.apps} field="app" onClick={addFilter} />
+      ),
     },
   ];
 
-  const filteredData =
-    filters.length > 0
-      ? changes.filter(change =>
-          filters.every(
-            filter =>
-              (change.change_types || []).some(
-                type => type.trim() === filter,
-              ) || (change.apps || []).some(app => app.trim() === filter),
-          ),
-        )
-      : changes;
+  const filteredData = changes
+    .filter(change =>
+      filters.every(filter =>
+        filter.field === 'type'
+          ? (change.change_types || []).some(
+              type => type.trim() === filter.value,
+            )
+          : (change.apps || []).some(app => app.trim() === filter.value),
+      ),
+    )
+    .filter(change =>
+      searchText
+        ? Object.values(change).some(value =>
+            Array.isArray(value)
+              ? value.join(' ').toLowerCase().includes(searchText.toLowerCase())
+              : String(value).toLowerCase().includes(searchText.toLowerCase()),
+          )
+        : true,
+    );
 
   return (
-    <div>
-      <ActiveFilterPills
-        filters={filters}
-        onRemove={removeFilter}
-        onClearAll={clearAllFilters}
-      />
-
-      <Table
-        options={{ search: true, paging: true, pageSize: 10 }}
-        columns={columns}
-        data={filteredData}
-      />
-    </div>
+    <Grid container spacing={3}>
+      <Grid item xs={3}>
+        <Paper elevation={3} style={{ padding: '16px' }}>
+          <Box display="flex" alignItems="center" mb={2}>
+            <TextField
+              label="Search"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              placeholder="Search"
+              value={searchText}
+              onChange={e => setSearchText(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={handleSearchClear} size="small">
+                    <ClearIcon />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Box>
+          <ActiveFilterPills
+            filters={filters}
+            onRemove={removeFilter}
+            onClearAll={clearAllFilters}
+          />
+        </Paper>
+      </Grid>
+      <Grid item xs={9}>
+        <Table
+          options={{ search: false, paging: true, pageSize: 10 }}
+          columns={columns}
+          data={filteredData}
+        />
+      </Grid>
+    </Grid>
   );
 };
 
