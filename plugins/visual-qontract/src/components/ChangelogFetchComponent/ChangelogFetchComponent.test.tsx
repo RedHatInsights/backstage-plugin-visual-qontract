@@ -1,7 +1,9 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { DenseTable } from './ChangelogFetchComponent'; // Ensure this path is correct
+import { DenseTable } from './ChangelogFetchComponent';
+import { MemoryRouter } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 
 // Sample data for testing
 const testData = [
@@ -21,9 +23,24 @@ const testData = [
   },
 ];
 
+// Mock useNavigate once at the module level
+const navigateMock = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => navigateMock, // Return the mock function
+}));
+
 describe('DenseTable component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks(); // Reset the mock before each test
+  });
+
   it('renders the table with correct columns and rows', () => {
-    render(<DenseTable changes={testData} />);
+    render(
+      <MemoryRouter>
+        <DenseTable changes={testData} />
+      </MemoryRouter>,
+    );
 
     // Check if table columns are present
     expect(screen.getByText('Commit')).toBeInTheDocument();
@@ -36,7 +53,7 @@ describe('DenseTable component', () => {
     const commitLink = screen.getByText('abc123');
     expect(commitLink).toHaveAttribute(
       'href',
-      'https://gitlab.cee.redhat.com/service/app-interface/-/commit/abc123'
+      'https://gitlab.cee.redhat.com/service/app-interface/-/commit/abc123',
     );
     expect(commitLink).toHaveStyle('text-decoration: underline');
     expect(commitLink).toHaveStyle('color: #007bff');
@@ -47,16 +64,20 @@ describe('DenseTable component', () => {
   });
 
   it('renders change types and apps as pills with correct styling', () => {
-    render(<DenseTable changes={testData} />);
+    render(
+      <MemoryRouter>
+        <DenseTable changes={testData} />
+      </MemoryRouter>,
+    );
 
-    // Check for pill elements by using a partial text match to avoid case-sensitivity issues
-    const changeTypePill = screen.getByText(/update/i); // 'i' flag makes it case-insensitive
+    // Check for pill elements in the table (not in filter display)
+    const changeTypePill = screen.getAllByText(/update/i)[0];
     expect(changeTypePill).toBeInTheDocument();
     expect(changeTypePill).toHaveStyle('text-transform: uppercase');
     expect(changeTypePill).toHaveStyle('padding: 4px 8px');
     expect(changeTypePill).toHaveStyle('border-radius: 12px');
 
-    const appPill = screen.getByText(/app1/i);
+    const appPill = screen.getAllByText(/app1/i)[0];
     expect(appPill).toBeInTheDocument();
     expect(appPill).toHaveStyle('text-transform: uppercase');
     expect(appPill).toHaveStyle('padding: 4px 8px');
@@ -64,14 +85,49 @@ describe('DenseTable component', () => {
   });
 
   it('displays the correct icon for error field', () => {
-    render(<DenseTable changes={testData} />);
-  
+    render(
+      <MemoryRouter>
+        <DenseTable changes={testData} />
+      </MemoryRouter>,
+    );
+
     // Check for the presence of icons using aria-label
     const succeededIcon = screen.getByLabelText('Change succeeded');
     const failedIcon = screen.getByLabelText('Change failed');
-  
+
     expect(succeededIcon).toBeInTheDocument();
     expect(failedIcon).toBeInTheDocument();
   });
 
+  it('loads initial filters from the URL query string', () => {
+    render(
+      <MemoryRouter initialEntries={['/?filters=Update,App1']}>
+        <DenseTable changes={testData} />
+      </MemoryRouter>,
+    );
+
+    // Check if the initial filters are applied based on the URL
+    expect(screen.getAllByText(/update/i)[1]).toBeInTheDocument(); // Second occurrence for filter pill
+    expect(screen.getAllByText(/app1/i)[1]).toBeInTheDocument(); // Second occurrence for filter pill
+  });
+
+  it('updates the URL when a pill is clicked', async () => {
+    render(
+      <MemoryRouter>
+        <DenseTable changes={testData} />
+      </MemoryRouter>,
+    );
+
+    // Simulate clicking on a change type pill to add it as a filter
+    const changeTypePill = screen.getAllByText(/update/i)[0];
+    fireEvent.click(changeTypePill);
+
+    // Wait for the navigateMock to be called with the expected arguments
+    await waitFor(() =>
+      expect(navigateMock).toHaveBeenCalledWith(
+        { search: 'filters=Update' },
+        { replace: true },
+      ),
+    );
+  });
 });
