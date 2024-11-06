@@ -1,7 +1,5 @@
 import React from 'react';
 import { TableColumn } from '@backstage/core-components';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
 import { PillList } from './PillList';
 
 export const ColumnDefinitions = (
@@ -36,16 +34,6 @@ export const ColumnDefinitions = (
         timeZoneName: 'short',
       }).format(date);
     },
-  },
-  {
-    title: 'Change Succeeded',
-    field: 'error',
-    render: rowData =>
-      rowData.error === false ? (
-        <CheckCircleIcon color="primary" aria-label="Change succeeded" />
-      ) : (
-        <CancelIcon color="error" aria-label="Change failed" />
-      ),
   },
   {
     title: 'Change Types',

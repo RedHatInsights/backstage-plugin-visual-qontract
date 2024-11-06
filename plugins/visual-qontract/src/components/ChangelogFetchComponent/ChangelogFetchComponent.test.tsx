@@ -44,7 +44,6 @@ describe('DenseTable component', () => {
     // Check if table columns are present
     expect(screen.getByText('Commit')).toBeInTheDocument();
     expect(screen.getByText('Merged At')).toBeInTheDocument();
-    expect(screen.getByText('Change Succeeded')).toBeInTheDocument();
     expect(screen.getByText('Change Types')).toBeInTheDocument();
     expect(screen.getByText('Apps')).toBeInTheDocument();
 
@@ -169,12 +168,6 @@ describe('DenseTable component', () => {
       </MemoryRouter>,
     );
 
-    // Check for the presence of icons using aria-label
-    const succeededIcon = screen.getByLabelText('Change succeeded');
-    const failedIcon = screen.getByLabelText('Change failed');
-
-    expect(succeededIcon).toBeInTheDocument();
-    expect(failedIcon).toBeInTheDocument();
   });
 
   it('loads initial filters from the URL query string', () => {
