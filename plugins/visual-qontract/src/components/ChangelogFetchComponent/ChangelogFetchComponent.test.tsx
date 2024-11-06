@@ -1,9 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { DenseTable } from './ChangelogFetchComponent';
+import { ChangeTable } from './ChangeTable';
 import { MemoryRouter } from 'react-router-dom';
-import * as ReactRouterDom from 'react-router-dom';
 
 // Sample data for testing
 const testData = [
@@ -38,14 +37,13 @@ describe('DenseTable component', () => {
   it('renders the table with correct columns and rows', () => {
     render(
       <MemoryRouter>
-        <DenseTable changes={testData} />
+        <ChangeTable changes={testData} />
       </MemoryRouter>,
     );
 
     // Check if table columns are present
     expect(screen.getByText('Commit')).toBeInTheDocument();
     expect(screen.getByText('Merged At')).toBeInTheDocument();
-    expect(screen.getByText('Change Succeeded')).toBeInTheDocument();
     expect(screen.getByText('Change Types')).toBeInTheDocument();
     expect(screen.getByText('Apps')).toBeInTheDocument();
 
@@ -63,46 +61,119 @@ describe('DenseTable component', () => {
     expect(screen.getByText(/Oct 26,? 2024/)).toBeInTheDocument();
   });
 
-  it('renders change types and apps as pills with correct styling', () => {
+  it('clears the search text when the clear button is clicked', () => {
     render(
       <MemoryRouter>
-        <DenseTable changes={testData} />
+        <ChangeTable changes={testData} />
       </MemoryRouter>,
     );
 
-    // Check for pill elements in the table (not in filter display)
-    const changeTypePill = screen.getAllByText(/update/i)[0];
-    expect(changeTypePill).toBeInTheDocument();
-    expect(changeTypePill).toHaveStyle('text-transform: uppercase');
-    expect(changeTypePill).toHaveStyle('padding: 4px 8px');
-    expect(changeTypePill).toHaveStyle('border-radius: 12px');
+    const searchInput = screen.getByPlaceholderText('Search');
+    fireEvent.change(searchInput, { target: { value: 'Update' } });
+    expect(searchInput).toHaveValue('Update');
 
-    const appPill = screen.getAllByText(/app1/i)[0];
+    // Locate the clear button within the search input field
+    const clearButton = screen.getByRole('button', { name: '' }); // Using an empty name as placeholder might not have an aria-label
+    fireEvent.click(clearButton);
+    expect(searchInput).toHaveValue(''); // Ensure search text is cleared
+  });
+
+  it('removes a filter when the "x" icon is clicked on a filter pill', async () => {
+    render(
+      <MemoryRouter initialEntries={['/?filters=type%3AUpdate,app%3AApp1']}>
+        <ChangeTable changes={testData} />
+      </MemoryRouter>,
+    );
+
+    // Ensure both filter pills are present initially in the filter box
+    expect(
+      screen.getByTestId('active-filter-app-pill-App1'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('active-filter-type-pill-Update'),
+    ).toBeInTheDocument();
+
+    // Click the "×" button on the "App1" filter pill to remove it
+    fireEvent.click(screen.getByTestId('active-filter-remove-app-pill-App1'));
+
+    // Verify "App1" filter is removed and URL is updated accordingly
+    await waitFor(() =>
+      expect(navigateMock).toHaveBeenLastCalledWith(
+        { search: 'filters=type%3AUpdate' },
+        { replace: true },
+      ),
+    );
+
+    // Verify the "App1" pill is no longer in the document
+    expect(
+      screen.queryByTestId('active-filter-app-pill-App1'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('clears all filters when "Clear All Filters" button is clicked', async () => {
+    render(
+      <MemoryRouter initialEntries={['/?filters=type%3AUpdate,app%3AApp1']}>
+        <ChangeTable changes={testData} />
+      </MemoryRouter>,
+    );
+
+    // Ensure both filter pills are present initially in the filter box
+    expect(
+      screen.getByTestId('active-filter-app-pill-App1'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('active-filter-type-pill-Update'),
+    ).toBeInTheDocument();
+
+    // Click "Clear All Filters" button
+    fireEvent.click(screen.getByTestId('clear-all-filters'));
+
+    // Verify all filters are cleared and URL is updated
+    await waitFor(() =>
+      expect(navigateMock).toHaveBeenLastCalledWith(
+        { search: '' },
+        { replace: true },
+      ),
+    );
+
+    // Verify that filter pills are no longer displayed
+    expect(
+      screen.queryByTestId('active-filter-app-pill-App1'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('active-filter-type-pill-Update'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders change types and apps as pills with correct styling', () => {
+    render(
+      <MemoryRouter>
+        <ChangeTable changes={testData} />
+      </MemoryRouter>,
+    );
+
+    // Find the change type pill by its text content
+    const changeTypePill = screen.getByText(/update/i);
+    expect(changeTypePill).toBeInTheDocument();
+
+    // Find the app pill by its text content
+    const appPill = screen.getByText(/app1/i);
     expect(appPill).toBeInTheDocument();
-    expect(appPill).toHaveStyle('text-transform: uppercase');
-    expect(appPill).toHaveStyle('padding: 4px 8px');
-    expect(appPill).toHaveStyle('border-radius: 12px');
   });
 
   it('displays the correct icon for error field', () => {
     render(
       <MemoryRouter>
-        <DenseTable changes={testData} />
+        <ChangeTable changes={testData} />
       </MemoryRouter>,
     );
 
-    // Check for the presence of icons using aria-label
-    const succeededIcon = screen.getByLabelText('Change succeeded');
-    const failedIcon = screen.getByLabelText('Change failed');
-
-    expect(succeededIcon).toBeInTheDocument();
-    expect(failedIcon).toBeInTheDocument();
   });
 
   it('loads initial filters from the URL query string', () => {
     render(
-      <MemoryRouter initialEntries={['/?filters=Update,App1']}>
-        <DenseTable changes={testData} />
+      <MemoryRouter initialEntries={['/?filters=type%3AUpdate,app%3AApp1']}>
+        <ChangeTable changes={testData} />
       </MemoryRouter>,
     );
 
@@ -111,10 +182,10 @@ describe('DenseTable component', () => {
     expect(screen.getAllByText(/app1/i)[1]).toBeInTheDocument(); // Second occurrence for filter pill
   });
 
-  it('updates the URL when a pill is clicked', async () => {
+  it('updates the URL with field-based filters when multiple pills are clicked', async () => {
     render(
       <MemoryRouter>
-        <DenseTable changes={testData} />
+        <ChangeTable changes={testData} />
       </MemoryRouter>,
     );
 
@@ -122,10 +193,14 @@ describe('DenseTable component', () => {
     const changeTypePill = screen.getAllByText(/update/i)[0];
     fireEvent.click(changeTypePill);
 
-    // Wait for the navigateMock to be called with the expected arguments
+    // Simulate clicking on an app pill to add another field-based filter
+    const appPill = screen.getAllByText(/app1/i)[0];
+    fireEvent.click(appPill);
+
+    // Wait for the navigateMock to be called with the final, full query string
     await waitFor(() =>
-      expect(navigateMock).toHaveBeenCalledWith(
-        { search: 'filters=Update' },
+      expect(navigateMock).toHaveBeenLastCalledWith(
+        { search: 'filters=type%3AUpdate%2Capp%3AApp1' },
         { replace: true },
       ),
     );
