@@ -2,17 +2,43 @@ import React from 'react';
 import { Box, Button, Typography } from '@material-ui/core';
 import { PillList } from './PillList';
 
+type Filter = { field: string; value: string };
+
 export const ActiveFilterPills = ({
   filters,
   onRemove,
   onClearAll,
 }: {
-  filters: { field: string; value: string }[];
-  onRemove: (filter: { field: string; value: string }) => void;
+  filters: Filter[];
+  onRemove: (filter: Filter) => void;
   onClearAll: () => void;
 }) => {
-  const hasAppFilters = filters.some(filter => filter.field === 'app');
-  const hasTypeFilters = filters.some(filter => filter.field === 'type');
+  const filterSections = [
+    { field: 'app', label: 'Apps' },
+    { field: 'type', label: 'Change Types' },
+  ];
+
+  const hasFilters = (field: string) =>
+    filters.some(filter => filter.field === field);
+
+  const renderFilterSection = (field: string, label: string) => {
+    if (!hasFilters(field)) return null;
+
+    return (
+      <Box mb={1} key={field}>
+        <Typography variant="button">{label}</Typography>
+        <PillList
+          items={filters
+            .filter(filter => filter.field === field)
+            .map(filter => filter.value)}
+          field={field}
+          onClick={(field, value) => onRemove({ field, value })}
+          removable
+          dataTestIdPrefix="active-filter"
+        />
+      </Box>
+    );
+  };
 
   return (
     <Box mb={2}>
@@ -30,33 +56,8 @@ export const ActiveFilterPills = ({
           </Button>
         </Box>
       )}
-      {hasAppFilters && (
-        <Box mb={1}>
-          <Typography variant="button">Apps</Typography>
-          <PillList
-            items={filters
-              .filter(filter => filter.field === 'app')
-              .map(filter => filter.value)}
-            field="app"
-            onClick={(field, value) => onRemove({ field, value })}
-            removable
-            dataTestIdPrefix="active-filter" // Only assign data-testid for active filters
-          />
-        </Box>
-      )}
-      {hasTypeFilters && (
-        <Box mb={1}>
-          <Typography variant="button">Change Types</Typography>
-          <PillList
-            items={filters
-              .filter(filter => filter.field === 'type')
-              .map(filter => filter.value)}
-            field="type"
-            onClick={(field, value) => onRemove({ field, value })}
-            removable
-            dataTestIdPrefix="active-filter"
-          />
-        </Box>
+      {filterSections.map(({ field, label }) =>
+        renderFilterSection(field, label),
       )}
     </Box>
   );
