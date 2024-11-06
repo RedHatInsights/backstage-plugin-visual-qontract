@@ -39,7 +39,7 @@ describe('DenseTable component', () => {
     render(
       <MemoryRouter>
         <DenseTable changes={testData} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Check if table columns are present
@@ -53,7 +53,7 @@ describe('DenseTable component', () => {
     const commitLink = screen.getByText('abc123');
     expect(commitLink).toHaveAttribute(
       'href',
-      'https://gitlab.cee.redhat.com/service/app-interface/-/commit/abc123'
+      'https://gitlab.cee.redhat.com/service/app-interface/-/commit/abc123',
     );
     expect(commitLink).toHaveStyle('text-decoration: underline');
     expect(commitLink).toHaveStyle('color: #007bff');
@@ -67,7 +67,7 @@ describe('DenseTable component', () => {
     render(
       <MemoryRouter>
         <DenseTable changes={testData} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Check for pill elements in the table (not in filter display)
@@ -88,7 +88,7 @@ describe('DenseTable component', () => {
     render(
       <MemoryRouter>
         <DenseTable changes={testData} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Check for the presence of icons using aria-label
@@ -103,7 +103,7 @@ describe('DenseTable component', () => {
     render(
       <MemoryRouter initialEntries={['/?filters=Update,App1']}>
         <DenseTable changes={testData} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Check if the initial filters are applied based on the URL
@@ -115,7 +115,7 @@ describe('DenseTable component', () => {
     render(
       <MemoryRouter>
         <DenseTable changes={testData} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Simulate clicking on a change type pill to add it as a filter
@@ -124,7 +124,10 @@ describe('DenseTable component', () => {
 
     // Wait for the navigateMock to be called with the expected arguments
     await waitFor(() =>
-      expect(navigateMock).toHaveBeenCalledWith({ search: 'filters=Update' }, { replace: true })
+      expect(navigateMock).toHaveBeenCalledWith(
+        { search: 'filters=Update' },
+        { replace: true },
+      ),
     );
   });
 });

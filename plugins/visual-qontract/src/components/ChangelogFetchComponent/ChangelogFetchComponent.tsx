@@ -81,7 +81,14 @@ const ActiveFilterPills = ({
   onRemove: (item: string) => void;
   onClearAll: () => void;
 }) => (
-  <div style={{ marginBottom: '10px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+  <div
+    style={{
+      marginBottom: '10px',
+      display: 'flex',
+      gap: '8px',
+      alignItems: 'center',
+    }}
+  >
     {filters.map(filter => (
       <span
         key={filter}
@@ -110,7 +117,7 @@ const ActiveFilterPills = ({
 
 export const DenseTable = ({ changes }: DenseTableProps) => {
   const [filters, setFilters] = useState<string[]>([]);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const location = useLocation();
 
   // Function to update URL with current filters
@@ -128,7 +135,9 @@ export const DenseTable = ({ changes }: DenseTableProps) => {
   const addFilter = (filter: string) => {
     const normalizedFilter = filter.trim();
     setFilters(prevFilters =>
-      prevFilters.includes(normalizedFilter) ? prevFilters : [...prevFilters, normalizedFilter],
+      prevFilters.includes(normalizedFilter)
+        ? prevFilters
+        : [...prevFilters, normalizedFilter],
     );
   };
 
@@ -207,24 +216,29 @@ export const DenseTable = ({ changes }: DenseTableProps) => {
     {
       title: 'Apps',
       field: 'apps',
-      render: rowData => (
-        <PillList items={rowData.apps} onClick={addFilter} />
-      ),
+      render: rowData => <PillList items={rowData.apps} onClick={addFilter} />,
     },
   ];
 
-  const filteredData = filters.length > 0
-    ? changes.filter(change =>
-        filters.every(filter =>
-          (change.change_types || []).some(type => type.trim() === filter) ||
-          (change.apps || []).some(app => app.trim() === filter)
+  const filteredData =
+    filters.length > 0
+      ? changes.filter(change =>
+          filters.every(
+            filter =>
+              (change.change_types || []).some(
+                type => type.trim() === filter,
+              ) || (change.apps || []).some(app => app.trim() === filter),
+          ),
         )
-      )
-    : changes;
+      : changes;
 
   return (
     <div>
-      <ActiveFilterPills filters={filters} onRemove={removeFilter} onClearAll={clearAllFilters} />
+      <ActiveFilterPills
+        filters={filters}
+        onRemove={removeFilter}
+        onClearAll={clearAllFilters}
+      />
 
       <Table
         options={{ search: true, paging: true, pageSize: 10 }}
@@ -239,7 +253,9 @@ export const ChangelogFetchComponent = () => {
   const config = useApi(configApiRef);
   const { value, loading, error } = useAsync(async (): Promise<Change[]> => {
     const response = await fetch(
-      `${config.getString('backend.baseUrl')}/api/proxy/inscope-resources/resources/json/change-log.json`,
+      `${config.getString(
+        'backend.baseUrl',
+      )}/api/proxy/inscope-resources/resources/json/change-log.json`,
     );
     if (!response.ok) {
       throw new Error('Failed to fetch data');
