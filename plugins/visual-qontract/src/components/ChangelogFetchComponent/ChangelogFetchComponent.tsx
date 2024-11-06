@@ -43,6 +43,9 @@ const getTextColor = (bgColor: string) => {
 const PillList = ({ items }: { items: string[] }) => (
   <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
     {items.map(item => {
+      if (!item) {
+        return null;
+      }
       const bgColor = stringToColor(item);
       const textColor = getTextColor(bgColor);
       return (
