@@ -2,17 +2,17 @@ import React from 'react';
 import { Box, Button, Typography } from '@material-ui/core';
 import { ActiveFilterPills } from './ActiveFilterPills';
 
+type Filter = { field: string; value: string };
+
 export const FilterManager = ({
   filters,
   setFilters,
 }: {
-  filters: { field: string; value: string }[];
-  setFilters: React.Dispatch<
-    React.SetStateAction<{ field: string; value: string }[]>
-  >;
+  filters: Filter[];
+  setFilters: React.Dispatch<React.SetStateAction<Filter[]>>;
 }) => {
   const clearAllFilters = () => setFilters([]);
-  const removeFilter = (filter: { field: string; value: string }) => {
+  const removeFilter = (filter: Filter) => {
     setFilters(
       filters.filter(f => f.field !== filter.field || f.value !== filter.value),
     );
@@ -28,6 +28,7 @@ export const FilterManager = ({
             variant="outlined"
             size="small"
             style={{ marginLeft: 'auto' }}
+            data-testid="clear-all-filters"
           >
             Clear All Filters
           </Button>
@@ -36,7 +37,6 @@ export const FilterManager = ({
       <ActiveFilterPills
         filters={filters}
         onRemove={removeFilter}
-        onClearAll={clearAllFilters}
       />
     </>
   );
