@@ -16,7 +16,13 @@ export const ChangelogFetchComponent = () => {
     const response = await fetch(
       `${config.getString(
         'backend.baseUrl',
-      )}/api/proxy/inscope-resources/resources/json/change-log.json`,
+      )}/api/proxy/inscope-resources/resources/json/change-log.json?timestamp=${Date.now()}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+        },
+      },
     );
     if (!response.ok) {
       throw new Error('Failed to fetch data');
