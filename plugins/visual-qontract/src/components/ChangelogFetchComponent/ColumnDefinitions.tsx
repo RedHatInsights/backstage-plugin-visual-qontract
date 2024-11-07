@@ -15,7 +15,7 @@ export const ColumnDefinitions = (
         rel="noopener noreferrer"
         style={{ color: '#007bff', textDecoration: 'underline' }}
       >
-        {rowData.commit}
+        {rowData.description || rowData.commit}
       </a>
     ),
   },
