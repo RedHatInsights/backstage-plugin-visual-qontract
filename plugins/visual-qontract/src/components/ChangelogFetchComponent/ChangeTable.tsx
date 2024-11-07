@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import { Table } from '@backstage/core-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChangeTableProps } from './ChangeTypes';
@@ -66,12 +66,25 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
     <Grid container spacing={3}>
       <Grid item xs={3}>
         <Paper elevation={3} style={{ padding: '16px' }}>
-          <SearchBox searchText={searchText} setSearchText={setSearchText} />
-          <FilterManager filters={filters} setFilters={setFilters} />
+          <Grid container direction="column" spacing={2}>
+            <Grid item>
+              <Typography variant="h6">Search & Filter</Typography>
+            </Grid>
+            <Grid item>
+              <SearchBox
+                searchText={searchText}
+                setSearchText={setSearchText}
+              />
+            </Grid>
+            <Grid item>
+              <FilterManager filters={filters} setFilters={setFilters} />
+            </Grid>
+          </Grid>
         </Paper>
       </Grid>
       <Grid item xs={9}>
         <Table
+          title="Changelog"
           options={{ search: false, paging: true, pageSize: 10 }}
           columns={ColumnDefinitions(addFilter)}
           data={filteredData}

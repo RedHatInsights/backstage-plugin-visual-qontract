@@ -14,7 +14,7 @@ export const SearchBox = ({
       label="Search"
       variant="outlined"
       fullWidth
-      placeholder="Search"
+      placeholder="Search the changelog"
       value={searchText}
       onChange={e => setSearchText(e.target.value)}
       InputProps={{
