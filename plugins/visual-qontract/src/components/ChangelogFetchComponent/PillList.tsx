@@ -49,7 +49,7 @@ const Pill = ({
         alignItems: 'center',
         cursor: clickable ? 'pointer' : 'default',
         transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-        '&:hover': clickable && !removable
+        '&:hover': clickable
           ? {
               transform: 'scale(1.05)',
               boxShadow: `0px 0px 8px 2px ${bgColor}`,
@@ -62,11 +62,11 @@ const Pill = ({
       {removable && (
         <IconButton
           size="small"
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             onClick(field, item);
           }}
-          data-testid={dataTestId ? `${dataTestId}-remove` : undefined}
+          data-testid={`active-filter-remove-${field}-pill-${item}`}
           sx={{ marginLeft: '4px', padding: 0, color: textColor }}
         >
           ×
@@ -92,7 +92,7 @@ export const PillList = ({
   dataTestIdPrefix?: string;
 }) => (
   <Box display="flex" flexWrap="wrap" gap={1}>
-    {items.map((item) => {
+    {items.map(item => {
       if (!item) return null;
       const normalizedItem = item.trim();
       const dataTestId = dataTestIdPrefix

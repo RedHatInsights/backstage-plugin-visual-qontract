@@ -31,6 +31,8 @@ export const ChangelogFetchComponent = () => {
     return data.items as Change[];
   }, [config]);
 
+    
+
   if (loading) {
     return <Progress />;
   }

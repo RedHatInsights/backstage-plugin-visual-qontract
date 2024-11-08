@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Chip } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import {
-  InfoCard,
   Page,
   Content,
   Link,
@@ -29,12 +28,6 @@ export function QueueTable({
 
   useEffect(() => {
     fetchMergeQ();
-
-    const intervalId = setInterval(() => {
-      fetchMergeQ();
-    }, 120000);
-
-    return () => clearInterval(intervalId);
   }, []);
 
   const fetchMergeQ = async () => {
@@ -55,6 +48,8 @@ export function QueueTable({
     }
   };
 
+  // I hate this, but I couldn't find a small, modern library to parse markdown tables
+  // into JSON. This is a simple implementation that works for our use case.
   const parseMarkdownTable = (markdown: string): Array<object> => {
     const lines = markdown.trim().split('\n');
     const headers = lines[0]
@@ -86,15 +81,6 @@ export function QueueTable({
       </Page>
     );
   }
-
-  const titleLink = (
-    <Link
-      target="_blank"
-      to={`https://gitlab.cee.redhat.com/service/app-interface-output/-/blob/master/${markdown}`}
-    >
-      {title}
-    </Link>
-  );
 
   // Define columns explicitly
   const defaultColumns: TableColumn[] = [
@@ -152,12 +138,15 @@ export function QueueTable({
     },
   ];
 
+  // We allow passing in custom columns, but default to the ones above
+  // This is so we can handle different payloads
   if (!columns) {
     columns = defaultColumns;
   }
 
   return tableData ? (
         <Table
+          
           title={title}
           columns={columns}
           data={tableData}
