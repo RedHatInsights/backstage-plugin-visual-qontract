@@ -2,21 +2,20 @@ import React from 'react';
 import {
   Page,
   Header,
+  HeaderLabel,
   TabbedLayout,
 } from '@backstage/core-components';
-import { QueueTable } from '../MergeQueues/QueueTable';
-import { ChangelogFetchComponent } from '../ChangelogFetchComponent';
-import { MergeQueueTable } from '../MergeQueues/MergeQueueTable';
+import { QueueTable } from './QueueTable';
 
-export function ChangelogComponent() {
+export function MergeQueues() {
   return (
     <Page themeId="tool">
-      <Header title="App Interface" subtitle="App Interface Change History and Merge Queues"/>
+      <Header title="App SRE Queues" subtitle="">
+        <HeaderLabel label="Owner" value="HCM Engineering Productivity" />
+        <HeaderLabel label="Lifecycle" value="Alpha" />
+      </Header>
       <TabbedLayout>
-        <TabbedLayout.Route path="/changelog" title="Changelog">
-            <ChangelogFetchComponent />
-        </TabbedLayout.Route>
-        <TabbedLayout.Route path="/self-serviceable" title="Self Service Queue">
+        <TabbedLayout.Route path="/self-serviceable" title="Self Serviceable">
           <QueueTable
             key="self-serviceable"
             markdown="app-interface-open-selfserviceable-mr-queue.md"
@@ -31,7 +30,11 @@ export function ChangelogComponent() {
           />
         </TabbedLayout.Route>
         <TabbedLayout.Route path="/merge-queue" title="Merge Queue">
-          <MergeQueueTable/>
+          <QueueTable
+            key="merge-queue"
+            markdown="app-interface-merge-queue.md"
+            title="Merge Queue"
+          />
         </TabbedLayout.Route>
       </TabbedLayout>
     </Page>

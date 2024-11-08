@@ -34,6 +34,14 @@ export const ActiveFilterPills = ({
     );
   };
 
+  if (filters.length === 0) return (
+    <Box textAlign="center" mt={2}>
+      <Typography variant="caption" color="textSecondary">
+        Click on app or type labels to filter.
+      </Typography>
+    </Box>
+  );
+
   return (
     <Box mb={2}>
       {filterSections.map(({ field, label }) => renderFilterSection(field, label))}

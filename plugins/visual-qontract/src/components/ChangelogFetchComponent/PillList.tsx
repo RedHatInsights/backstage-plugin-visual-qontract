@@ -15,67 +15,100 @@ const getTextColor = (bgColor: string) => {
   return l > 60 ? 'black' : 'white';
 };
 
+const Pill = ({
+  item,
+  field,
+  onClick,
+  removable,
+  clickable,
+  dataTestId,
+}: {
+  item: string;
+  field: string;
+  onClick: (field: string, item: string) => void;
+  removable?: boolean;
+  clickable?: boolean;
+  dataTestId?: string;
+}) => {
+  const bgColor = stringToColor(item);
+  const textColor = getTextColor(bgColor);
+
+  return (
+    <Box
+      key={item}
+      data-testid={dataTestId}
+      sx={{
+        backgroundColor: bgColor,
+        color: textColor,
+        padding: '4px 8px',
+        borderRadius: '12px',
+        fontSize: '0.8em',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        display: 'flex',
+        alignItems: 'center',
+        cursor: clickable ? 'pointer' : 'default',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+        '&:hover': clickable
+          ? {
+              transform: 'scale(1.05)',
+              boxShadow: `0px 0px 8px 2px ${bgColor}`,
+            }
+          : undefined,
+      }}
+      onClick={() => !removable && clickable && onClick(field, item)}
+    >
+      <span>{item}</span>
+      {removable && (
+        <IconButton
+          size="small"
+          onClick={e => {
+            e.stopPropagation();
+            onClick(field, item);
+          }}
+          data-testid={`active-filter-remove-${field}-pill-${item}`}
+          sx={{ marginLeft: '4px', padding: 0, color: textColor }}
+        >
+          ×
+        </IconButton>
+      )}
+    </Box>
+  );
+};
+
 export const PillList = ({
   items,
   field,
   onClick,
   removable = false,
-  dataTestIdPrefix = '', // Optional prefix for data-testid
+  clickable = true,
+  dataTestIdPrefix = '',
 }: {
   items: string[];
   field: string;
   onClick: (field: string, item: string) => void;
   removable?: boolean;
+  clickable?: boolean;
   dataTestIdPrefix?: string;
 }) => (
   <Box display="flex" flexWrap="wrap" gap={1}>
     {items.map(item => {
       if (!item) return null;
       const normalizedItem = item.trim();
-      const bgColor = stringToColor(normalizedItem);
-      const textColor = getTextColor(bgColor);
+      const dataTestId = dataTestIdPrefix
+        ? `${dataTestIdPrefix}-${field}-pill-${normalizedItem}`
+        : undefined;
+
       return (
-        <Box
+        <Pill
           key={normalizedItem}
-          data-testid={
-            dataTestIdPrefix
-              ? `${dataTestIdPrefix}-${field}-pill-${normalizedItem}`
-              : undefined // Only add data-testid when a prefix is provided
-          }
-          sx={{
-            backgroundColor: bgColor,
-            color: textColor,
-            padding: '4px 8px',
-            borderRadius: '12px',
-            fontSize: '0.8em',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: '8px',
-            cursor: 'pointer',
-          }}
-          onClick={() => !removable && onClick(field, normalizedItem)}
-        >
-          <span>{normalizedItem}</span>
-          {removable && (
-            <IconButton
-              size="small"
-              onClick={e => {
-                e.stopPropagation();
-                onClick(field, normalizedItem);
-              }}
-              data-testid={
-                dataTestIdPrefix
-                  ? `${dataTestIdPrefix}-remove-${field}-pill-${normalizedItem}`
-                  : undefined
-              }
-              sx={{ marginLeft: '4px', padding: 0, color: textColor }}
-            >
-              ×
-            </IconButton>
-          )}
-        </Box>
+          item={normalizedItem}
+          field={field}
+          onClick={onClick}
+          removable={removable}
+          clickable={clickable}
+          dataTestId={dataTestId}
+        />
       );
     })}
   </Box>

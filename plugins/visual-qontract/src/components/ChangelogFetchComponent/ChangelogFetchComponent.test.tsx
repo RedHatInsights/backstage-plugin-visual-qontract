@@ -68,7 +68,7 @@ describe('DenseTable component', () => {
       </MemoryRouter>,
     );
 
-    const searchInput = screen.getByPlaceholderText('Search');
+    const searchInput = screen.getByPlaceholderText('Search the changelog');
     fireEvent.change(searchInput, { target: { value: 'Update' } });
     expect(searchInput).toHaveValue('Update');
 

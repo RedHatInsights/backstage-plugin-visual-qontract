@@ -81,6 +81,11 @@ proxy:
     '/sso-redhat':
       target: ${SSO_URL}
       allowedHeaders: ['Content-Type']
+    '/mergeq':
+      target: 'https://gitlab.cee.redhat.com/service/app-interface-output/-/raw/master/'
+      credentials: dangerously-allow-unauthenticated
+      secure: false
+      changeOrigin: true
 
 
 
