@@ -42,6 +42,7 @@ export const FilterManager = ({
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
+            id="start-date"
             fullWidth
             label="Start Date"
             type="date"
@@ -52,6 +53,7 @@ export const FilterManager = ({
         </Grid>
         <Grid item xs={12}>
           <TextField
+            id="end-date"
             fullWidth
             label="End Date"
             type="date"
