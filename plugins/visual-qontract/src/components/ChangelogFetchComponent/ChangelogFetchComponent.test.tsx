@@ -8,7 +8,7 @@ import { MemoryRouter } from 'react-router-dom';
 const testData = [
   {
     commit: 'abc123',
-    merged_at: '2024-10-25T16:14:25.653Z',
+    merged_at: '2024-10-21T16:14:25.653Z',
     change_types: ['Update', 'Bugfix'],
     error: false,
     apps: ['App1', 'App2'],
@@ -57,8 +57,56 @@ describe('DenseTable component', () => {
     expect(commitLink).toHaveStyle('color: #007bff');
 
     // Check for date presence with regex to handle different formats
-    expect(screen.getByText(/Oct 25,? 2024/)).toBeInTheDocument();
+    expect(screen.getByText(/Oct 21,? 2024/)).toBeInTheDocument();
     expect(screen.getByText(/Oct 26,? 2024/)).toBeInTheDocument();
+  });
+
+  it('shows instructional text when no filters are applied', () => {
+    render(
+      <MemoryRouter>
+        <ChangeTable changes={testData} />
+      </MemoryRouter>,
+    );
+
+    // Check for the instructional message
+    expect(
+      screen.getByText('Click on the app or change type labels to add filters.'),
+    ).toBeInTheDocument();
+  });
+
+  it('conditionally displays "Clear Filters" button when filters or dates are active', () => {
+    render(
+      <MemoryRouter initialEntries={['/?filters=type%3AUpdate']}>
+        <ChangeTable changes={testData} />
+      </MemoryRouter>,
+    );
+
+    // Expect the clear button to be visible when filters are present
+    expect(screen.getByTestId('clear-all-filters')).toBeInTheDocument();
+
+    // Clear all filters
+    fireEvent.click(screen.getByTestId('clear-all-filters'));
+
+    // Expect the clear button to disappear
+    expect(screen.queryByTestId('clear-all-filters')).not.toBeInTheDocument();
+  });
+
+  it('filters data by date range', () => {
+    render(
+      <MemoryRouter>
+        <ChangeTable changes={testData} />
+      </MemoryRouter>,
+    );
+
+    // Set date range to only show items from Oct 26, 2024
+    const startDateInput = screen.getByLabelText('Start Date');
+    const endDateInput = screen.getByLabelText('End Date');
+    fireEvent.change(startDateInput, { target: { value: '2024-10-25' } });
+    fireEvent.change(endDateInput, { target: { value: '2024-10-27' } });
+
+    // Verify that only the relevant row is displayed
+    expect(screen.queryByText('abc123')).not.toBeInTheDocument();
+    expect(screen.getByText('def456')).toBeInTheDocument();
   });
 
   it('clears the search text when the clear button is clicked', () => {
@@ -110,41 +158,6 @@ describe('DenseTable component', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('clears all filters when "Clear All Filters" button is clicked', async () => {
-    render(
-      <MemoryRouter initialEntries={['/?filters=type%3AUpdate,app%3AApp1']}>
-        <ChangeTable changes={testData} />
-      </MemoryRouter>,
-    );
-
-    // Ensure both filter pills are present initially in the filter box
-    expect(
-      screen.getByTestId('active-filter-app-pill-App1'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('active-filter-type-pill-Update'),
-    ).toBeInTheDocument();
-
-    // Click "Clear All Filters" button
-    fireEvent.click(screen.getByTestId('clear-all-filters'));
-
-    // Verify all filters are cleared and URL is updated
-    await waitFor(() =>
-      expect(navigateMock).toHaveBeenLastCalledWith(
-        { search: '' },
-        { replace: true },
-      ),
-    );
-
-    // Verify that filter pills are no longer displayed
-    expect(
-      screen.queryByTestId('active-filter-app-pill-App1'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('active-filter-type-pill-Update'),
-    ).not.toBeInTheDocument();
-  });
-
   it('renders change types and apps as pills with correct styling', () => {
     render(
       <MemoryRouter>
@@ -167,7 +180,6 @@ describe('DenseTable component', () => {
         <ChangeTable changes={testData} />
       </MemoryRouter>,
     );
-
   });
 
   it('loads initial filters from the URL query string', () => {

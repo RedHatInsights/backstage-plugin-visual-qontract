@@ -11,6 +11,8 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
   const [filters, setFilters] = useState<{ field: string; value: string }[]>(
     [],
   );
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,6 +20,9 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const filtersFromQuery = queryParams.get('filters');
+    const startDateFromQuery = queryParams.get('startDate');
+    const endDateFromQuery = queryParams.get('endDate');
+
     if (filtersFromQuery) {
       const parsedFilters = filtersFromQuery.split(',').map(filterStr => {
         const [field, value] = filterStr.split(':');
@@ -25,6 +30,9 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       });
       setFilters(parsedFilters);
     }
+
+    if (startDateFromQuery) setStartDate(startDateFromQuery);
+    if (endDateFromQuery) setEndDate(endDateFromQuery);
   }, [location.search]);
 
   useEffect(() => {
@@ -32,13 +40,27 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
     const filterStrings = filters.map(
       filter => `${filter.field}:${filter.value}`,
     );
+
     if (filterStrings.length > 0) {
       queryParams.set('filters', filterStrings.join(','));
     } else {
       queryParams.delete('filters');
     }
+
+    if (startDate) {
+      queryParams.set('startDate', startDate);
+    } else {
+      queryParams.delete('startDate');
+    }
+
+    if (endDate) {
+      queryParams.set('endDate', endDate);
+    } else {
+      queryParams.delete('endDate');
+    }
+
     navigate({ search: queryParams.toString() }, { replace: true });
-  }, [filters, navigate, location.search]);
+  }, [filters, startDate, endDate, navigate, location.search]);
 
   const addFilter = (field: string, value: string) => {
     setFilters(prevFilters => [...prevFilters, { field, value }]);
@@ -52,6 +74,19 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
           : change.apps.includes(filter.value),
       ),
     )
+    .filter(change => {
+      // Convert the change's date and the filter dates to Date objects
+      //debugger
+      const changeDate = new Date(change.merged_at);
+      const start = startDate ? new Date(startDate) : null;
+      const end = endDate ? new Date(endDate) : null;
+
+      // Check if the change date is within the range
+      const isWithinRange =
+        (!start || changeDate >= start) && (!end || changeDate <= end);
+
+      return isWithinRange;
+    })
     .filter(change =>
       searchText
         ? Object.values(change).some(value =>
@@ -77,7 +112,14 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
               />
             </Grid>
             <Grid item>
-              <FilterManager filters={filters} setFilters={setFilters} />
+              <FilterManager
+                filters={filters}
+                setFilters={setFilters}
+                startDate={startDate}
+                setStartDate={setStartDate}
+                endDate={endDate}
+                setEndDate={setEndDate}
+              />
             </Grid>
           </Grid>
         </Paper>

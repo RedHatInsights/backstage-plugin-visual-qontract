@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, IconButton, Typography, Grid, TextField, Tooltip } from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
 import { ActiveFilterPills } from './ActiveFilterPills';
 
 type Filter = { field: string; value: string };
@@ -7,37 +8,79 @@ type Filter = { field: string; value: string };
 export const FilterManager = ({
   filters,
   setFilters,
-}: {
-  filters: Filter[];
-  setFilters: React.Dispatch<React.SetStateAction<Filter[]>>;
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
 }) => {
-  const clearAllFilters = () => setFilters([]);
+  const clearAllFilters = () => {
+    setFilters([]);
+    setStartDate('');
+    setEndDate('');
+  };
+
   const removeFilter = (filter: Filter) => {
     setFilters(
       filters.filter(f => f.field !== filter.field || f.value !== filter.value),
     );
   };
 
+  const hasFilters = filters.length > 0 || startDate || endDate;
+
   return (
-    <>
-      {filters.length > 0 && (
-        <Box display="flex" alignItems="center" mb={2}>
-          <Typography variant="button">Active Filters</Typography>
-          <Button
-            onClick={clearAllFilters}
-            variant="outlined"
-            size="small"
-            style={{ marginLeft: 'auto' }}
-            data-testid="clear-all-filters"
-          >
-            Clear All Filters
-          </Button>
-        </Box>
-      )}
-      <ActiveFilterPills
-        filters={filters}
-        onRemove={removeFilter}
-      />
-    </>
+    <Box p={2} border={1} borderRadius={4} borderColor="grey.300">
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="h6">Filters</Typography>
+        {hasFilters && (
+          <Tooltip title="Clear Filters">
+            <IconButton onClick={clearAllFilters} data-testid="clear-all-filters">
+              <ClearIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <TextField
+            id="start-date"
+            fullWidth
+            label="Start Date"
+            type="date"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="end-date"
+            fullWidth
+            label="End Date"
+            type="date"
+            value={endDate}
+            onChange={e => setEndDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+        {filters.length > 0 && (
+          <Grid item xs={12}>
+            <Typography variant="button">Active Filters</Typography>
+            <ActiveFilterPills filters={filters} onRemove={removeFilter} />
+          </Grid>
+        )}
+        {!hasFilters && (
+          <Grid item xs={12}>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              align="center"
+              style={{ marginTop: '16px' }}
+            >
+              Click on the app or change type labels to add filters.
+            </Typography>
+          </Grid>
+        )}
+      </Grid>
+    </Box>
   );
 };
