@@ -18,7 +18,7 @@ export function QueueTable({
 }: {
   markdown: string;
   title: string;
-  columns: TableColumn[];
+  columns?: TableColumn[];
 }) {
   const config = useApi(configApiRef);
   const [error, setError] = useState(false);
