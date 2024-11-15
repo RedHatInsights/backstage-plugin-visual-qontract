@@ -1,6 +1,5 @@
 import { QueueTable } from "./QueueTable";
-import { TableColumn } from "@backstage/core-components";
-import { Link, Typography } from "@material-ui/core";
+import { TableColumn, Link } from "@backstage/core-components";
 import { PillList } from "../ChangelogFetchComponent/PillList";
 
 
