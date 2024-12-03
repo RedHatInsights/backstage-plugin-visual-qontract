@@ -11,35 +11,35 @@ export const IncidentResponseGuide = () => {
         <List>
           <ListItem>
             <ListItemText>
-              1. Check the{' '}
+              1. Consult the  {' '}
               <Link
-                href="https://redhat.enterprise.slack.com/archives/C022YV4E0NA"
+                href="/docs/default/component/incident-management/identify/"
                 target="_blank"
               >
-                #consoledot-incident
+                Identifying an Incident
               </Link>{' '}
-              channel on Slack. Ping if there's no current discussion.
+              document to ensure what you are seeing meets the criteria for an incident.
             </ListItemText>
           </ListItem>
           <ListItem>
             <ListItemText>
-              2. Consult the{' '}
+              2. Use the steps outlined in the{' '}
               <Link
-                href="https://docs.google.com/document/d/1AyEQnL4B11w7zXwum8Boty2IipMIxoFw1ri1UZB6xJE/edit?usp=sharing"
+                href="/docs/default/component/incident-management/create/"
                 target="_blank"
               >
-                Hybrid Cloud Console Incident Response Plan
+                Creating an Incident
               </Link>{' '}
-              document.
+              guide to raise an incident.
             </ListItemText>
           </ListItem>
           <ListItem>
             <ListItemText>
-              3. Open an incident report on{' '}
-              <Link href="https://web-rca.devshift.net/new" target="_blank">
-                WebRCA
+              3. Consult the full
+              <Link href="/docs/default/component/incident-management/" target="_blank">
+              Incident Management and Response Process
               </Link>
-              .
+              documentation for information on all facets of the incident process including severity levels, roles, and more.
             </ListItemText>
           </ListItem>
         </List>
