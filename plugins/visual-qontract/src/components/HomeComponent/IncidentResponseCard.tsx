@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import BugReportIcon from '@material-ui/icons/BugReport';
 import { makeStyles } from 'tss-react/mui';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi, fetchApiRef } from '@backstage/core-plugin-api';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import { green, red } from '@material-ui/core/colors';
@@ -31,36 +31,39 @@ export const IncidentResponseCard = () => {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
   const [selectedTab, setSelectedTab] = React.useState(0);
+  const fetchApi = useApi(fetchApiRef);
 
   useEffect(() => {
     fetchIncidents();
   }, []);
 
+  const fetchIncidents = async () => {
+    try {
+      const response = await fetchApi.fetch(
+        `${config.getString(
+          'backend.baseUrl',
+        )}/api/plugin-web-rca-backend/incidents/public`,
+      );
 
-  const fetchIncidents = () => {
-    setLoading(true);
-    setError(false);
-    fetch(
-      `${config.getString('backend.baseUrl')}/api/plugin-web-rca-backend/incidents/public`
-    )
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(json => {
-        if (json.kind == "Error") {
-          throw new Error('Something went wrong talking to WebRCA');
-        }
-        setWebRCAResponse(json);
-        setLoading(false);
-      })
-      .catch(error => {
-        setError(true);
-        setLoading(false);
-        //console.log('Error fetching incidents:', error);
-      });
+      if (!response.ok) {
+        throw new Error(
+          `Network response was not ok: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      const json = await response.json();
+
+      if (json.kind === 'Error') {
+        throw new Error('Something went wrong talking to WebRCA');
+      }
+
+      setWebRCAResponse(json);
+    } catch (error) {
+      setError(true);
+      console.error('Error fetching incidents:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const useStyles = makeStyles()(_theme => ({
@@ -85,7 +88,7 @@ export const IncidentResponseCard = () => {
       return (
         <Grid container justifyContent="center">
           <Grid item>
-            <CircularProgress role="progressbar"/>
+            <CircularProgress role="progressbar" />
           </Grid>
         </Grid>
       );

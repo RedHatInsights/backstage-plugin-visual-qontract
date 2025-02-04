@@ -67,21 +67,25 @@ proxy:
     '/inscope-resources':
       target: 'https://inscope.corp.stage.redhat.com/api/proxy/inscope-resources'
       changeOrigin: true
+      secure: false
+    '/inscope-resources/resources/images':
+      target: 'https://inscope.corp.stage.redhat.com/api/proxy/inscope-resources'
+      changeOrigin: true
+      secure: false
+      credentials: dangerously-allow-unauthenticated
     '/status':
       target: 'https://status.redhat.com/api/v2/summary.json'
       changeOrigin: true
-    '/web-rca':
-      target: ${WEB_RCA_API}
-      allowedHeaders: ['Authorization']
     '/status-board':
-      target: ${STATUS_BOARD_API}
+      target: '${STATUS_BOARD_API}'
       allowedHeaders: ['Authorization']
     '/sso-redhat':
-      target: ${SSO_URL}
+      target: '${SSO_URL}'
       allowedHeaders: ['Content-Type']
     '/mergeq':
       target: 'https://gitlab.cee.redhat.com/service/app-interface-output/-/raw/master/'
       changeOrigin: true
+      secure: false
 
 
 

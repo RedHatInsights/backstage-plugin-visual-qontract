@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Typography,
-  Grid,
-  Table,
-  TableContainer,
-  TableRow,
-  TableBody,
-  TableHead,
-  TableCell,
-  Paper,
-} from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { EscalationPolicyQuery, NextEscalationPolicyQuery } from './query';
 import QueryQontract from '../../common/QueryAppInterface';
 import { request } from 'graphql-request';
 import { NextEscalationPolicyRow } from './NextEscalationPolicyRow';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+  configApiRef,
+  useApi,
+  identityApiRef,
+} from '@backstage/core-plugin-api';
 
 export const EscalationPolicyComponent = () => {
   const {
@@ -31,14 +25,19 @@ export const EscalationPolicyComponent = () => {
 
   // Get Backstage objects
   const config = useApi(configApiRef);
+  const identityApi = useApi(identityApiRef);
 
   // Constants
   const backendUrl = config.getString('backend.baseUrl');
   const proxyUrl = `${backendUrl}/api/proxy/visual-qontract/graphql`;
 
-  function GetEscalationPolicy(path: string) {
+  const GetEscalationPolicy = async (path: string) => {
     const variables = { path: path };
-    request(proxyUrl, NextEscalationPolicyQuery, variables)
+    const { token } = await identityApi.getCredentials();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    request(proxyUrl, NextEscalationPolicyQuery, variables, headers)
       .then((data: any) => {
         if (data.escalation_policies_v1.length !== 0) {
           if (
@@ -121,12 +120,10 @@ export const EscalationPolicyComponent = () => {
 
   return (
     <InfoCard title={title} noPadding>
-
-          <NextEscalationPolicyRow ep={result.apps_v1[0].escalationPolicy} />
-          {escalationPolicies.map((component: any, key: any) => (
-            <NextEscalationPolicyRow key={key} ep={component} />
-          ))}
-
+      <NextEscalationPolicyRow ep={result.apps_v1[0].escalationPolicy} />
+      {escalationPolicies.map((component: any, key: any) => (
+        <NextEscalationPolicyRow key={key} ep={component} />
+      ))}
     </InfoCard>
   );
 };

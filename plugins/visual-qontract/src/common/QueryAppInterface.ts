@@ -5,7 +5,6 @@ import {
   useApi,
   configApiRef,
   identityApiRef,
-  fetchApiRef,
 } from '@backstage/core-plugin-api';
 
 const QueryQontract = (query: string, path?: string) => {
@@ -20,7 +19,6 @@ const QueryQontract = (query: string, path?: string) => {
   const proxyUrl = `${backendUrl}/api/proxy/visual-qontract/graphql`;
 
   const identityApi = useApi(identityApiRef);
-  const fetchApi = useApi(fetchApiRef);
 
   const [result, setResult] = useState<QontractApp>({});
   const [loaded, setLoaded] = useState<boolean>(false);

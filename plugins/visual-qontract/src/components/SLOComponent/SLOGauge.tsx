@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Typography, Box } from '@mui/material';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi, fetchApiRef } from '@backstage/core-plugin-api';
 
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 
@@ -9,10 +9,10 @@ export const SLOGauge = ({ query }: { query: string }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<boolean>(false);
   const [noResultsFound, setNoResultsFound] = useState<boolean>(false);
-
+  
   // Get Backstage objects
   const config = useApi(configApiRef);
-
+  const fetchApi = useApi(fetchApiRef);
   // Constants
   const backendUrl = config.getString('backend.baseUrl');
 
@@ -25,7 +25,7 @@ export const SLOGauge = ({ query }: { query: string }) => {
         const queryString = new URLSearchParams({
           query: adjustedQuery,
         }).toString();
-        const response = await fetch(
+        const response = await fetchApi.fetch(
           `${backendUrl}/api/proxy/prometheus/query?${queryString}`,
           {
             method: 'GET',
