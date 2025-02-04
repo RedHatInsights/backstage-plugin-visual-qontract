@@ -201,6 +201,19 @@ yarn dev
 
 Before you do, you'll likely want to have catalog entries to see the plugin working on. Check out AppStage for that. 
 
+## Updating Backstage Deps and Node Version
+Over time you'll need to upgrade deps, and those may require node version bumps too. To update backstage deps simply run:
+
+```
+yarn backstage-cli versions:bump <Backstage Version>
+```
+
+That will update the frontend and backend backstage code, as well as all of the deps for the frontend, backend, and plugins. 
+
+Part of the upgrade process will install deps. If any fail you may need to change node versions. First install the version of node you need. I recommend using [NVM](https://github.com/nvm-sh/nvm) for that. Then edit the `engines.node` value in the monorepo `package.json`.
+
+After updating backstage I recommend you attempt building all plugins with `make build-all` and adjust the build script if anything changed like command output, paths, etc. You should also run all tests with `yarn test` to make sure all tests are still passing.
+
 ### Build the Dynamic Plugin
 Run `make build-all` - the plugin tarballs will appear under `builds/`. There will be a directory for each plugin, and 2 files for each: the plugin tarball and a text file with the integrity SHA.
 
