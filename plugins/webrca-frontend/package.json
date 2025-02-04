@@ -11,7 +11,11 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "webrca-frontend",
+    "pluginPackages": [
+      "@redhatinsights/backstage-plugin-webrca-frontend"
+    ]
   },
   "sideEffects": false,
   "scripts": {
@@ -25,9 +29,9 @@
     "export-dynamic": "janus-cli package export-dynamic-plugin"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.14.3",
-    "@backstage/core-plugin-api": "^1.9.1",
-    "@backstage/theme": "^0.5.2",
+    "@backstage/core-components": "^0.16.3",
+    "@backstage/core-plugin-api": "^1.10.3",
+    "@backstage/theme": "^0.6.3",
     "@janus-idp/cli": "^1.8.0",
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.9.1",
@@ -37,15 +41,12 @@
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
-
-  
-  
   "configSchema": "config.d.ts",
   "devDependencies": {
-    "@backstage/cli": "^0.26.2",
-    "@backstage/core-app-api": "^1.12.3",
-    "@backstage/dev-utils": "^1.0.30",
-    "@backstage/test-utils": "^1.5.3",
+    "@backstage/cli": "^0.29.6",
+    "@backstage/core-app-api": "^1.15.4",
+    "@backstage/dev-utils": "^1.1.6",
+    "@backstage/test-utils": "^1.7.4",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
