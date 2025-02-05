@@ -11,7 +11,7 @@ import {
   CardActionArea,
   makeStyles,
 } from '@material-ui/core';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi, fetchApiRef } from '@backstage/core-plugin-api';
 import AnnouncementIcon from '@material-ui/icons/Announcement';
 
 export const FeaturedNews = () => {
@@ -25,6 +25,7 @@ export const FeaturedNews = () => {
   // Constants
   const backendUrl = config.getString('backend.baseUrl');
   const proxyUrl = `${backendUrl}/api/proxy/inscope-resources`;
+  const fetchApi = useApi(fetchApiRef);
 
   const useStyles = makeStyles({
     root: {
@@ -52,7 +53,7 @@ export const FeaturedNews = () => {
   const classes = useStyles();
   useEffect(() => {
     setLoading(true);
-    fetch(`${proxyUrl}/resources/json/hotnews.json`)
+    fetchApi.fetch(`${proxyUrl}/resources/json/hotnews.json`)
       .then(response => response.json())
       .then(json => { 
         setNews(json)
@@ -94,7 +95,7 @@ export const FeaturedNews = () => {
             <CardActionArea>
               <CardMedia
                 className={classes.media}
-                image={`${proxyUrl}/${story.image}`}
+                image={`${proxyUrl}${story.image}`}
                 title={story.title}
               />
               <CardContent className={classes.cardBody}>

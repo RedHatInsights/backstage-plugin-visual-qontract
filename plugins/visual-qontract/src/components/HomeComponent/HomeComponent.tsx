@@ -13,7 +13,7 @@ import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import Explore from '@material-ui/icons/Explore';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import LinkIcon from '@material-ui/icons/Link';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 import { FeaturedNews } from './FeaturedNews';
 import { StatusMiniComponent } from '../StatusMiniComponent';
 import { InfoCard } from './InfoCard';
@@ -23,18 +23,37 @@ export const HomeComponent = () => {
   const { starredEntities } = useStarredEntities();
 
   const [links, setLinks] = useState([]);
+  const [linkError, setLinkError] = useState(false);
 
   // Get Backstage objects
   const config = useApi(configApiRef);
   // Constants
   const backendUrl = config.getString('backend.baseUrl');
   const proxyUrl = `${backendUrl}/api/proxy/developer-hub`;
+  const fetchApi = useApi(fetchApiRef);
 
   useEffect(() => {
-    fetch(proxyUrl)
-      .then(response => response.json())
-      .then(json => setLinks(json));
-  }, []);
+    setLinkError(false);
+    const fetchLinks = async () => {
+      try {
+        const response = await fetchApi.fetch(proxyUrl);
+
+        if (!response.ok) {
+          throw new Error(
+            `Network response was not ok: ${response.status} ${response.statusText}`,
+          );
+        }
+
+        const json = await response.json();
+        setLinks(json);
+      } catch (error) {
+        console.error('Error fetching links:', error);
+        setLinkError(true); // Set error state
+      }
+    };
+
+    fetchLinks();
+  }, [proxyUrl]);
 
   const useStyles = makeStyles()(theme => ({
     topcard: {
@@ -90,6 +109,25 @@ export const HomeComponent = () => {
   const { classes } = useStyles();
 
   const LinksCard = () => {
+    if (linkError) {
+      return (
+        <Card classes={{ root: classes.infocard }}>
+          <CardHeader
+            title="Links"
+            titleTypographyProps={{
+              variant: 'h6',
+            }}
+            avatar={<LinkIcon />}
+          />
+          <CardContent>
+            <Typography variant="body1">
+              An error occurred while fetching links. You can try reloading or
+              contact Engineering Productivity.
+            </Typography>
+          </CardContent>
+        </Card>
+      );
+    }
     return (
       <Card classes={{ root: classes.infocard }}>
         <CardHeader
@@ -154,14 +192,17 @@ export const HomeComponent = () => {
         <React.Fragment>
           <Grid item xs={3}></Grid>
           <Grid xs={6} item>
-            <Typography variant="body1">You have no favorites set. Visit the catalog and hit the star icon to add a favorite..</Typography>
+            <Typography variant="body1">
+              You have no favorites set. Visit the catalog and hit the star icon
+              to add a favorite..
+            </Typography>
           </Grid>
           <Grid item xs={3}></Grid>
         </React.Fragment>
       );
     } else {
       Output = (
-        <Grid container direction="row"> 
+        <Grid container direction="row">
           {StarredEntities}
         </Grid>
       );
@@ -229,8 +270,6 @@ export const HomeComponent = () => {
       </Grid>
     );
   };
-
-
 
   return (
     <Page themeId="home">

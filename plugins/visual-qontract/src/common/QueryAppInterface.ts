@@ -1,55 +1,69 @@
 import { useState, useEffect } from 'react';
 import { request } from 'graphql-request';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import {
+  useApi,
+  configApiRef,
+  identityApiRef,
+} from '@backstage/core-plugin-api';
 
 const QueryQontract = (query: string, path?: string) => {
-    type QontractApp = Record<string, any>;
+  type QontractApp = Record<string, any>;
 
-    // Get Backstage objects
-    const config = useApi(configApiRef);
-    const { entity } = useEntity();
+  // Get Backstage objects
+  const config = useApi(configApiRef);
+  const { entity } = useEntity();
 
-    // Constants
-    const backendUrl = config.getString('backend.baseUrl');
-    const proxyUrl = `${backendUrl}/api/proxy/visual-qontract/graphql`
+  // Constants
+  const backendUrl = config.getString('backend.baseUrl');
+  const proxyUrl = `${backendUrl}/api/proxy/visual-qontract/graphql`;
 
-    const [result, setResult] = useState<QontractApp>({});
-    const [loaded, setLoaded] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
+  const identityApi = useApi(identityApiRef);
 
-    // Function to get the app interface path
-    const getQontractPath = () => {
-        if (path) {
-            return path
-        }
+  const [result, setResult] = useState<QontractApp>({});
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
-        // use 'visual-qontract/app-path' annotation if defined on the entity
-        const appPath = entity?.metadata?.annotations?.["visual-qontract/app-path"];
-        if (appPath) {
-             return appPath
-        }
-
-        // otherwise fall back to making an educated guess at this entity's app path
-        const platform = entity?.metadata?.labels?.platform
-        const service = entity?.metadata?.labels?.service
-        return `/services/${platform}/${service}/app.yml`
+  // Function to get the app interface path
+  const getQontractPath = () => {
+    if (path) {
+      return path;
     }
 
-    // Get the qontract data on load
-    useEffect(() => {
-        const variables = { path: getQontractPath() };
-        request(proxyUrl, query, variables)
-            .then((data: any) => {
-                setLoaded(true)
-                setResult(data)
-            })
-            .catch((_error) => {
-                setError(true)
-            });
-    }, []);
+    // use 'visual-qontract/app-path' annotation if defined on the entity
+    const appPath = entity?.metadata?.annotations?.['visual-qontract/app-path'];
+    if (appPath) {
+      return appPath;
+    }
 
-    return { result, loaded, error }
-}
+    // otherwise fall back to making an educated guess at this entity's app path
+    const platform = entity?.metadata?.labels?.platform;
+    const service = entity?.metadata?.labels?.service;
+    return `/services/${platform}/${service}/app.yml`;
+  };
+
+  const getQontractData = async () => {
+    const variables = { path: getQontractPath() };
+    const { token } = await identityApi.getCredentials();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    request(proxyUrl, query, variables, headers)
+      .then((data: any) => {
+        setLoaded(true);
+        setResult(data);
+      })
+      .catch(_error => {
+        setError(true);
+      });
+  };
+
+  // Get the qontract data on load
+  useEffect(() => {
+    getQontractData();
+  }, []);
+
+  return { result, loaded, error };
+};
 
 export default QueryQontract;

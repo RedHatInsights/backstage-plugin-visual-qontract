@@ -9,7 +9,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { Content, Header, Page } from '@backstage/core-components';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 import levenshtein from 'js-levenshtein'; // Import the Levenshtein distance library
 import { NewsStoryCard } from './NewsStoryCard';
 
@@ -29,11 +29,12 @@ export const NewsComponent = () => {
   // Constants
   const backendUrl = config.getString('backend.baseUrl');
   const proxyUrl = `${backendUrl}/api/proxy/inscope-resources`;
+  const fetchApi = useApi(fetchApiRef);
 
   //On mount fetch the news data
   useEffect(() => {
     setLoading(true);
-    fetch(`${proxyUrl}/resources/json/hotnews.json`)
+    fetchApi.fetch(`${proxyUrl}/resources/json/hotnews.json`)
       .then(response => response.json())
       .then(json => {
         setNews(json);

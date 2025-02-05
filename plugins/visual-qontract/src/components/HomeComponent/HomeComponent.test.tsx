@@ -1,68 +1,56 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { HomeComponent } from './HomeComponent';
-import { useApi } from '@backstage/core-plugin-api';
-import { ThemeProvider } from '@material-ui/core/styles';
-import { lightTheme } from '@backstage/theme';
-import { act, waitFor } from '@testing-library/react';
+import { configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
+import {
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/frontend-test-utils';
+import { waitFor } from '@testing-library/react';
 
 // This is a minimal test because the functionality is all basically in the children
 
-
-// Mock useApi to return the necessary config methods
-jest.mock('@backstage/core-plugin-api', () => ({
-  ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest.fn(),
-}));
-
-// Mock useStarredEntities
 jest.mock('@backstage/plugin-catalog-react', () => ({
   ...jest.requireActual('@backstage/plugin-catalog-react'),
-  useStarredEntities: jest.fn(() => ({
-    starredEntities: [], // Mocked starred entities, can add actual entities if needed
-  })),
+  useStarredEntities: jest.fn().mockReturnValue({ starredEntities: [] }),
 }));
+describe('Home component', () => {
+  it('should render the Home page', async () => {
+    const mockConfigApi = {
+      getString: (key: string) => {
+        if (key === 'backend.baseUrl') {
+          return 'http://localhost:3000';
+        }
+        throw new Error(`Missing required config value at '${key}'`);
+      },
+      getOptionalString: (key: string) => {
+        if (key === 'app.baseUrl') {
+          return 'http://localhost:3000';
+        }
+        return undefined;
+      },
+    };
 
-
-
-describe('<HomeComponent />', () => {
-  beforeEach(() => {
-    // Mock fetch to return a resolved promise with JSON response
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () => Promise.resolve([]), // Empty array or add mock data if needed
+    const mockFetchApi = {
+      fetch: jest.fn().mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue([]),
       }),
+    };
+
+    renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [configApiRef, mockConfigApi],
+          [fetchApiRef, mockFetchApi],
+        ]}
+      >
+        <HomeComponent />
+      </TestApiProvider>,
     );
 
-    // Mock useApi
-    useApi.mockReturnValue({
-      getString: () => 'http://localhost:7000',
-      getOptionalString: () => 'http://localhost:7000',
+    await waitFor(() => {
+      expect(screen.getByText('inScope')).toBeInTheDocument();
     });
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  const renderWithProviders = ui =>
-    render(<ThemeProvider theme={lightTheme}>{ui}</ThemeProvider>);
-
-
-  it('displays an error message if fetching links fails', async () => {
-    global.fetch.mockRejectedValueOnce(new Error('Failed to fetch'));
-
-    renderWithProviders(<HomeComponent />);
-
-    await waitFor(() =>
-      expect(screen.getByText('Error fetching news...')).toBeInTheDocument(),
-    );
-  });
-
-  it('renders HomeComponent without providers', async () => {
-    await act(async () => {
-      renderWithProviders(<HomeComponent />);
-    });
-    expect(screen.getByText('inScope')).toBeInTheDocument();
   });
 });

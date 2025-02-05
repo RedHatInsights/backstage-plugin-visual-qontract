@@ -42,7 +42,7 @@ export const NewsStoryCard = ({story}: {story: any}) => {
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image={`${proxyUrl}/${story.image}`}
+          image={`${proxyUrl}${story.image}`}
           title={story.title}
         />
         <CardContent className={classes.cardBody}>

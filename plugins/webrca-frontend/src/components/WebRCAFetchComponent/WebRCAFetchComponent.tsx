@@ -6,7 +6,7 @@ import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import useAsync from 'react-use/lib/useAsync';
-import { useApi, configApiRef /*, identityApiRef*/ } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, fetchApiRef} from '@backstage/core-plugin-api';
 import '@backstage/plugin-user-settings';
 import { Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
@@ -105,6 +105,8 @@ export const WebRCAFetchComponent = () => {
   // const user = useApi(identityApiRef);
   const entity = useEntity();
 
+  const fetchApi = useApi(fetchApiRef);
+
   const { value, loading, error } = useAsync(async (): Promise<
     IncidentList | string
   > => {
@@ -132,7 +134,7 @@ export const WebRCAFetchComponent = () => {
       }
 
 
-      let incidentList = await fetch(
+      let incidentList = await fetchApi.fetch(
         `${config.getString('backend.baseUrl')}/api/plugin-web-rca-backend/incidents`,
         {
           headers: {

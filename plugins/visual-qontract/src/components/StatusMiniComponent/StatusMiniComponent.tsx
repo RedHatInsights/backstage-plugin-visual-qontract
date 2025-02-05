@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   CardHeader,
@@ -10,8 +9,7 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import { Content, Header, InfoCard, Page } from '@backstage/core-components';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import WarningIcon from '@material-ui/icons/Warning';
@@ -20,6 +18,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import { red, green, yellow, orange } from '@material-ui/core/colors';
 import OpenInNew from '@material-ui/icons/OpenInNew';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
+import { configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 
 const useStyles = makeStyles({
   root: {
@@ -38,31 +37,35 @@ const useStyles = makeStyles({
 export const StatusMiniComponent = () => {
   const classes = useStyles();
 
+  const config = useApi(configApiRef);
+  const fetchApi = useApi(fetchApiRef);
+  const backendUrl = config.getString('backend.baseUrl');
+
   const [status, setStatus] = useState({
     status: { indicator: 'unknown', description: 'Unknown' },
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  // Get Backstage objects
-  const config = useApi(configApiRef);
   // Constants
-  const backendUrl = config.getString('backend.baseUrl');
   const proxyUrl = `${backendUrl}/api/proxy/status`;
 
-  useEffect(() => {
+  const fetchStatus = async () => {
     setLoading(true);
-    fetch(proxyUrl)
-      .then(response => response.json())
-      .then(json => {
-        setStatus(json);
-        setLoading(false);
-      })
-      .catch(error => {
-        setError(true);
-        console.error('Error fetching Status Page:', error);
-        setLoading(false);
-      });
+    try {
+      const response = await fetchApi.fetch(proxyUrl);
+      const json = await response.json();
+      setStatus(json);
+    } catch (error) {
+      console.error('Error fetching Status Page:', error);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchStatus();
   }, []);
 
   if (loading) {

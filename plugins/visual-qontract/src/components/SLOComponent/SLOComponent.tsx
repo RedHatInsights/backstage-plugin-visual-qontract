@@ -76,19 +76,6 @@ export const SLOComponent = () => {
     return name.replace(/([a-z])([A-Z])|([A-Z])([A-Z][a-z])/g, '$1$3 $2$4').trim();
   };
 
-  const dashboardLink = (dashboard: string) => {
-    try {
-      new URL(dashboard);
-      return ( <CardActions>
-      <Link target="_blank" href={dashboard}>
-        View Dashboard
-      </Link>
-    </CardActions> )
-    } catch (e) {
-      return <React.Fragment/>
-    }
-
-  }
 
   return (
 

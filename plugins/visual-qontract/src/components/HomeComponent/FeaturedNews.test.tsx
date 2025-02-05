@@ -1,35 +1,40 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { FeaturedNews } from './FeaturedNews';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi, fetchApiRef, configApiRef } from '@backstage/core-plugin-api';
 
-// Mock useApi to return a fixed backend URL
+// Mock useApi to return fetchApi and configApi
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
   useApi: jest.fn(),
 }));
 
 describe('<FeaturedNews />', () => {
+  const mockFetch = jest.fn(); // Mock fetchApi.fetch
+
   beforeEach(() => {
-    global.fetch = jest.fn();
-    useApi.mockReturnValue({
-      getString: () => 'http://localhost:7000', // Mock backend URL
+    jest.clearAllMocks();
+
+    // Mock useApi based on the reference being requested
+    useApi.mockImplementation((apiRef) => {
+      if (apiRef === fetchApiRef) {
+        return { fetch: mockFetch }; // Mock fetchApi
+      }
+      if (apiRef === configApiRef) {
+        return { getString: () => 'http://localhost:7000' }; // Mock configApi
+      }
     });
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('displays a loading message initially', async () => {
-    global.fetch.mockImplementation(() => new Promise(() => {})); // Simulate loading
+    mockFetch.mockImplementation(() => new Promise(() => {})); // Simulate loading
 
     render(<FeaturedNews />);
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   it('displays an error message if fetching data fails', async () => {
-    global.fetch.mockRejectedValue(new Error('Fetch error')); // Simulate error
+    mockFetch.mockRejectedValue(new Error('Fetch error')); // Simulate error
 
     render(<FeaturedNews />);
     await waitFor(() => {
@@ -62,13 +67,13 @@ describe('<FeaturedNews />', () => {
       },
     ];
 
-    global.fetch.mockResolvedValue({
+    mockFetch.mockResolvedValue({
+      ok: true,
       json: async () => mockNewsData,
     });
 
     render(<FeaturedNews />);
 
-    // Wait for data to load
     await waitFor(() => {
       expect(screen.getByText('Tech News')).toBeInTheDocument();
       expect(screen.getByText('Latest in tech...')).toBeInTheDocument();

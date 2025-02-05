@@ -52,7 +52,8 @@ integrations:
 
 proxy:
   endpoints:
-    '/visual-qontract': 'https://app-interface.apps.rosa.appsrep09ue1.03r5.p3.openshiftapps.com/'
+    '/visual-qontract': 
+      target: 'https://app-interface.apps.rosa.appsrep09ue1.03r5.p3.openshiftapps.com/'
     '/prometheus':
       target: "https://prometheus.crcs02ue1.devshift.net/api/v1/"
       allowedMethods: ['POST', 'GET']
@@ -63,29 +64,28 @@ proxy:
       pathRewrite:
         '^/api/proxy/developer-hub': '/resources/json/homepage.json'
       changeOrigin: true
-      secure: false
     '/inscope-resources':
       target: 'https://inscope.corp.stage.redhat.com/api/proxy/inscope-resources'
       changeOrigin: true
       secure: false
+    '/inscope-resources/resources/images':
+      target: 'https://inscope.corp.stage.redhat.com/api/proxy/inscope-resources'
+      changeOrigin: true
+      secure: false
+      credentials: dangerously-allow-unauthenticated
     '/status':
       target: 'https://status.redhat.com/api/v2/summary.json'
       changeOrigin: true
-      secure: false
-    '/web-rca':
-      target: ${WEB_RCA_API}
-      allowedHeaders: ['Authorization']
     '/status-board':
-      target: ${STATUS_BOARD_API}
+      target: '${STATUS_BOARD_API}'
       allowedHeaders: ['Authorization']
     '/sso-redhat':
-      target: ${SSO_URL}
+      target: '${SSO_URL}'
       allowedHeaders: ['Content-Type']
     '/mergeq':
       target: 'https://gitlab.cee.redhat.com/service/app-interface-output/-/raw/master/'
-      credentials: dangerously-allow-unauthenticated
-      secure: false
       changeOrigin: true
+      secure: false
 
 
 

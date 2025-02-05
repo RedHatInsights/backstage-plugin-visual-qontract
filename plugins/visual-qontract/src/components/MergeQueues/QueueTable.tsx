@@ -8,7 +8,11 @@ import {
   TableColumn,
   Progress,
 } from '@backstage/core-components';
-import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import {
+  useApi,
+  fetchApiRef,
+  configApiRef
+} from '@backstage/core-plugin-api';
 import { PillList } from '../ChangelogFetchComponent/PillList';
 
 export function QueueTable({
@@ -20,11 +24,12 @@ export function QueueTable({
   title: string;
   columns?: TableColumn[];
 }) {
-  const config = useApi(configApiRef);
   const [error, setError] = useState(false);
   const [tableData, setTableData] = useState<Array<object> | null>(null);
-
+  const fetchApi = useApi(fetchApiRef);
+  const config = useApi(configApiRef);
   const backendUrl = config.getString('backend.baseUrl');
+
 
   useEffect(() => {
     fetchMergeQ();
@@ -32,12 +37,11 @@ export function QueueTable({
 
   const fetchMergeQ = async () => {
     try {
-      const response = await fetch(
-        `${backendUrl}/api/proxy/mergeq/${markdown}`,
-      );
+      const response = await fetchApi.fetch(`${backendUrl}/api/proxy/mergeq/${markdown}`);
       if (!response.ok) {
         throw new Error('Failed to fetch the Markdown file');
       }
+
 
       const text = await response.text();
       const parsedData = parseMarkdownTable(text);
@@ -145,19 +149,18 @@ export function QueueTable({
   }
 
   return tableData ? (
-        <Table
-          
-          title={title}
-          columns={columns}
-          data={tableData}
-          options={{
-            showTitle: true,
-            search: false,
-            paging: false,
-            toolbar: true,
-          }}
-        />
-      ) : (
-        <Progress />
-      );
+    <Table
+      title={title}
+      columns={columns}
+      data={tableData}
+      options={{
+        showTitle: true,
+        search: false,
+        paging: false,
+        toolbar: true,
+      }}
+    />
+  ) : (
+    <Progress />
+  );
 }
