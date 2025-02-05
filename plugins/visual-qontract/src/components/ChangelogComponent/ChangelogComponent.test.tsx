@@ -1,27 +1,50 @@
 import React from 'react';
-import { ChangelogComponent } from './ChangelogComponent';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
 import {
-  setupRequestMockHandlers,
   renderInTestApp,
-} from "@backstage/test-utils";
+  TestApiProvider,
+} from '@backstage/frontend-test-utils';
+import { ChangelogComponent } from './ChangelogComponent';
+import { configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 
-describe('ExampleComponent', () => {
-  const server = setupServer();
-  // Enable sane handlers for network requests
-  setupRequestMockHandlers(server);
 
-  // setup mock response
-  beforeEach(() => {
-    server.use(
-      rest.get('/*', (_, res, ctx) => res(ctx.status(200), ctx.json({}))),
+describe('Changelog', () => {
+  it('Should render the component', async () => {
+    const mockConfigApi = {
+      getString: (key: string) => {
+        if (key === 'backend.baseUrl') {
+          return 'http://localhost:3000';
+        }
+        throw new Error(`Missing required config value at '${key}'`);
+      },
+      getOptionalString: (key: string) => {
+        if (key === 'app.baseUrl') {
+          return 'http://localhost:3000';
+        }
+        return undefined;
+      },
+    };
+
+    const mockFetchApi = {
+      fetch: jest.fn().mockResolvedValue({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ items: [] }),
+      }),
+    };
+
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [configApiRef, mockConfigApi],
+          [fetchApiRef, mockFetchApi],
+        ]}
+      >
+        <ChangelogComponent />
+      </TestApiProvider>,
     );
-  });
 
-  it('should render', async () => {
-    await renderInTestApp(<ChangelogComponent />);
-    expect(screen.getByText('App Interface')).toBeInTheDocument();
+    await expect(
+      screen.findByText('App Interface'),
+    ).resolves.toBeInTheDocument();
   });
 });

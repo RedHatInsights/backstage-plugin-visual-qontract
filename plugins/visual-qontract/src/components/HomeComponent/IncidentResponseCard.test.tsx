@@ -1,65 +1,76 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import {
+  screen,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
 import { IncidentResponseCard } from './IncidentResponseCard';
-import { ThemeProvider } from '@material-ui/core/styles';
-import { lightTheme } from '@backstage/theme';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
+import {
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/frontend-test-utils';
 
-// Mock the configApiRef to provide the backend URL
-jest.mock('@backstage/core-plugin-api', () => ({
-  ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest.fn(),
-}));
-
-// Set up a mock fetch response
-const mockFetchResponse = (data, ok = true) => {
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      ok,
-      json: () => Promise.resolve(data),
-    })
-  );
+const mockFetchApi = {
+  fetch: jest.fn().mockResolvedValue({
+    ok: true,
+    json: jest.fn().mockResolvedValue({
+      kind: 'IncidentList',
+      total: 3,
+      ok: true,
+      code: 200,
+      items: [
+        { incident_id: '1', summary: 'Incident 1', severity: 'High' },
+        { incident_id: '2', summary: 'Incident 2', severity: 'Medium' },
+        { incident_id: '3', summary: 'Incident 3', severity: 'Low' },
+      ],
+    }),
+  }),
 };
 
-// Utility to render with providers
-const renderWithProviders = (ui) => {
-  render(
-    <ThemeProvider theme={lightTheme}>
-      {ui}
-    </ThemeProvider>
-  );
+const mockFailedFetchApi = {
+  fetch: jest.fn().mockResolvedValue({
+    ok: true,
+    json: jest.fn().mockResolvedValue({
+      kind: 'Error',
+      total: 3,
+      ok: false,
+      code: 500,
+      items: jest.fn().mockResolvedValue({}),
+    }),
+  }),
+};
+
+const mockConfigApi = {
+  getString: (key: string) => {
+    if (key === 'backend.baseUrl') {
+      return 'http://localhost:3000';
+    }
+    throw new Error(`Missing required config value at '${key}'`);
+  },
+  getOptionalString: (key: string) => {
+    if (key === 'app.baseUrl') {
+      return 'http://localhost:3000';
+    }
+    return undefined;
+  },
 };
 
 describe('<IncidentResponseCard />', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-
-    // Mock the config API
-    useApi.mockReturnValue({
-      getString: () => 'http://localhost:7000',
-    });
-  });
-
   it('displays loading spinner initially', async () => {
-    // Set up a fetch mock that delays response
-    global.fetch = jest.fn(() =>
-      new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({
-            ok: true,
-            json: () => Promise.resolve({ total: 0, items: [] }),
-          });
-        }, 100); // Delay of 100ms
-      })
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [configApiRef, mockConfigApi],
+          [fetchApiRef, mockFetchApi],
+        ]}
+      >
+        <IncidentResponseCard />
+      </TestApiProvider>,
     );
-  
-    await act(async () => {
-      renderWithProviders(<IncidentResponseCard />);
-    });
-  
     // Assert that the loading spinner is visible initially
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
-  
+
     // Wait for the fetch to complete and the loading spinner to disappear
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
@@ -67,66 +78,86 @@ describe('<IncidentResponseCard />', () => {
   });
 
   it('displays fetched data correctly', async () => {
-    mockFetchResponse({
-      total: 2,
-      items: [
-        { incident_id: '1', summary: 'Incident 1', severity: 'High' },
-        { incident_id: '2', summary: 'Incident 2', severity: 'Medium' },
-      ],
-    });
-
-    await act(async () => {
-      renderWithProviders(<IncidentResponseCard />);
-    });
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [configApiRef, mockConfigApi],
+          [fetchApiRef, mockFetchApi],
+        ]}
+      >
+        <IncidentResponseCard />
+      </TestApiProvider>,
+    );
 
     await waitFor(() => {
-      expect(screen.getByText('There are 2 Ongoing Incidents')).toBeInTheDocument();
+      expect(
+        screen.getByText('There are 3 Ongoing Incidents'),
+      ).toBeInTheDocument();
       expect(screen.getByText('Incident 1')).toBeInTheDocument();
       expect(screen.getByText('Incident 2')).toBeInTheDocument();
+      expect(screen.getByText('Incident 3')).toBeInTheDocument();
+
     });
   });
 
   it('displays error message if fetch fails', async () => {
-    mockFetchResponse({}, false);
-
-    await act(async () => {
-      renderWithProviders(<IncidentResponseCard />);
-    });
-
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [configApiRef, mockConfigApi],
+          [fetchApiRef, mockFailedFetchApi],
+        ]}
+      >
+        <IncidentResponseCard />
+      </TestApiProvider>,
+    );
     await waitFor(() => {
-      expect(screen.getByText(/An error occurred while fetching incidents/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/An error occurred while fetching incidents/i),
+      ).toBeInTheDocument();
     });
   });
 
   it('re-fetches data when Refresh button is clicked', async () => {
-    mockFetchResponse({
-      total: 1,
-      items: [{ incident_id: '1', summary: 'Incident 1', severity: 'High' }],
-    });
+    const mockFetchApiCopy = mockFetchApi as typeof mockFetchApi;
 
-    await act(async () => {
-      renderWithProviders(<IncidentResponseCard />);
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('There are 1 Ongoing Incidents')).toBeInTheDocument();
-    });
-
-    mockFetchResponse({
-      total: 3,
-      items: [
-        { incident_id: '1', summary: 'Incident 1', severity: 'High' },
-        { incident_id: '2', summary: 'Incident 2', severity: 'Medium' },
-        { incident_id: '3', summary: 'Incident 3', severity: 'Low' },
-      ],
-    });
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /refresh/i }));
-    });
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [configApiRef, mockConfigApi],
+          [fetchApiRef, mockFetchApiCopy],
+        ]}
+      >
+        <IncidentResponseCard />
+      </TestApiProvider>,
+    );
 
     await waitFor(() => {
-      expect(screen.getByText('There are 3 Ongoing Incidents')).toBeInTheDocument();
+      expect(
+        screen.getByText('There are 3 Ongoing Incidents'),
+      ).toBeInTheDocument();
+    });
+
+    mockFetchApiCopy.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({
+        kind: 'IncidentList',
+        total: 2,
+        ok: true,
+        code: 200,
+        items: [
+          { incident_id: '1', summary: 'Incident 1', severity: 'High' },
+          { incident_id: '2', summary: 'Incident 2', severity: 'Medium' },
+        ],
+      }),
+    });
+
+    await fireEvent.click(screen.getByRole('button', { name: /refresh/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('There are 2 Ongoing Incidents'),
+      ).toBeInTheDocument();
     });
   });
 });

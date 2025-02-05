@@ -26,8 +26,10 @@ export const IncidentResponseCard = () => {
   // Get Backstage objects
   const config = useApi(configApiRef);
   // Constants
-
-  const [webRCAResponse, setWebRCAResponse] = React.useState({});
+  // Make this a record any any to prevent type errors
+  const [webRCAResponse, setWebRCAResponse] = React.useState(
+    {} as any,
+  );
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
   const [selectedTab, setSelectedTab] = React.useState(0);
