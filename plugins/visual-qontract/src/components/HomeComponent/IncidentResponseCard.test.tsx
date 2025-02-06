@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  screen,
-  fireEvent,
-  waitFor,
-} from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { IncidentResponseCard } from './IncidentResponseCard';
 import { configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 import {
@@ -37,6 +33,28 @@ const mockFailedFetchApi = {
       ok: false,
       code: 500,
       items: jest.fn().mockResolvedValue({}),
+    }),
+  }),
+};
+
+const mockFailedWebRCABackendFetchApi = {
+  fetch: jest.fn().mockResolvedValue({
+    ok: false,
+    json: jest.fn().mockResolvedValue({
+      kind: 'response',
+      total: 3,
+      ok: true,
+      code: 200,
+      json: jest
+        .fn()
+        .mockResolvedValue({
+          error: { name: 'AuthenticationError', message: 'Illegal token' },
+          request: {
+            method: 'GET',
+            url: '/api/proxy/web-rca/incidents?status=ongoing&invalid=false&public=true&order_by=created_at%20desc',
+          },
+          response: { statusCode: 401 },
+        }),
     }),
   }),
 };
@@ -96,7 +114,6 @@ describe('<IncidentResponseCard />', () => {
       expect(screen.getByText('Incident 1')).toBeInTheDocument();
       expect(screen.getByText('Incident 2')).toBeInTheDocument();
       expect(screen.getByText('Incident 3')).toBeInTheDocument();
-
     });
   });
 
@@ -106,6 +123,24 @@ describe('<IncidentResponseCard />', () => {
         apis={[
           [configApiRef, mockConfigApi],
           [fetchApiRef, mockFailedFetchApi],
+        ]}
+      >
+        <IncidentResponseCard />
+      </TestApiProvider>,
+    );
+    await waitFor(() => {
+      expect(
+        screen.getByText(/An error occurred while fetching incidents/i),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('displays error message if talking to webrca backend fails ', async () => {
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [configApiRef, mockConfigApi],
+          [fetchApiRef, mockFailedWebRCABackendFetchApi],
         ]}
       >
         <IncidentResponseCard />
