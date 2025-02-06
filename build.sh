@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#set -ex
+
 # Check if the correct number of arguments are passed
 if [ "$#" -ne 2 ]; then
   echo "Usage: $0 <workspace> <plugin-dir-name>"
@@ -16,6 +18,9 @@ PLUGIN_DIR="plugins/$PLUGIN_DIR_NAME"
 # Create build directory for the plugin if it doesn't exist
 mkdir -p "build/$PLUGIN_DIR_NAME"
 
+# Delete any old builds that may be hanging around
+rm -rf $PLUGIN_DIR/dist*
+
 # Run the yarn command for the specified workspace
 yarn workspace "$WORKSPACE" export-dynamic
 
@@ -25,6 +30,9 @@ cd "$PLUGIN_DIR" || exit
 # Remove any existing .tgz files
 rm -f *.tgz
 
+# cd to the dist directory
+cd dist-dynamic || exit
+
 # Pack the npm package
 npm pack
 
@@ -32,10 +40,10 @@ npm pack
 TARBALL=$(ls *.tgz)
 
 # Move back to the root directory
-cd ../..
+cd ../../.. || exit
 
 # Move the generated .tgz file to the build subdirectory named after the plugin
-mv "$PLUGIN_DIR/$TARBALL" "build/$PLUGIN_DIR_NAME/"
+mv "$PLUGIN_DIR/dist-dynamic/$TARBALL" "build/$PLUGIN_DIR_NAME/"
 
 # Calculate the base64-encoded SHA256 checksum for the specific .tgz file generated
 SHA_SUM=$(shasum -a 256 "build/$PLUGIN_DIR_NAME/$TARBALL" | awk '{print $1}' | xxd -r -p | base64)

@@ -27,11 +27,11 @@ export const web_rca_backendPlugin = createBackendPlugin({
         );
         httpRouter.addAuthPolicy({
           path: '/health',
-          allow: 'unauthenticated',
+          allow: 'user-cookie',
         });
         httpRouter.addAuthPolicy({
           path: '/incidents',
-          allow: 'unauthenticated',
+          allow: 'user-cookie',
         });
       },
     });
