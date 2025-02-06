@@ -45,7 +45,7 @@ const mockFailedWebRCABackendFetchApi = {
       total: 3,
       ok: true,
       code: 200,
-      items: jest
+      json: jest
         .fn()
         .mockResolvedValue({
           error: { name: 'AuthenticationError', message: 'Illegal token' },
