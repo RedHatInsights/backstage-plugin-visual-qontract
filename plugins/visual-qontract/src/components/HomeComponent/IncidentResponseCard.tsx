@@ -47,7 +47,7 @@ export const IncidentResponseCard = () => {
         )}/api/plugin-web-rca-backend/incidents/public`,
       );
 
-      if (!response.ok) {
+      if (!response.ok ) {
         throw new Error(
           `Network response was not ok: ${response.status} ${response.statusText}`,
         );
@@ -55,7 +55,7 @@ export const IncidentResponseCard = () => {
 
       const json = await response.json();
 
-      if (json.kind === 'Error') {
+      if (json.kind === 'Error' || json.response.statusCode !== 200) {
         throw new Error('Something went wrong talking to WebRCA');
       }
 
