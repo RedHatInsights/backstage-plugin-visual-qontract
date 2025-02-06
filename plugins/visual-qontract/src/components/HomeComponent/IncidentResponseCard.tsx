@@ -55,7 +55,7 @@ export const IncidentResponseCard = () => {
 
       const json = await response.json();
 
-      if (json.kind === 'Error' || json.response.statusCode !== 200) {
+      if (json.kind === 'Error' || json.error) {
         throw new Error('Something went wrong talking to WebRCA');
       }
 
