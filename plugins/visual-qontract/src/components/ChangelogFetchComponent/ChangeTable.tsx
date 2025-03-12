@@ -12,7 +12,9 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
     [],
   );
   const [startDate, setStartDate] = useState('');
+  const [startTime, setStartTime] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
@@ -90,10 +92,10 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
     .filter(change =>
       searchText
         ? Object.values(change).some(value =>
-            Array.isArray(value)
-              ? value.join(' ').toLowerCase().includes(searchText.toLowerCase())
-              : String(value).toLowerCase().includes(searchText.toLowerCase()),
-          )
+          Array.isArray(value)
+            ? value.join(' ').toLowerCase().includes(searchText.toLowerCase())
+            : String(value).toLowerCase().includes(searchText.toLowerCase()),
+        )
         : true,
     );
 
@@ -116,8 +118,12 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
                 filters={filters}
                 setFilters={setFilters}
                 startDate={startDate}
+                startTime={startTime}
                 setStartDate={setStartDate}
+                setStartTime={setStartTime}
                 endDate={endDate}
+                endTime={endTime}
+                setEndTime={setEndTime}
                 setEndDate={setEndDate}
               />
             </Grid>
