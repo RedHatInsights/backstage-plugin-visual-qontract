@@ -20,7 +20,9 @@ export const FilterManager = ({
   const clearAllFilters = () => {
     setFilters([]);
     setStartDate('');
+    setStartTime('');
     setEndDate('');
+    setEndTime('');
   };
 
   const removeFilter = (filter: Filter) => {
@@ -48,6 +50,7 @@ export const FilterManager = ({
           <TextField
             id="start-date"
             fullWidth
+            required
             label="Start Date"
             type="date"
             value={startDate}
@@ -70,6 +73,7 @@ export const FilterManager = ({
           <TextField
             id="end-date"
             fullWidth
+            required
             label="End Date"
             type="date"
             value={endDate}

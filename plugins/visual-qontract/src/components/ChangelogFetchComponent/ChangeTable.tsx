@@ -23,7 +23,9 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
     const queryParams = new URLSearchParams(location.search);
     const filtersFromQuery = queryParams.get('filters');
     const startDateFromQuery = queryParams.get('startDate');
+    const startTimeFromQuery = queryParams.get('startTime');
     const endDateFromQuery = queryParams.get('endDate');
+    const endTimeFromQuery = queryParams.get('endTime');
 
     if (filtersFromQuery) {
       const parsedFilters = filtersFromQuery.split(',').map(filterStr => {
@@ -34,7 +36,9 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
     }
 
     if (startDateFromQuery) setStartDate(startDateFromQuery);
+    if (startTimeFromQuery) setStartTime(startTimeFromQuery);
     if (endDateFromQuery) setEndDate(endDateFromQuery);
+    if (endTimeFromQuery) setEndTime(endTimeFromQuery);
   }, [location.search]);
 
   useEffect(() => {
@@ -55,14 +59,26 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       queryParams.delete('startDate');
     }
 
+    if (startTime) {
+      queryParams.set('startTime', startTime);
+    } else {
+      queryParams.delete('startTime');
+    }
+
     if (endDate) {
       queryParams.set('endDate', endDate);
     } else {
       queryParams.delete('endDate');
     }
 
+    if (endTime) {
+      queryParams.set('endTime', startTime);
+    } else {
+      queryParams.delete('endTime');
+    }
+
     navigate({ search: queryParams.toString() }, { replace: true });
-  }, [filters, startDate, endDate, navigate, location.search]);
+  }, [filters, startDate, startTime, endDate, endTime, navigate, location.search]);
 
   const addFilter = (field: string, value: string) => {
     setFilters(prevFilters => [...prevFilters, { field, value }]);
@@ -77,15 +93,46 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       ),
     )
     .filter(change => {
+      if (!startDate && !endDate) {
+        return true;
+      }
+
       // Convert the change's date and the filter dates to Date objects
       //debugger
       const changeDate = new Date(change.merged_at);
-      const start = startDate ? new Date(startDate) : null;
-      const end = endDate ? new Date(endDate) : null;
+
+      const [startYear, startMonth, startDay] = startDate.split("-");
+      const [endYear, endMonth, endDay] = endDate.split("-");
+
+      //const start = startDate ? new Date(startDate) : null;
+      //const end = endDate ? new Date(endDate) : null;
+
+      const start = new Date(`${startMonth}/${startDay}/${startYear}`);
+      const end = new Date(`${endMonth}/-${endDay}/${endYear}`);
+
+      const [startHour, startMinute] = startTime.split(":").map(Number);
+      const [endHour, endMinute] = endTime.split(":").map(Number);
+
+      if (startTime) {
+        start.setHours(startHour, startMinute);
+      }
+      else {
+        start.setHours(0, 0);
+      }
+
+      if (endTime) {
+        end.setHours(endHour, endMinute);
+      }
+      else {
+        end.setHours(23, 59);
+      }
 
       // Check if the change date is within the range
-      const isWithinRange =
-        (!start || changeDate >= start) && (!end || changeDate <= end);
+      //const isWithinRange =
+      //  (!start || changeDate >= start) && (!end || changeDate <= end);
+
+      const isWithinRange = changeDate >= start && changeDate <= end;
+      console.log(changeDate, start, end);
 
       return isWithinRange;
     })
