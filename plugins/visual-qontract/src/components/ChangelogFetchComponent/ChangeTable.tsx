@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { FormControlLabel, FormGroup, Grid, Paper, Typography } from '@material-ui/core';
 import { Table } from '@backstage/core-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChangeTableProps } from './ChangeTypes';
 import { ColumnDefinitions } from './ColumnDefinitions';
 import { SearchBox } from './SearchBox';
 import { FilterManager } from './FilterManager';
+import { Switch } from '@material-ui/core';
 
 export const ChangeTable = ({ changes }: ChangeTableProps) => {
   const [filters, setFilters] = useState<{ field: string; value: string }[]>(
@@ -173,6 +174,11 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
                 setEndTime={setEndTime}
                 setEndDate={setEndDate}
               />
+            </Grid>
+            <Grid item>
+              <FormGroup>
+                <FormControlLabel control={<Switch />} label="UTC" />
+              </FormGroup>
             </Grid>
           </Grid>
         </Paper>
