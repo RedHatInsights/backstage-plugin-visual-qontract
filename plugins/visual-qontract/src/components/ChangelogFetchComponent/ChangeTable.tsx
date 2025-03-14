@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FormControlLabel, FormGroup, Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import { Table } from '@backstage/core-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChangeTableProps } from './ChangeTypes';
 import { ColumnDefinitions } from './ColumnDefinitions';
 import { SearchBox } from './SearchBox';
 import { FilterManager } from './FilterManager';
-import { Switch } from '@material-ui/core';
 
 export const ChangeTable = ({ changes }: ChangeTableProps) => {
   const [filters, setFilters] = useState<{ field: string; value: string }[]>(
@@ -17,6 +16,7 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
   const [endDate, setEndDate] = useState('');
   const [endTime, setEndTime] = useState('');
   const [searchText, setSearchText] = useState('');
+  const [showUtcTimestamps, setShowUtcTimestamps] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -94,6 +94,8 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       ),
     )
     .filter(change => {
+      // If the start and end dates are not specified,
+      // filter out no changelogs
       if (!startDate && !endDate) {
         return true;
       }
@@ -102,14 +104,14 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       //debugger
       const changeDate = new Date(change.merged_at);
 
+      // Date picker component emits datetime in YYYY-MM-DD format
+      // by default; to maintain the proper locale, convert this datetime
+      // format to MM-DD-YYYY
       const [startYear, startMonth, startDay] = startDate.split("-");
       const [endYear, endMonth, endDay] = endDate.split("-");
 
-      //const start = startDate ? new Date(startDate) : null;
-      //const end = endDate ? new Date(endDate) : null;
-
       const start = new Date(`${startMonth}/${startDay}/${startYear}`);
-      const end = new Date(`${endMonth}/-${endDay}/${endYear}`);
+      const end = new Date(`${endMonth}/${endDay}/${endYear}`);
 
       const [startHour, startMinute] = startTime.split(":").map(Number);
       const [endHour, endMinute] = endTime.split(":").map(Number);
@@ -128,14 +130,7 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
         end.setHours(23, 59);
       }
 
-      // Check if the change date is within the range
-      //const isWithinRange =
-      //  (!start || changeDate >= start) && (!end || changeDate <= end);
-
-      const isWithinRange = changeDate >= start && changeDate <= end;
-      console.log(changeDate, start, end);
-
-      return isWithinRange;
+      return changeDate >= start && changeDate <= end;
     })
     .filter(change =>
       searchText
@@ -173,16 +168,12 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
                 endTime={endTime}
                 setEndTime={setEndTime}
                 setEndDate={setEndDate}
+                setShowUtcTimestamps={setShowUtcTimestamps}
               />
-            </Grid>
-            <Grid item>
-              <FormGroup>
-                <FormControlLabel control={<Switch />} label="UTC" />
-              </FormGroup>
             </Grid>
           </Grid>
         </Paper>
-      </Grid>
+      </Grid >
       <Grid item xs={9}>
         <Table
           title="Changelog"
@@ -191,6 +182,6 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
           data={filteredData}
         />
       </Grid>
-    </Grid>
+    </Grid >
   );
 };
