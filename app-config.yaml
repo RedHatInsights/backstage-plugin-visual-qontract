@@ -69,7 +69,7 @@ proxy:
       changeOrigin: true
       secure: false
     '/inscope-resources/resources/images':
-      ;target: '${INSCOPE_RESOURCES_URL}'
+      target: '${INSCOPE_RESOURCES_URL}'
       changeOrigin: true
       secure: false
       credentials: dangerously-allow-unauthenticated
