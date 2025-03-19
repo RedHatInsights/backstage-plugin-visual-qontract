@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { Table } from '@backstage/core-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChangeTableProps } from './ChangeTypes';
@@ -78,8 +78,10 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       queryParams.delete('endTime');
     }
 
+    queryParams.set('utc', String(showUtcTimestamps));
+
     navigate({ search: queryParams.toString() }, { replace: true });
-  }, [filters, startDate, startTime, endDate, endTime, navigate, location.search]);
+  }, [filters, startDate, startTime, endDate, endTime, showUtcTimestamps, navigate, location.search]);
 
   const addFilter = (field: string, value: string) => {
     setFilters(prevFilters => [...prevFilters, { field, value }]);
@@ -176,9 +178,25 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       </Grid >
       <Grid item xs={9}>
         <Table
-          title="Changelog"
+          title={
+            <>
+              <Typography variant="h5" component="h2">Changelog</Typography>
+              <Grid style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                height: '100%',
+                display: 'flex',
+                marginRight: "20px"
+              }}
+                justifyContent="center" alignItems="center" xs={2}>
+                <Button variant={showUtcTimestamps ? "text" : "contained"} onClick={() => setShowUtcTimestamps(!showUtcTimestamps)}>Local</Button>
+                <Button variant={showUtcTimestamps ? "contained" : "text"} onClick={() => setShowUtcTimestamps(!showUtcTimestamps)}>UTC</Button>
+              </Grid>
+            </>
+          }
           options={{ search: false, paging: true, pageSize: 10 }}
-          columns={ColumnDefinitions(addFilter)}
+          columns={ColumnDefinitions(addFilter, showUtcTimestamps)}
           data={filteredData}
         />
       </Grid>
