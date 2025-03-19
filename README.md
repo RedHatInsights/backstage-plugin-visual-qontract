@@ -30,6 +30,10 @@ We also provide 3 pages that can extend the functionality of Janus IDP / RHDH.
 You'll need to have the `inscope-resources` pod running. This pod contains the resources like new stories used on the front page.
 
 Running the following script will download the images from the Quay repository and run the `inscope-resources` pod locally.
+
+> NOTE: You may need to log in to the Quay resource prior to pulling the image.
+`podman login quay`
+
 ```bash
 if ! podman container exists resources &> /dev/null; then
     echo "Starting resources container..."
@@ -56,6 +60,7 @@ data:
 ```
 
 Run the pod locally using the following script - this mounts the local `config-map.json` into the local pod to be served by the proxy.
+
 ```bash
 if ! podman container exists resources &> /dev/null; then
     echo "Starting resources container"
