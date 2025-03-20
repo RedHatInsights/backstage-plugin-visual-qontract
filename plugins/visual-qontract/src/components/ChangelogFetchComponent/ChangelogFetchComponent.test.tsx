@@ -99,8 +99,8 @@ describe('DenseTable component', () => {
     );
 
     // Set date range to only show items from Oct 26, 2024
-    const startDateInput = screen.getByLabelText('Start Date');
-    const endDateInput = screen.getByLabelText('End Date');
+    const startDateInput = screen.getByLabelText(/Start Date/i);
+    const endDateInput = screen.getByLabelText(/End Date/i);
     fireEvent.change(startDateInput, { target: { value: '2024-10-25' } });
     fireEvent.change(endDateInput, { target: { value: '2024-10-27' } });
 

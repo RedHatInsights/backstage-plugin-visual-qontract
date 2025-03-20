@@ -56,6 +56,10 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
 
     if (startDate) {
       queryParams.set('startDate', startDate);
+
+      if (!startTime) {
+        setStartTime("00:00");
+      }
     } else {
       queryParams.delete('startDate');
     }
@@ -68,17 +72,19 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
 
     if (endDate) {
       queryParams.set('endDate', endDate);
+
+      if (!endTime) {
+        setEndTime("23:59");
+      }
     } else {
       queryParams.delete('endDate');
     }
 
     if (endTime) {
-      queryParams.set('endTime', startTime);
+      queryParams.set('endTime', endTime);
     } else {
       queryParams.delete('endTime');
     }
-
-    queryParams.set('utc', String(showUtcTimestamps));
 
     navigate({ search: queryParams.toString() }, { replace: true });
   }, [filters, startDate, startTime, endDate, endTime, showUtcTimestamps, navigate, location.search]);
