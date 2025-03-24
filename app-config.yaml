@@ -72,7 +72,6 @@ proxy:
       target: '${INSCOPE_RESOURCES_URL}'
       changeOrigin: true
       secure: false
-      credentials: dangerously-allow-unauthenticated
     '/status':
       target: 'https://status.redhat.com/api/v2/summary.json'
       changeOrigin: true
