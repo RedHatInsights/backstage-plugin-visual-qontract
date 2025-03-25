@@ -176,7 +176,6 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
                 endTime={endTime}
                 setEndTime={setEndTime}
                 setEndDate={setEndDate}
-                setShowUtcTimestamps={setShowUtcTimestamps}
               />
             </Grid>
           </Grid>
@@ -196,8 +195,8 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
                 marginRight: "20px"
               }}
                 justifyContent="center" alignItems="center" xs={2}>
-                <Button variant={showUtcTimestamps ? "text" : "contained"} onClick={() => setShowUtcTimestamps(!showUtcTimestamps)}>Local</Button>
-                <Button variant={showUtcTimestamps ? "contained" : "text"} onClick={() => setShowUtcTimestamps(!showUtcTimestamps)}>UTC</Button>
+                <Button variant={showUtcTimestamps ? "text" : "contained"} onClick={() => setShowUtcTimestamps(false)}>Local</Button>
+                <Button variant={showUtcTimestamps ? "contained" : "text"} onClick={() => setShowUtcTimestamps(true)}>UTC</Button>
               </Grid>
             </>
           }

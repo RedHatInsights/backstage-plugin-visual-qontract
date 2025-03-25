@@ -15,8 +15,7 @@ export const FilterManager = ({
   endDate,
   setEndDate,
   endTime,
-  setEndTime,
-  setShowUtcTimestamps
+  setEndTime
 }) => {
   const clearAllFilters = () => {
     setFilters([]);
@@ -24,7 +23,6 @@ export const FilterManager = ({
     setStartTime('');
     setEndDate('');
     setEndTime('');
-    setShowUtcTimestamps(false);
   };
 
   const removeFilter = (filter: Filter) => {
