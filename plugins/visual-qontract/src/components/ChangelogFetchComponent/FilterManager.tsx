@@ -10,13 +10,19 @@ export const FilterManager = ({
   setFilters,
   startDate,
   setStartDate,
+  startTime,
+  setStartTime,
   endDate,
   setEndDate,
+  endTime,
+  setEndTime
 }) => {
   const clearAllFilters = () => {
     setFilters([]);
     setStartDate('');
+    setStartTime('');
     setEndDate('');
+    setEndTime('');
   };
 
   const removeFilter = (filter: Filter) => {
@@ -44,6 +50,7 @@ export const FilterManager = ({
           <TextField
             id="start-date"
             fullWidth
+            required
             label="Start Date"
             type="date"
             value={startDate}
@@ -53,12 +60,35 @@ export const FilterManager = ({
         </Grid>
         <Grid item xs={12}>
           <TextField
+            id="start-time"
+            fullWidth
+            label="Start Time"
+            type="time"
+            value={startTime}
+            onChange={e => setStartTime(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
             id="end-date"
             fullWidth
+            required
             label="End Date"
             type="date"
             value={endDate}
             onChange={e => setEndDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="end-time"
+            fullWidth
+            label="End Time"
+            type="time"
+            value={endTime}
+            onChange={e => setEndTime(e.target.value)}
             InputLabelProps={{ shrink: true }}
           />
         </Grid>

@@ -11,10 +11,10 @@ import { MergeQueueTable } from '../MergeQueues/MergeQueueTable';
 export function ChangelogComponent() {
   return (
     <Page themeId="tool">
-      <Header title="App Interface" subtitle="App Interface Change History and Merge Queues"/>
+      <Header title="App Interface" subtitle="App Interface Change History and Merge Queues" />
       <TabbedLayout>
         <TabbedLayout.Route path="/changelog" title="Changelog">
-            <ChangelogFetchComponent />
+          <ChangelogFetchComponent />
         </TabbedLayout.Route>
         <TabbedLayout.Route path="/self-serviceable" title="Self Service Queue">
           <QueueTable
@@ -31,7 +31,7 @@ export function ChangelogComponent() {
           />
         </TabbedLayout.Route>
         <TabbedLayout.Route path="/merge-queue" title="Merge Queue">
-          <MergeQueueTable/>
+          <MergeQueueTable />
         </TabbedLayout.Route>
       </TabbedLayout>
     </Page>

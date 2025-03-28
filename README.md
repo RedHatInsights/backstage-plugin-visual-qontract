@@ -29,50 +29,92 @@ We also provide 3 pages that can extend the functionality of Janus IDP / RHDH.
 ## Dependencies 
 You'll need to have the `inscope-resources` pod running. This pod contains the resources like new stories used on the front page.
 
+Running the following script will download the images from the Quay repository and run the `inscope-resources` pod locally.
+
+> NOTE: You may need to log in to the Quay resource prior to pulling the image.
+`podman login quay`
+
+```bash
+if ! podman container exists resources &> /dev/null; then
+    echo "Starting resources container..."
+    podman pull quay.io/app-sre/inscope-resources:latest
+    podman run -d --name resources \
+        --hostname resources \
+        -p 8000:8000 \
+        quay.io/app-sre/inscope-resources:latest
+fi
+```
+
+### Changelog Development
+In order to populate the changelog locally, [download the updated changelog from Openshift](https://console-openshift-console.apps.rosa.appsres09ue1.24ep.p3.openshiftapps.com/k8s/ns/backstage-stage/configmaps/change-log/yaml).
+
+Copy the contents from the `config-map.json` field into a separate JSON file named `config-map.json` in the root of the plugin directory.
+
+```yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+...
+data:
+  config-map.json: '<--- COPY THIS INTO CONFIG-MAP.JSON FILE --->'
+```
+
+Run the pod locally using the following script - this mounts the local `config-map.json` into the local pod to be served by the proxy.
+
+```bash
+if ! podman container exists resources &> /dev/null; then
+    echo "Starting resources container"
+    podman pull quay.io/app-sre/inscope-resources:latest
+    podman run -d --name resources \
+        --hostname resources \
+        -p 8000:8000 \
+        -v $(pwd)/config-map.json:/opt/app-root/src/resources/configmap/change-log.json:Z \
+        quay.io/app-sre/inscope-resources:latest
+fi
+```
+
 ## Configuration
 In `app-config.yaml` first add the proxies:
 
 ```yaml
 proxy:
   endpoints:
-    # Used for app-interface data from a qontract server
-    '/visual-qontract': ${QONTRACT_SERVER}
-    # Used to pull metrics from prometheus for SLO cards
+    '/visual-qontract': 
+      target: 'https://app-interface.apps.rosa.appsrep09ue1.03r5.p3.openshiftapps.com/'
     '/prometheus':
-      target: ${PROMETHEUS_SERVER}
+      target: "https://prometheus.crcs02ue1.devshift.net/api/v1/"
       allowedMethods: ['POST', 'GET']
       headers:
         Authorization: "Bearer ${PROMETHEUS_TOKEN}"
-    # inscope-resources pod. This proxy ensures backwards compatibility with the RHDH home page.
     '/developer-hub':
       target: 'http://localhost:8000'
       pathRewrite:
         '^/api/proxy/developer-hub': '/resources/json/homepage.json'
       changeOrigin: true
-      secure: false
-    # inscope-resources pod. provides resources for the home page.
     '/inscope-resources':
-      target: 'http://localhost:8000'
+      target: '${INSCOPE_RESOURCES_URL}'
       changeOrigin: true
       secure: false
-    # Status page URL
+    '/inscope-resources/resources/images':
+      target: '${INSCOPE_RESOURCES_URL}'
+      changeOrigin: true
+      secure: false
+      credentials: dangerously-allow-unauthenticated
     '/status':
-      target: ${STATUS_PAGE_URL}
+      target: 'https://status.redhat.com/api/v2/summary.json'
+      changeOrigin: true
+    '/status-board':
+      target: '${STATUS_BOARD_API}'
+      allowedHeaders: ['Authorization']
+    '/sso-redhat':
+      target: '${SSO_URL}'
+      allowedHeaders: ['Content-Type']
+    '/mergeq':
+      target: 'https://gitlab.cee.redhat.com/service/app-interface-output/-/raw/master/'
       changeOrigin: true
       secure: false
-    # Web RCA API backend
-    '/web-rca':
-      target: ${WEB_RCA_API}
-      allowedHeaders: ['Authorization']
-    # Status Board API
-    '/status-board':
-      target: ${STATUS_BOARD_API}
-      allowedHeaders: ['Authorization']
-    # SSO URL for OAuth flow
-    '/sso-redhat':
-      target: ${SSO_URL}
-      allowedHeaders: ['Content-Type']
 ```
+
 ## RHDH Dynamic Plugin Config
 Here's an example of how to configure all of the various plugins in your dynmaic plugins config for RHDH.
 

@@ -65,14 +65,13 @@ proxy:
         '^/api/proxy/developer-hub': '/resources/json/homepage.json'
       changeOrigin: true
     '/inscope-resources':
-      target: 'https://inscope.corp.stage.redhat.com/api/proxy/inscope-resources'
+      target: '${INSCOPE_RESOURCES_URL}'
       changeOrigin: true
       secure: false
     '/inscope-resources/resources/images':
-      target: 'https://inscope.corp.stage.redhat.com/api/proxy/inscope-resources'
+      target: '${INSCOPE_RESOURCES_URL}'
       changeOrigin: true
       secure: false
-      credentials: dangerously-allow-unauthenticated
     '/status':
       target: 'https://status.redhat.com/api/v2/summary.json'
       changeOrigin: true
