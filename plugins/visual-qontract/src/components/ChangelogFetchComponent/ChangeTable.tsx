@@ -12,13 +12,45 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
     [],
   );
   const [startDate, setStartDate] = useState('');
+  const [utcStartDate, setUtcStartDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [utcEndDate, setUtcEndDate] = useState('');
   const [endTime, setEndTime] = useState('');
   const [searchText, setSearchText] = useState('');
   const [showUtcTimestamps, setShowUtcTimestamps] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  function retrieveFilteringBounds() {
+    // Date picker component emits datetime in YYYY-MM-DD format
+    // by default; to maintain the proper locale, convert this datetime
+    // format to MM-DD-YYYY
+    const [startYear, startMonth, startDay] = startDate.split("-");
+    const [endYear, endMonth, endDay] = endDate.split("-");
+
+    const start = new Date(`${startMonth}/${startDay}/${startYear}`);
+    const end = new Date(`${endMonth}/${endDay}/${endYear}`);
+
+    const [startHour, startMinute] = startTime.split(":").map(Number);
+    const [endHour, endMinute] = endTime.split(":").map(Number);
+
+    if (startTime) {
+      start.setHours(startHour, startMinute);
+    }
+    else {
+      start.setHours(0, 0);
+    }
+
+    if (endTime) {
+      end.setHours(endHour, endMinute);
+    }
+    else {
+      end.setHours(23, 59);
+    }
+
+    return { start, end };
+  }
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -87,7 +119,20 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
     }
 
     navigate({ search: queryParams.toString() }, { replace: true });
-  }, [filters, startDate, startTime, endDate, endTime, showUtcTimestamps, navigate, location.search]);
+  }, [filters, startDate, startTime, endDate, endTime, navigate, location.search]);
+
+  useEffect(() => {
+    if (!startDate && !endDate) {
+      return;
+    }
+
+    if (showUtcTimestamps) {
+      const { start, end } = retrieveFilteringBounds();
+
+      setUtcStartDate(start.toISOString());
+      setUtcEndDate(end.toISOString());
+    }
+  }, [showUtcTimestamps])
 
   const addFilter = (field: string, value: string) => {
     setFilters(prevFilters => [...prevFilters, { field, value }]);
@@ -102,6 +147,18 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       ),
     )
     .filter(change => {
+      if (showUtcTimestamps) {
+        if (!utcStartDate && !utcEndDate) {
+          return true;
+        }
+
+        // Convert the change's date and the filter dates to Date objects
+        //debugger
+        const changeDate = new Date(change.merged_at);
+
+        return changeDate >= new Date(utcStartDate) && changeDate <= new Date(utcEndDate);
+      }
+
       // If the start and end dates are not specified,
       // filter out no changelogs
       if (!startDate && !endDate) {
@@ -111,33 +168,7 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       // Convert the change's date and the filter dates to Date objects
       //debugger
       const changeDate = new Date(change.merged_at);
-
-      // Date picker component emits datetime in YYYY-MM-DD format
-      // by default; to maintain the proper locale, convert this datetime
-      // format to MM-DD-YYYY
-      const [startYear, startMonth, startDay] = startDate.split("-");
-      const [endYear, endMonth, endDay] = endDate.split("-");
-
-      const start = new Date(`${startMonth}/${startDay}/${startYear}`);
-      const end = new Date(`${endMonth}/${endDay}/${endYear}`);
-
-      const [startHour, startMinute] = startTime.split(":").map(Number);
-      const [endHour, endMinute] = endTime.split(":").map(Number);
-
-      if (startTime) {
-        start.setHours(startHour, startMinute);
-      }
-      else {
-        start.setHours(0, 0);
-      }
-
-      if (endTime) {
-        end.setHours(endHour, endMinute);
-      }
-      else {
-        end.setHours(23, 59);
-      }
-
+      const { start, end } = retrieveFilteringBounds();
       return changeDate >= start && changeDate <= end;
     })
     .filter(change =>
@@ -169,13 +200,18 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
                 filters={filters}
                 setFilters={setFilters}
                 startDate={startDate}
+                utcStartDate={utcStartDate}
                 startTime={startTime}
                 setStartDate={setStartDate}
+                setUtcStartDate={setUtcStartDate}
                 setStartTime={setStartTime}
                 endDate={endDate}
+                utcEndDate={utcEndDate}
                 endTime={endTime}
                 setEndTime={setEndTime}
                 setEndDate={setEndDate}
+                setUtcEndDate={setUtcEndDate}
+                showUtcTimestamps={showUtcTimestamps}
               />
             </Grid>
           </Grid>
