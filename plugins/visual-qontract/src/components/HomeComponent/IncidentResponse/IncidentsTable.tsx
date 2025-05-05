@@ -17,12 +17,12 @@ import { ExternalCoordinationButton } from './ExternalCoordinationButton';
 import React from 'react';
 
 // The component that displays the incidents in a table
-export const IncidentsTable = ({ incidents }: { incidents: any }) => {
+export const IncidentsTable = ({ incidents, maxRows }: { incidents: any, maxRows: number }) => {
   if (incidents?.length === 0) {
     return null;
   }
 
-  const rowsPerPage = 5;
+  const rowsPerPage = maxRows || 5;
   const [page, setPage] = React.useState(0);
   const [maxPage, setMaxPage] = React.useState(0);
   const [visibleRows, setVisibleRows] = React.useState([]);

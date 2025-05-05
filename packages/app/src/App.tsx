@@ -42,6 +42,7 @@ import {
   EntityQontractHomePageComponent,
   EntityQontractNewsComponent,
   ChangelogPageComponent,
+  IncidentResponseComponent,
 } from '@redhatinsights/backstage-plugin-visual-qontract';
 
 const app = createApp({
@@ -70,8 +71,11 @@ const app = createApp({
 
 const routes = (
   <FlatRoutes>
-    <Route path="/" element={<Navigate to="catalog" />} />
+    <Route path="/" element={<EntityQontractHomePageComponent />} />
     <Route path="/home" element={<EntityQontractHomePageComponent />} />
+    <Route
+      path="/incident-response"
+      element={<IncidentResponseComponent />}/>
     <Route path="/news" element={<EntityQontractNewsComponent />} />
     <Route path="/changelog" element={<ChangelogPageComponent />} />
     <Route path="/catalog" element={<CatalogIndexPage />} />

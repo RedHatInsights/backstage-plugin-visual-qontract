@@ -6,6 +6,7 @@ import Router from 'express-promise-router';
 import { lookupProduct } from './ocm/status-board';
 import { refresh } from './ocm/token';
 import { listIncidents, listPublicIncidents } from './ocm/web-rca';
+import { c } from 'msw/lib/glossary-2792c6da';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -88,6 +89,8 @@ export async function createRouter(
       response.status(500).json({ error: 'Failed to retrieve access token' });
       return;
     }
+
+    console.log('default_token: ' + default_token);
 
     let incident_list = await listPublicIncidents(config.getString('backend.baseUrl'), default_token);
     response.status(200);

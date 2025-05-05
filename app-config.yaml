@@ -4,7 +4,6 @@ app:
 
 # Web RCA Config
 ocm:
-  webRcaUrl: https://web-rca.stage.devshift.net
   webRcaUIUrl: https://web-rca.stage.devshift.net
   clientId: ${WEB_RCA_CLIENT_ID}
   clientSecret: ${WEB_RCA_CLIENT_SECRET}
@@ -67,11 +66,12 @@ proxy:
     '/inscope-resources':
       target: '${INSCOPE_RESOURCES_URL}'
       changeOrigin: true
-      secure: false
+      credentials: dangerously-allow-unauthenticated
     '/inscope-resources/resources/images':
       target: '${INSCOPE_RESOURCES_URL}'
       changeOrigin: true
       secure: false
+      credentials: dangerously-allow-unauthenticated
     '/status':
       target: 'https://status.redhat.com/api/v2/summary.json'
       changeOrigin: true
@@ -81,10 +81,17 @@ proxy:
     '/sso-redhat':
       target: '${SSO_URL}'
       allowedHeaders: ['Content-Type']
+      credentials: dangerously-allow-unauthenticated
+      secure: false
     '/mergeq':
       target: 'https://gitlab.cee.redhat.com/service/app-interface-output/-/raw/master/'
       changeOrigin: true
       secure: false
+    '/web-rca':
+      target: 'https://api.stage.openshift.com/api/web-rca/v1'
+      allowedHeaders: ['Authorization']
+      credentials: dangerously-allow-unauthenticated
+
 
 
 
