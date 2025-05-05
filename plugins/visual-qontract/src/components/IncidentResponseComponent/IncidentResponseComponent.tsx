@@ -21,11 +21,9 @@ const LeftMenu = () => {
             <CardContent>
               <Grid container direction="column">
                 <Grid item>
-                  <Typography variant="body1">
                     <Link target="blank" href="/docs/default/component/incident-management">
                       Incident Management & Response Guide
                     </Link>
-                  </Typography>
                 </Grid>
                 <Grid item>
                     <Link target="blank" href="https://web-rca.devshift.net/new">
@@ -50,6 +48,11 @@ const LeftMenu = () => {
                     #hcm-incidents-announce on Slack
                   </Link>
                 </Grid>
+                <Grid item>
+                    <Link target="blank" href="/create/templates/default/webrca-user-onboarding">
+                        Web RCA User Onboarding Template
+                    </Link>
+                </Grid>
               </Grid>
             </CardContent>
           </Card>
@@ -64,7 +67,7 @@ const RightContent = () => {
     <Grid item xs={9}>
       <Grid container direction="column">
         <Grid item xs={12}>
-          <IncidentResponseCard maxRows={15}/>
+          <IncidentResponseCard maxRows={10}/>
         </Grid>
       </Grid>
     </Grid>
