@@ -89,7 +89,6 @@ export async function createRouter(
       return;
     }
 
-
     let incident_list = await listPublicIncidents(config.getString('backend.baseUrl'), default_token);
     response.status(200);
 
