@@ -134,6 +134,107 @@ describe('ChangelogFetch component', () => {
     expect(screen.getByText("Jan 1, 2025, 6:25:11 AM UTC")).toBeInTheDocument();
   });
 
+  it('should hide time filtering fields and update date filtering fields to text inputs when UTC mode is enabled', () => {
+    render(
+      <MemoryRouter>
+        <ChangeTable changes={mockChangelogData} />
+      </MemoryRouter>,
+    );
+
+    let startDateInput;
+    let endDateInput;
+
+    startDateInput = screen.getByLabelText(/Start Date/i);
+    endDateInput = screen.getByLabelText(/End Date/i);
+
+    // Start and end time inputs should be displayed
+    // on the screen by default
+    expect(screen.queryByText(/Start Time/)).toBeInTheDocument();
+    expect(screen.queryByText(/End Time/)).toBeInTheDocument();
+
+    // Start and end fields should have HTML5 date
+    // input types
+    expect(startDateInput.getAttribute("type")).toBe("date");
+    expect(endDateInput.getAttribute("type")).toBe("date");
+
+    // Toggle on UTC mode
+    const utcButton = screen.getByText("UTC");
+    fireEvent.click(utcButton);
+
+    // Start and end date inputs should be hidden
+    expect(screen.queryByText(/Start Time/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/End Time/)).not.toBeInTheDocument();
+
+    startDateInput = screen.getByLabelText(/Start Date/i);
+    endDateInput = screen.getByLabelText(/End Date/i);
+
+    // Start and end fields should have default text
+    // input types
+    expect(startDateInput.getAttribute("type")).toBe("text");
+    expect(endDateInput.getAttribute("type")).toBe("text");
+
+    const localButton = screen.getByText("Local");
+    fireEvent.click(localButton);
+
+    startDateInput = screen.getByLabelText(/Start Date/i);
+    endDateInput = screen.getByLabelText(/End Date/i);
+
+    // Start and end fields should revert back to
+    // HTML5 date input types
+    expect(startDateInput.getAttribute("type")).toBe("date");
+    expect(endDateInput.getAttribute("type")).toBe("date");
+
+    // Start and end time fields should reppear on screen
+    expect(screen.queryByText(/Start Time/)).toBeInTheDocument();
+    expect(screen.queryByText(/End Time/)).toBeInTheDocument();
+  });
+
+  it('should filter changelog entries in UTC mode', () => {
+    render(
+      <MemoryRouter>
+        <ChangeTable changes={mockChangelogData} />
+      </MemoryRouter>,
+    );
+
+    const utcButton = screen.getByText("UTC");
+    fireEvent.click(utcButton);
+
+    let startDateInput;
+    let endDateInput;
+
+    startDateInput = screen.getByLabelText(/Start Date/i);
+    endDateInput = screen.getByLabelText(/End Date/i);
+
+    fireEvent.change(startDateInput, { target: { value: "2025-01-01T04:30:00.000Z" } });
+    fireEvent.change(endDateInput, { target: { value: "2025-01-02T01:30:00.000Z" } });
+
+    expect(screen.queryByText('CHANGELOG_DATA_1')).toBeInTheDocument();
+    expect(screen.queryByText('CHANGELOG_DATA_2')).toBeInTheDocument();
+    expect(screen.queryByText('CHANGELOG_DATA_3')).toBeInTheDocument();
+    expect(screen.queryByText('CHANGELOG_DATA_4')).not.toBeInTheDocument();
+
+    fireEvent.change(endDateInput, { target: { value: "2025-01-02T05:00:00.000Z" } });
+    expect(screen.queryByText('CHANGELOG_DATA_4')).toBeInTheDocument();
+
+    // When switching to local mode from UTC mode, the datetime
+    // data should persist and be displayed in the start/end
+    // date and start/end time fields
+    const localButton = screen.getByText("Local");
+    fireEvent.click(localButton);
+
+    startDateInput = screen.getByLabelText(/Start Date/i);
+    endDateInput = screen.getByLabelText(/End Date/i);
+
+    const startTimeInput = screen.getByLabelText(/Start Time/);
+    const endTimeInput = screen.getByLabelText(/End Time/);
+
+    expect(startDateInput.getAttribute("value")).toBe("2025-01-01");
+    expect(endDateInput.getAttribute("value")).toBe("2025-01-01");
+
+    expect(startTimeInput.getAttribute("value")).toBe("00:30");
+    expect(endTimeInput.getAttribute("value")).toBe("21:30");
+  });
+
   it('shows instructional text when no filters are applied', () => {
     render(
       <MemoryRouter>
