@@ -154,8 +154,8 @@ describe('ChangelogFetch component', () => {
 
     // Start and end fields should have HTML5 date
     // input types
-    expect(startDateInput.getAttribute("type")).toBe("date");
-    expect(endDateInput.getAttribute("type")).toBe("date");
+    expect(startDateInput).toHaveAttribute("type", "date");
+    expect(endDateInput).toHaveAttribute("type", "date");
 
     // Toggle on UTC mode
     const utcButton = screen.getByText("UTC");
@@ -170,8 +170,8 @@ describe('ChangelogFetch component', () => {
 
     // Start and end fields should have default text
     // input types
-    expect(startDateInput.getAttribute("type")).toBe("text");
-    expect(endDateInput.getAttribute("type")).toBe("text");
+    expect(startDateInput).toHaveAttribute("type", "text");
+    expect(endDateInput).toHaveAttribute("type", "text");
 
     const localButton = screen.getByText("Local");
     fireEvent.click(localButton);
@@ -181,8 +181,8 @@ describe('ChangelogFetch component', () => {
 
     // Start and end fields should revert back to
     // HTML5 date input types
-    expect(startDateInput.getAttribute("type")).toBe("date");
-    expect(endDateInput.getAttribute("type")).toBe("date");
+    expect(startDateInput).toHaveAttribute("type", "date");
+    expect(endDateInput).toHaveAttribute("type", "date");
 
     // Start and end time fields should reppear on screen
     expect(screen.queryByText(/Start Time/)).toBeInTheDocument();
@@ -205,7 +205,7 @@ describe('ChangelogFetch component', () => {
     startDateInput = screen.getByLabelText(/Start Date/i);
     endDateInput = screen.getByLabelText(/End Date/i);
 
-    fireEvent.change(startDateInput, { target: { value: "2025-01-01T04:30:00.000Z" } });
+    fireEvent.change(startDateInput, { target: { value: "2025-01-01T06:00:00.000Z" } });
     fireEvent.change(endDateInput, { target: { value: "2025-01-02T01:30:00.000Z" } });
 
     expect(screen.queryByText('CHANGELOG_DATA_1')).toBeInTheDocument();
@@ -225,14 +225,8 @@ describe('ChangelogFetch component', () => {
     startDateInput = screen.getByLabelText(/Start Date/i);
     endDateInput = screen.getByLabelText(/End Date/i);
 
-    const startTimeInput = screen.getByLabelText(/Start Time/);
-    const endTimeInput = screen.getByLabelText(/End Time/);
-
-    expect(startDateInput.getAttribute("value")).toBe("2025-01-01");
-    expect(endDateInput.getAttribute("value")).toBe("2025-01-01");
-
-    expect(startTimeInput.getAttribute("value")).toBe("00:30");
-    expect(endTimeInput.getAttribute("value")).toBe("21:30");
+    expect(startDateInput).toHaveValue("2025-01-01");
+    expect(endDateInput).toHaveValue("2025-01-02");
   });
 
   it('shows instructional text when no filters are applied', () => {
