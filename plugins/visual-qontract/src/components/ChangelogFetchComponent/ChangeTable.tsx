@@ -96,6 +96,25 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       queryParams.delete('startDate');
     }
 
+    if (utcStartDate) {
+      const utcDate = new Date(utcStartDate);
+
+      // If the entered UTC start date is invalid, do not update
+      // the local start date field or the associated
+      // search parameters
+      if (!isNaN(utcDate.getTime())) {
+        const formattedDate = `${utcDate.getFullYear()}-${String(utcDate.getMonth() + 1).padStart(2, '0')}-${String(utcDate.getDate()).padStart(2, '0')}`;
+        const formattedTime = `${String(utcDate.getHours()).padStart(2, '0')}:${String(utcDate.getMinutes()).padStart(2, '0')}`;
+
+        setStartDate(formattedDate);
+        setStartTime(formattedTime);
+      }
+    }
+    else {
+      queryParams.delete('startDate');
+      queryParams.delete('startTime');
+    }
+
     if (startTime) {
       queryParams.set('startTime', startTime);
     } else {
@@ -112,6 +131,27 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
       queryParams.delete('endDate');
     }
 
+    if (utcEndDate) {
+      const utcDate = new Date(utcEndDate);
+
+      // If the entered UTC end date is invalid, do not
+      // update the local end date field oe the associated
+      // search parameters
+      if (!isNaN(utcDate.getTime())) {
+
+        const formattedDate = `${utcDate.getFullYear()}-${String(utcDate.getMonth() + 1).padStart(2, '0')}-${String(utcDate.getDate()).padStart(2, '0')}`;
+        const formattedTime = `${String(utcDate.getHours()).padStart(2, '0')}:${String(utcDate.getMinutes()).padStart(2, '0')}`;
+
+        setEndDate(formattedDate);
+        setEndTime(formattedTime);
+      }
+    }
+    else {
+      queryParams.delete('endDate');
+      queryParams.delete('endTime');
+    }
+
+
     if (endTime) {
       queryParams.set('endTime', endTime);
     } else {
@@ -119,7 +159,7 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
     }
 
     navigate({ search: queryParams.toString() }, { replace: true });
-  }, [filters, startDate, startTime, endDate, endTime, navigate, location.search]);
+  }, [filters, startDate, utcStartDate, startTime, endDate, utcEndDate, endTime, navigate, location.search]);
 
   useEffect(() => {
     if (!startDate && !endDate) {
@@ -152,10 +192,7 @@ export const ChangeTable = ({ changes }: ChangeTableProps) => {
           return true;
         }
 
-        // Convert the change's date and the filter dates to Date objects
-        //debugger
         const changeDate = new Date(change.merged_at);
-
         return changeDate >= new Date(utcStartDate) && changeDate <= new Date(utcEndDate);
       }
 
