@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import CloseOutlined from '@material-ui/icons/CloseOutlined';
 import { v4 as uuidv4 } from 'uuid';
-import { useApi, configApiRef, identityApiRef } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, identityApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 import { MarkdownContent } from '@backstage/core-components';
 
 const FloatingChat = () => {
@@ -25,12 +25,13 @@ const FloatingChat = () => {
   const chatEndRef = useRef(null);
   const config = useApi(configApiRef);
   const identity = useApi(identityApiRef);
+  const fetchApi = useApi(fetchApiRef);
   const backendUrl = config.getString('backend.baseUrl');
   const theme = useTheme();
 
   useEffect(() => {
     const fetchAssistantId = async () => {
-      const res = await fetch(
+      const res = await fetchApi.fetch(
         `${backendUrl}/api/proxy/tangerine/api/assistants`,
       );
       const assistants = await res.json();
@@ -67,7 +68,7 @@ const FloatingChat = () => {
     setInput('');
     setLoading(true);
 
-    const response = await fetch(
+    const response = await fetchApi.fetch(
       `${backendUrl}/api/proxy/tangerine/api/assistants/${assistantId}/chat`,
       {
         method: 'POST',
@@ -152,6 +153,7 @@ const FloatingChat = () => {
             zIndex: 1300,
             bgcolor: theme.palette.background.paper,
             color: theme.palette.text.primary,
+            border: `1px solid ${theme.palette.divider}`,
           }}
         >
           <Box sx={{ p: 1, display: 'flex', justifyContent: 'space-between' }}>
