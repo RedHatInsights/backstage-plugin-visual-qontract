@@ -105,3 +105,12 @@ export const ChangelogPageComponent = visualQontractPlugin.provide(
     }
   }),
 );
+
+export const IncidentResponseComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'IncidentResponseComponent',
+    component: {
+      lazy: () => import('./components/IncidentResponseComponent').then(m => m.IncidentResponseComponent),
+    }
+  }),
+);
