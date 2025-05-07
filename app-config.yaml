@@ -91,6 +91,10 @@ proxy:
       target: 'https://api.stage.openshift.com/api/web-rca/v1'
       allowedHeaders: ['Authorization']
       credentials: dangerously-allow-unauthenticated
+    '/tangerine':
+      target: 'http://localhost:8080'
+      allowedHeaders: ['Authorization']
+      credentials: dangerously-allow-unauthenticated
 
 
 

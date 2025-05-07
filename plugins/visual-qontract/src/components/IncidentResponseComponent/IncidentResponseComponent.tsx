@@ -10,6 +10,7 @@ import {
   Typography,
   Link,
 } from '@material-ui/core';
+import FloatingChat from './FloatingChat';
 
 const LeftMenu = () => {
   return (
@@ -82,6 +83,7 @@ export const IncidentResponseComponent = () => {
         <Grid container direction="row">
           <LeftMenu />
           <RightContent />
+          <FloatingChat />
         </Grid>
       </Content>
     </Page>

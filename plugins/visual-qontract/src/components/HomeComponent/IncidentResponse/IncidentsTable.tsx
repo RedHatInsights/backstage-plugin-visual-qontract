@@ -9,15 +9,26 @@ import {
   Link,
   TableFooter,
   TablePagination,
+  Button,
+  Card,
+  CardContent,
+  Modal,
 } from '@material-ui/core';
 import TablePaginationActions from '@material-ui/core/TablePagination/TablePaginationActions';
 import OpenInNew from '@material-ui/icons/OpenInNew';
 import { useEffect } from 'react';
 import { ExternalCoordinationButton } from './ExternalCoordinationButton';
 import React from 'react';
+import { IncidentModal } from './IncidentModal';
 
 // The component that displays the incidents in a table
-export const IncidentsTable = ({ incidents, maxRows }: { incidents: any, maxRows: number }) => {
+export const IncidentsTable = ({
+  incidents,
+  maxRows,
+}: {
+  incidents: any;
+  maxRows: number;
+}) => {
   if (incidents?.length === 0) {
     return null;
   }
@@ -61,12 +72,15 @@ export const IncidentsTable = ({ incidents, maxRows }: { incidents: any, maxRows
             <TableCell variant="head" align="center">
               <Typography variant="button">Coordination</Typography>
             </TableCell>
+            <TableCell variant="head" align="center">
+              <Typography variant="button">AI Summary</Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {visibleRows.map((incident, index) => (
             <TableRow key={index}>
-              <TableCell>
+              <TableCell align="center">
                 <Link
                   href={`https://web-rca.devshift.net/incident/${incident.incident_id}`}
                   target="_blank"
@@ -74,14 +88,17 @@ export const IncidentsTable = ({ incidents, maxRows }: { incidents: any, maxRows
                   <OpenInNew />
                 </Link>
               </TableCell>
-              <TableCell style={{ maxWidth: '30em' }}>
+              <TableCell  align="center" style={{ maxWidth: '30em' }}>
                 {incident.summary}
               </TableCell>
-              <TableCell>{incident.severity}</TableCell>
-              <TableCell>
+              <TableCell align="center">{incident.severity}</TableCell>
+              <TableCell align="center">
                 {incident.external_coordination?.map((link, linkIndex) => (
                   <ExternalCoordinationButton link={link} key={linkIndex} />
                 ))}
+              </TableCell>
+              <TableCell align="center">
+                <IncidentModal incident={incident} />
               </TableCell>
             </TableRow>
           ))}
