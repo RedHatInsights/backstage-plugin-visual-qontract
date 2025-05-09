@@ -10,18 +10,25 @@ export const FilterManager = ({
   setFilters,
   startDate,
   setStartDate,
+  utcStartDate,
+  setUtcStartDate,
   startTime,
   setStartTime,
   endDate,
   setEndDate,
+  utcEndDate,
+  setUtcEndDate,
   endTime,
-  setEndTime
+  setEndTime,
+  showUtcTimestamps
 }) => {
   const clearAllFilters = () => {
     setFilters([]);
     setStartDate('');
+    setUtcStartDate('');
     setStartTime('');
     setEndDate('');
+    setUtcEndDate('');
     setEndTime('');
   };
 
@@ -46,52 +53,84 @@ export const FilterManager = ({
         )}
       </Box>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            id="start-date"
-            fullWidth
-            required
-            label="Start Date"
-            type="date"
-            value={startDate}
-            onChange={e => setStartDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            id="start-time"
-            fullWidth
-            label="Start Time"
-            type="time"
-            value={startTime}
-            onChange={e => setStartTime(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            id="end-date"
-            fullWidth
-            required
-            label="End Date"
-            type="date"
-            value={endDate}
-            onChange={e => setEndDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            id="end-time"
-            fullWidth
-            label="End Time"
-            type="time"
-            value={endTime}
-            onChange={e => setEndTime(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
+        {!showUtcTimestamps &&
+          <>
+            <Grid item xs={12}>
+              <TextField
+                id="start-date"
+                fullWidth
+                required
+                label="Start Date"
+                type="date"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id="start-time"
+                fullWidth
+                label="Start Time"
+                type="time"
+                value={startTime}
+                onChange={e => setStartTime(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id="end-date"
+                fullWidth
+                required
+                label="End Date"
+                type="date"
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id="end-time"
+                fullWidth
+                label="End Time"
+                type="time"
+                value={endTime}
+                onChange={e => setEndTime(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+          </>
+        }
+        {showUtcTimestamps &&
+          <>
+            <Grid item xs={12}>
+              <TextField
+                id="start-date"
+                fullWidth
+                required
+                label="Start Date"
+                type="text"
+                value={utcStartDate}
+                onChange={e => setUtcStartDate(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id="end-date"
+                fullWidth
+                required
+                label="End Date"
+                type="text"
+                value={utcEndDate}
+                onChange={e => setUtcEndDate(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+          </>
+        }
         {filters.length > 0 && (
           <Grid item xs={12}>
             <Typography variant="button">Active Filters</Typography>
@@ -111,6 +150,6 @@ export const FilterManager = ({
           </Grid>
         )}
       </Grid>
-    </Box>
+    </Box >
   );
 };
