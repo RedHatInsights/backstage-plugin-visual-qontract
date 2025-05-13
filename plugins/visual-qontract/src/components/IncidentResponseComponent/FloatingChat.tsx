@@ -11,14 +11,26 @@ import {
 } from '@mui/material';
 import CloseOutlined from '@material-ui/icons/CloseOutlined';
 import { v4 as uuidv4 } from 'uuid';
-import { useApi, configApiRef, identityApiRef, fetchApiRef } from '@backstage/core-plugin-api';
+import {
+  useApi,
+  configApiRef,
+  identityApiRef,
+  fetchApiRef,
+} from '@backstage/core-plugin-api';
 import { MarkdownContent } from '@backstage/core-components';
 
 const FloatingChat = () => {
-  const [open, setOpen] = useState(false);
+  const greetingMessage = [
+    {
+      sender: 'bot',
+      text: `Hello! 👋 I'm the Convo Incident Management Assistant. I can answer questions about incident management and response including process, workflow, tools, roles, and more. How can I help?`,
+    },
+  ];
+  const [open, setOpen] = useState(true);
   const [assistantId, setAssistantId] = useState(null);
+  const [showCloseButton, setShowCloseButton] = useState(false);
   const [sessionId, setSessionId] = useState(uuidv4());
-  const [conversation, setConversation] = useState([]);
+  const [conversation, setConversation] = useState(greetingMessage);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('You');
@@ -60,10 +72,7 @@ const FloatingChat = () => {
     if (!input.trim() || loading) return;
 
     const interactionId = uuidv4();
-    const newConversation = [
-      ...conversation,
-      { sender: 'human', text: input },
-    ];
+    const newConversation = [...conversation, { sender: 'human', text: input }];
     setConversation(newConversation);
     setInput('');
     setLoading(true);
@@ -88,7 +97,10 @@ const FloatingChat = () => {
     const reader = response.body.getReader();
     const decoder = new TextDecoder('utf-8');
     let botContent = '';
-    setConversation(prev => [...prev, { sender: 'bot', text: '', interactionId }]);
+    setConversation(prev => [
+      ...prev,
+      { sender: 'bot', text: '', interactionId },
+    ]);
 
     let buffer = '';
 
@@ -128,6 +140,23 @@ const FloatingChat = () => {
     setSessionId(uuidv4());
   };
 
+  const CloseButton = () => {
+    if (showCloseButton) {
+      return (
+        <IconButton
+          size="small"
+          onClick={() => {
+            setOpen(false);
+            clearConversation();
+          }}
+        >
+          <CloseOutlined fontSize="small" />
+        </IconButton>
+      );
+    }
+    return null;
+  };
+
   return (
     <Box>
       {!open && (
@@ -143,10 +172,6 @@ const FloatingChat = () => {
         <Paper
           elevation={4}
           sx={{
-            position: 'fixed',
-            bottom: 24,
-            left: 250,
-            width: 400,
             height: 500,
             display: 'flex',
             flexDirection: 'column',
@@ -162,9 +187,7 @@ const FloatingChat = () => {
               <Button size="small" onClick={clearConversation}>
                 Clear
               </Button>
-              <IconButton size="small" onClick={() => { setOpen(false); clearConversation(); }}>
-                <CloseOutlined fontSize="small" />
-              </IconButton>
+              <CloseButton />
             </Box>
           </Box>
           <Box sx={{ flex: 1, overflowY: 'auto', px: 1 }}>
@@ -194,7 +217,10 @@ const FloatingChat = () => {
                   </Box>
                 ) : (
                   <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ fontWeight: 'bold', mb: 0.5 }}
+                    >
                       Incident Management Assistant:
                     </Typography>
                     <MarkdownContent content={entry.text || ''} />
@@ -213,7 +239,10 @@ const FloatingChat = () => {
                     maxWidth: '80%',
                   }}
                 >
-                  <CircularProgress size={16} sx={{ verticalAlign: 'middle' }} />
+                  <CircularProgress
+                    size={16}
+                    sx={{ verticalAlign: 'middle' }}
+                  />
                 </Box>
               </Box>
             )}

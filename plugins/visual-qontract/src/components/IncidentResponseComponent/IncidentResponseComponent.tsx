@@ -58,6 +58,10 @@ const LeftMenu = () => {
             </CardContent>
           </Card>
         </Grid>
+        <Grid item>
+
+              <FloatingChat />
+        </Grid>
       </Grid>
     </Grid>
   );
@@ -83,7 +87,6 @@ export const IncidentResponseComponent = () => {
         <Grid container direction="row">
           <LeftMenu />
           <RightContent />
-          <FloatingChat />
         </Grid>
       </Content>
     </Page>
