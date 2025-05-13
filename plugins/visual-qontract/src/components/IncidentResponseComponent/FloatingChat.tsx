@@ -172,7 +172,7 @@ const FloatingChat = () => {
         <Paper
           elevation={4}
           sx={{
-            height: 500,
+            height: 524,
             display: 'flex',
             flexDirection: 'column',
             zIndex: 1300,
