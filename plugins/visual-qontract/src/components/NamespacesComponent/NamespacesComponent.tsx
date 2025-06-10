@@ -58,11 +58,10 @@ export const NamespacesComponent = () => {
     fallback: string,
   ) => {
     if (clusterMap[cluster as keyof typeof clusterMap]) {
-      return `${
-        clusterMap[cluster as keyof typeof clusterMap].url
-      }${namespace}`;
-    }
+      return `${clusterMap[cluster as keyof typeof clusterMap].url}${namespace}`;
+    } else {
     return getAppInterfaceLink(fallback);
+    }
   };
 
   const NamespacesTable = () => {
