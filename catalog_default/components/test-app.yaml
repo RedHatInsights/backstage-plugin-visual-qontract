@@ -1,0 +1,30 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: access-transparency-service-app
+  title: Test App
+  description: |
+    Test App is a simple app that does nothing.
+
+  labels:
+    service: ocm
+    platform: test-platform
+
+  tags:
+    - test-app
+
+  annotations:
+    backstage.io/techdocs-ref: url:https://github.com/TestOrg/test-app
+    backstage.io/source-location: url:https://github.com/TestOrg/test-app
+    quay.io/repository-slug: TestOrg/test-app
+    github.com/project-slug: TestOrg/test-app
+    visual-qontract/app-path: /services/ocm/access_transparency_service/app.yml
+
+
+spec:
+  type: application
+  system: test-app
+  owner: test-app-app-owners
+  lifecycle: OnBoarded
+  subcomponentOf: test-app-app
