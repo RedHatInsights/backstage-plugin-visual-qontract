@@ -26,61 +26,6 @@ export const NamespacesComponent = () => {
     return `${appInterfaceBaseURL}${path}`;
   };
 
-  const clusterMap = {
-    crcd01ue1: {
-      url: 'https://console-openshift-console.apps.crcs02ue1.urby.p1.openshiftapps.com/k8s/cluster/projects/',
-      name: 'CRCD',
-    },
-    'crc-eph': {
-      url: 'https://console-openshift-console.apps.crc-eph.r9lp.p1.openshiftapps.com/k8s/cluster/projects/',
-      name: 'Ephemeral',
-    },
-    crcp01ue1: {
-      url: 'https://console-openshift-console.apps.crcp01ue1.o9m8.p1.openshiftapps.com/k8s/cluster/projects/',
-      name: 'Production',
-    },
-    crcs02ue1: {
-      url: 'https://console-openshift-console.apps.crcs02ue1.urby.p1.openshiftapps.com/k8s/cluster/projects/',
-      name: 'Stage',
-    },
-    appsrep09ue1: {
-      url: 'https://console-openshift-console.apps.rosa.appsres09ue1.24ep.p3.openshiftapps.com/k8s/cluster/projects',
-      name: 'App-SreP-09',
-    },
-    appsres09ue1: {
-      url: 'https://console-openshift-console.apps.rosa.appsres09ue1.24ep.p3.openshiftapps.com/k8s/cluster/projects',
-      name:'App-SreS-09',
-    },
-    appsrep11ue1: {
-      url: 'https://console-openshift-console.apps.rosa.appsrep11ue1.tgem.p3.openshiftapps.com',
-      name: 'App-SreP-11',
-    },
-    appsres11ue1: {
-      url: 'https://console-openshift-console.apps.rosa.appsres11ue1.mtvk.p3.openshiftapps.com',
-      name: 'App-SreS-11',
-    },
-  };
-
-  const getClusterName = (cluster: string) => {
-    if (clusterMap[cluster as keyof typeof clusterMap]) {
-      return clusterMap[cluster as keyof typeof clusterMap].name;
-    }
-    return cluster;
-  };
-
-  const getClusterLink = (
-    cluster: string,
-    namespace: string,
-    fallback: string,
-  ) => {
-    if (clusterMap[cluster as keyof typeof clusterMap]) {
-      return `${
-        clusterMap[cluster as keyof typeof clusterMap].url
-      }${namespace}`;
-    }
-    return getAppInterfaceLink(fallback);
-  };
-
   const NamespacesTable = () => {
     return (
       <TableContainer component={Paper}>
@@ -111,13 +56,9 @@ export const NamespacesComponent = () => {
                   <Typography variant="subtitle2">
                     <Link
                       target="_blank"
-                      href={getClusterLink(
-                        namespace.cluster.name,
-                        namespace.name,
-                        namespace.cluster.path,
-                      )}
+                      href={`${namespace.cluster.consoleUrl}/k8s/cluster/projects/${namespace.name}`}
                     >
-                      {getClusterName(namespace.cluster.name)}
+                      {namespace.cluster.name}
                     </Link>
                   </Typography>
                 </TableCell>
