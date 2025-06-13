@@ -10,6 +10,7 @@ query App($path: String) {
       description
       cluster {
         name
+        consoleUrl
         path
         jumpHost {
           hostname
