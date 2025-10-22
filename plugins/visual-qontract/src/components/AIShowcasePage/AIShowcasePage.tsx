@@ -452,7 +452,7 @@ export function AIShowcasePage() {
                   color="primary"
                   className={classes.addProjectButton}
                   startIcon={<AddIcon />}
-                  href="/create/templates/redhat-ai/add-new-ai-project"
+                  href="/create/templates/ai/add-new-ai-project"
                 >
                   Add New Project
                 </Button>
