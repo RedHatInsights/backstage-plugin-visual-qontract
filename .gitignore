@@ -5,6 +5,8 @@
 
 build/*
 
+catalog_default/components/local/*
+
 plugins/*/*.tgz
 plugins/*/dist*
 
