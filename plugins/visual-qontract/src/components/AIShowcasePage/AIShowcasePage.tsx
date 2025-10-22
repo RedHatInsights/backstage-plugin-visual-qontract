@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Page,
   Header,
@@ -11,37 +11,77 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
+import {
+  Grid,
+  Chip,
+  Paper,
+  FormControl,
+  Typography,
+  Select,
+  MenuItem,
+  InputLabel,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-const columns: TableColumn<Entity>[] = [
-  {
-    title: 'Name',
-    field: 'metadata.name',
-    render: (entity: Entity) => (
-      <Link
-        to={`/catalog/${entity.metadata.namespace}/${entity.kind.toLowerCase()}/${
-          entity.metadata.name
-        }`}
-      >
-        {entity.metadata.name}
-      </Link>
-    ),
+const useStyles = makeStyles((theme) => ({
+  filterSidebar: {
+    padding: theme.spacing(2),
+    position: 'sticky',
+    top: theme.spacing(2),
   },
-  { title: 'Kind', field: 'kind' },
-  { title: 'Namespace', field: 'metadata.namespace' },
-  { title: 'Description', field: 'metadata.description' },
-];
+  filterSection: {
+    marginBottom: theme.spacing(2),
+    width: '100%',
+  },
+  tagChip: {
+    margin: theme.spacing(0.5),
+  },
+  nameCell: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(1),
+  },
+  chipContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: theme.spacing(0.5),
+  },
+}));
+
+interface Filters {
+  category: string;
+  usecase: string;
+  status: string;
+  domain: string;
+}
+
+const getAnnotation = (entity: Entity, key: string): string => {
+  const annotationKey = `ai.redhat.com/${key}`;
+  const value = entity.metadata.annotations?.[annotationKey];
+  return value || '-';
+};
 
 export function AIShowcasePage() {
+  const classes = useStyles();
   const catalogApi = useApi(catalogApiRef);
   const [entities, setEntities] = useState<Entity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | undefined>();
+  const [filters, setFilters] = useState<Filters>({
+    category: '',
+    usecase: '',
+    status: '',
+    domain: '',
+  });
 
   useEffect(() => {
     const fetchEntities = async () => {
       try {
         const response = await catalogApi.getEntities({
-          filter: { 'metadata.namespace': 'ai' },
+          filter: {
+            'metadata.namespace': 'ai',
+            'kind': 'Component',
+          },
         });
         setEntities(response.items);
       } catch (err) {
@@ -55,19 +95,220 @@ export function AIShowcasePage() {
     fetchEntities();
   }, [catalogApi]);
 
+  // Extract unique values for filters
+  const filterOptions = useMemo(() => {
+    const categories = new Set<string>();
+    const usecases = new Set<string>();
+    const statuses = new Set<string>();
+    const domains = new Set<string>();
+
+    entities.forEach(entity => {
+      const category = getAnnotation(entity, 'category');
+      const usecase = getAnnotation(entity, 'usecase');
+      const status = getAnnotation(entity, 'status');
+      const domain = getAnnotation(entity, 'domain');
+
+      if (category !== '-') categories.add(category);
+      if (usecase !== '-') usecases.add(usecase);
+      if (status !== '-') statuses.add(status);
+      if (domain !== '-') domains.add(domain);
+    });
+
+    return {
+      categories: Array.from(categories).sort(),
+      usecases: Array.from(usecases).sort(),
+      statuses: Array.from(statuses).sort(),
+      domains: Array.from(domains).sort(),
+    };
+  }, [entities]);
+
+  // Filter entities based on selected filters
+  const filteredEntities = useMemo(() => {
+    return entities.filter(entity => {
+      if (filters.category) {
+        const category = getAnnotation(entity, 'category');
+        if (category !== filters.category) return false;
+      }
+      if (filters.usecase) {
+        const usecase = getAnnotation(entity, 'usecase');
+        if (usecase !== filters.usecase) return false;
+      }
+      if (filters.status) {
+        const status = getAnnotation(entity, 'status');
+        if (status !== filters.status) return false;
+      }
+      if (filters.domain) {
+        const domain = getAnnotation(entity, 'domain');
+        if (domain !== filters.domain) return false;
+      }
+      return true;
+    });
+  }, [entities, filters]);
+
+  const handleFilterChange = (filterType: keyof Filters, value: string) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: value,
+    }));
+  };
+
+  const columns: TableColumn<Entity>[] = [
+    {
+      title: 'Name',
+      field: 'metadata.title',
+      render: (entity: Entity) => (
+        <div className={classes.nameCell}>
+          <Link
+            to={`/catalog/${entity.metadata.namespace}/${entity.kind.toLowerCase()}/${
+              entity.metadata.name
+            }`}
+          >
+            {entity.metadata.title || entity.metadata.name}
+          </Link>
+          {entity.metadata.tags && entity.metadata.tags.length > 0 && (
+            <div className={classes.chipContainer}>
+              {entity.metadata.tags.map(tag => (
+                <Chip
+                  key={tag}
+                  label={tag}
+                  size="small"
+                  className={classes.tagChip}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      ),
+      customSort: (a: Entity, b: Entity) =>
+        (a.metadata.title || a.metadata.name || '').localeCompare(b.metadata.title || b.metadata.name || ''),
+    },
+    {
+      title: 'Category',
+      field: 'metadata.annotations.ai.redhat.com/category',
+      render: (entity: Entity) => getAnnotation(entity, 'category'),
+      customSort: (a: Entity, b: Entity) =>
+        getAnnotation(a, 'category').localeCompare(getAnnotation(b, 'category')),
+    },
+    {
+      title: 'Usecase',
+      field: 'metadata.annotations.ai.redhat.com/usecase',
+      render: (entity: Entity) => getAnnotation(entity, 'usecase'),
+      customSort: (a: Entity, b: Entity) =>
+        getAnnotation(a, 'usecase').localeCompare(getAnnotation(b, 'usecase')),
+    },
+    {
+      title: 'Status',
+      field: 'metadata.annotations.ai.redhat.com/status',
+      render: (entity: Entity) => {
+        const status = getAnnotation(entity, 'status');
+        return (
+          <Chip
+            label={status}
+            size="small"
+            color={status === 'active' ? 'primary' : 'default'}
+          />
+        );
+      },
+      customSort: (a: Entity, b: Entity) =>
+        getAnnotation(a, 'status').localeCompare(getAnnotation(b, 'status')),
+    },
+    {
+      title: 'Owner',
+      field: 'metadata.annotations.ai.redhat.com/owner',
+      render: (entity: Entity) => {
+        const owner = getAnnotation(entity, 'owner');
+        const domain = getAnnotation(entity, 'domain');
+        return (
+          <div className={classes.chipContainer}>
+            <span>{owner}</span>
+            {domain !== '-' && (
+              <Chip label={domain} size="small" variant="outlined" />
+            )}
+          </div>
+        );
+      },
+      customSort: (a: Entity, b: Entity) =>
+        getAnnotation(a, 'owner').localeCompare(getAnnotation(b, 'owner')),
+    },
+  ];
+
+  const FilterSection = ({
+    label,
+    options,
+    filterType,
+  }: {
+    label: string;
+    options: string[];
+    filterType: keyof Filters;
+  }) => (
+    <FormControl className={classes.filterSection} variant="outlined" size="small">
+      <InputLabel>{label}</InputLabel>
+      <Select
+        value={filters[filterType]}
+        onChange={(e) => handleFilterChange(filterType, e.target.value as string)}
+        label={label}
+      >
+        <MenuItem value="">
+          <em>All</em>
+        </MenuItem>
+        {options.map(option => (
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+
   return (
     <Page themeId="tool">
-      <Header title="AI Showcase" subtitle="AI-powered features and demonstrations" />
+      <Header title="AI Projects" subtitle="Red Hat AI Projects" />
       <Content>
         {loading && <Progress />}
         {error && <div>Error: {error}</div>}
         {!loading && !error && (
-          <Table
-            title="AI Namespace Entities"
-            options={{ search: true, paging: true, pageSize: 10 }}
-            columns={columns}
-            data={entities}
-          />
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={3}>
+              <Paper className={classes.filterSidebar}>
+                <Typography variant="h6" gutterBottom>
+                  Filters
+                </Typography>
+                <FilterSection
+                  label="Category"
+                  options={filterOptions.categories}
+                  filterType="category"
+                />
+                <FilterSection
+                  label="Usecase"
+                  options={filterOptions.usecases}
+                  filterType="usecase"
+                />
+                <FilterSection
+                  label="Status"
+                  options={filterOptions.statuses}
+                  filterType="status"
+                />
+                <FilterSection
+                  label="Domain"
+                  options={filterOptions.domains}
+                  filterType="domain"
+                />
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={9}>
+              <Table
+                title={`AI Projects (${filteredEntities.length})`}
+                options={{
+                  search: true,
+                  paging: true,
+                  pageSize: 20,
+                  sorting: true,
+                }}
+                columns={columns}
+                data={filteredEntities}
+              />
+            </Grid>
+          </Grid>
         )}
       </Content>
     </Page>
