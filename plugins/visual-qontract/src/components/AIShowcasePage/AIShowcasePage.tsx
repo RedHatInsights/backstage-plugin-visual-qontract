@@ -20,8 +20,11 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  Button,
+  Divider,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 const useStyles = makeStyles((theme) => ({
   filterSidebar: {
@@ -46,6 +49,25 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     gap: theme.spacing(0.5),
   },
+  linksSidebar: {
+    padding: theme.spacing(2),
+    marginTop: theme.spacing(2),
+  },
+  linkButton: {
+    width: '100%',
+    marginBottom: theme.spacing(1),
+    justifyContent: 'space-between',
+    textAlign: 'left',
+    textTransform: 'none',
+    padding: theme.spacing(1.5),
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+  linkButtonText: {
+    flex: 1,
+    textAlign: 'left',
+  },
 }));
 
 interface Filters {
@@ -60,6 +82,37 @@ const getAnnotation = (entity: Entity, key: string): string => {
   const value = entity.metadata.annotations?.[annotationKey];
   return value || '-';
 };
+
+const usefulLinks = [
+  {
+    title: 'Artificial Intelligence Skills Academy',
+    url: 'https://source.redhat.com/career/start_learning/skills/artificial_intelligence',
+  },
+  {
+    title: 'Approved AI Tools',
+    url: 'https://source.redhat.com/projects_and_programs/ai/ai_tools_and_use_cases',
+  },
+  {
+    title: 'Internal AI News Room',
+    url: 'https://source.redhat.com/projects_and_programs/ai/newsroom',
+  },
+  {
+    title: 'Sharing AI Community Blog',
+    url: 'https://source.redhat.com/projects_and_programs/ai/share_ai',
+  },
+  {
+    title: 'OpenShift AI',
+    url: 'https://www.redhat.com/en/products/ai/openshift-ai',
+  },
+  {
+    title: 'RHEL AI',
+    url: 'https://www.redhat.com/en/products/ai/enterprise-linux-ai',
+  },
+  {
+    title: 'Ansible Lightspeed',
+    url: 'https://www.redhat.com/en/technologies/management/ansible/ansible-lightspeed',
+  },
+];
 
 export function AIShowcasePage() {
   const classes = useStyles();
@@ -260,6 +313,28 @@ export function AIShowcasePage() {
     </FormControl>
   );
 
+  const UsefulLinks = () => (
+    <Paper className={classes.linksSidebar}>
+      <Typography variant="h6" gutterBottom>
+        Useful Links
+      </Typography>
+      <Divider style={{ marginBottom: 16 }} />
+      {usefulLinks.map((link) => (
+        <Button
+          key={link.url}
+          className={classes.linkButton}
+          variant="outlined"
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          endIcon={<OpenInNewIcon fontSize="small" />}
+        >
+          <span className={classes.linkButtonText}>{link.title}</span>
+        </Button>
+      ))}
+    </Paper>
+  );
+
   return (
     <Page themeId="tool">
       <Header title="AI Projects" subtitle="Red Hat AI Projects" />
@@ -294,6 +369,7 @@ export function AIShowcasePage() {
                   filterType="domain"
                 />
               </Paper>
+              <UsefulLinks />
             </Grid>
             <Grid item xs={12} md={9}>
               <Table
