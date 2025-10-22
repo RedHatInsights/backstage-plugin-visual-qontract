@@ -29,6 +29,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
   filterSidebar: {
@@ -74,6 +75,14 @@ const useStyles = makeStyles((theme) => ({
   },
   searchBox: {
     marginBottom: theme.spacing(2),
+  },
+  headerActions: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginBottom: theme.spacing(2),
+  },
+  addProjectButton: {
+    textTransform: 'none',
   },
 }));
 
@@ -437,6 +446,17 @@ export function AIShowcasePage() {
               <UsefulLinks />
             </Grid>
             <Grid item xs={12} md={9}>
+              <Box className={classes.headerActions}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.addProjectButton}
+                  startIcon={<AddIcon />}
+                  href="/create/templates/redhat-ai/add-new-ai-project"
+                >
+                  Add New Project
+                </Button>
+              </Box>
               <TextField
                 className={classes.searchBox}
                 fullWidth
