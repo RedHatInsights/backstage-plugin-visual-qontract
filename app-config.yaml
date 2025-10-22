@@ -127,7 +127,7 @@ catalog:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
   rules:
-    - allow: [Component, System, User, Group, Resource, Location, Template, API]
+    - allow: [Component, System, Domain, User, Group, Resource, Location, Template, API]
   locations:
     - type: file
-      target: ../../catalog/all.yaml
+      target: ../../catalog_default/all.yaml

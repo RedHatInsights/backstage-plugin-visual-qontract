@@ -114,3 +114,12 @@ export const IncidentResponseComponent = visualQontractPlugin.provide(
     }
   }),
 );
+
+export const AIShowcasePageComponent = visualQontractPlugin.provide(
+  createComponentExtension({
+    name: 'AIShowcasePageComponent',
+    component: {
+      lazy: () => import('./components/AIShowcasePage').then(m => m.AIShowcasePage),
+    }
+  }),
+);

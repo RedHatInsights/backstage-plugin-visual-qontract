@@ -12,4 +12,5 @@ export {
     EntityQontractStatusMiniComponent,
     ChangelogPageComponent,
     IncidentResponseComponent,
+    AIShowcasePageComponent,
 } from './plugin';
