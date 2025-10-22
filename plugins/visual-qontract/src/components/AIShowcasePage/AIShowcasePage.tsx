@@ -22,9 +22,13 @@ import {
   InputLabel,
   Button,
   Divider,
+  Box,
+  TextField,
+  InputAdornment,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles((theme) => ({
   filterSidebar: {
@@ -68,6 +72,9 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     textAlign: 'left',
   },
+  searchBox: {
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 interface Filters {
@@ -81,6 +88,34 @@ const getAnnotation = (entity: Entity, key: string): string => {
   const annotationKey = `ai.redhat.com/${key}`;
   const value = entity.metadata.annotations?.[annotationKey];
   return value || '-';
+};
+
+// Custom search function that searches across all entity fields
+const searchFunction = (entity: Entity, searchTerm: string): boolean => {
+  if (!searchTerm) return true;
+  
+  const lowerSearchTerm = searchTerm.toLowerCase();
+  
+  // Helper function to recursively search through an object
+  const searchInObject = (obj: any): boolean => {
+    if (obj === null || obj === undefined) return false;
+    
+    if (typeof obj === 'string') {
+      return obj.toLowerCase().includes(lowerSearchTerm);
+    }
+    
+    if (Array.isArray(obj)) {
+      return obj.some(item => searchInObject(item));
+    }
+    
+    if (typeof obj === 'object') {
+      return Object.values(obj).some(value => searchInObject(value));
+    }
+    
+    return false;
+  };
+  
+  return searchInObject(entity);
 };
 
 const usefulLinks = [
@@ -120,6 +155,7 @@ export function AIShowcasePage() {
   const [entities, setEntities] = useState<Entity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | undefined>();
+  const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState<Filters>({
     category: '',
     usecase: '',
@@ -175,9 +211,10 @@ export function AIShowcasePage() {
     };
   }, [entities]);
 
-  // Filter entities based on selected filters
+  // Filter entities based on selected filters and search term
   const filteredEntities = useMemo(() => {
     return entities.filter(entity => {
+      // Apply dropdown filters
       if (filters.category) {
         const category = getAnnotation(entity, 'category');
         if (category !== filters.category) return false;
@@ -194,9 +231,15 @@ export function AIShowcasePage() {
         const domain = getAnnotation(entity, 'domain');
         if (domain !== filters.domain) return false;
       }
+      
+      // Apply search filter
+      if (searchTerm && !searchFunction(entity, searchTerm)) {
+        return false;
+      }
+      
       return true;
     });
-  }, [entities, filters]);
+  }, [entities, filters, searchTerm]);
 
   const handleFilterChange = (filterType: keyof Filters, value: string) => {
     setFilters(prev => ({
@@ -204,6 +247,17 @@ export function AIShowcasePage() {
       [filterType]: value,
     }));
   };
+
+  const clearFilters = () => {
+    setFilters({
+      category: '',
+      usecase: '',
+      status: '',
+      domain: '',
+    });
+  };
+
+  const hasActiveFilters = filters.category || filters.usecase || filters.status || filters.domain;
 
   const columns: TableColumn<Entity>[] = [
     {
@@ -316,7 +370,7 @@ export function AIShowcasePage() {
   const UsefulLinks = () => (
     <Paper className={classes.linksSidebar}>
       <Typography variant="h6" gutterBottom>
-        Useful Links
+        AI @ Red Hat
       </Typography>
       <Divider style={{ marginBottom: 16 }} />
       {usefulLinks.map((link) => (
@@ -368,14 +422,41 @@ export function AIShowcasePage() {
                   options={filterOptions.domains}
                   filterType="domain"
                 />
+                <Box display="flex" justifyContent="flex-end" mt={2}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={clearFilters}
+                    disabled={!hasActiveFilters}
+                  >
+                    Clear Filters
+                  </Button>
+                </Box>
               </Paper>
               <UsefulLinks />
             </Grid>
             <Grid item xs={12} md={9}>
+              <TextField
+                className={classes.searchBox}
+                fullWidth
+                variant="outlined"
+                size="small"
+                placeholder="Search across all fields..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
               <Table
                 title={`AI Projects (${filteredEntities.length})`}
                 options={{
-                  search: true,
+                  search: false,
                   paging: true,
                   pageSize: 20,
                   sorting: true,
