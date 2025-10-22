@@ -6,13 +6,26 @@ import {
   Table,
   TableColumn,
   Progress,
+  Link,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
 
 const columns: TableColumn<Entity>[] = [
-  { title: 'Name', field: 'metadata.name' },
+  {
+    title: 'Name',
+    field: 'metadata.name',
+    render: (entity: Entity) => (
+      <Link
+        to={`/catalog/${entity.metadata.namespace}/${entity.kind.toLowerCase()}/${
+          entity.metadata.name
+        }`}
+      >
+        {entity.metadata.name}
+      </Link>
+    ),
+  },
   { title: 'Kind', field: 'kind' },
   { title: 'Namespace', field: 'metadata.namespace' },
   { title: 'Description', field: 'metadata.description' },
