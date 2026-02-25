@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { WebRCAFetchComponent } from './WebRCAFetchComponent';
-import { TestApiProvider } from '@backstage/test-utils';
+import { renderInTestApp, TestApiProvider } from '@backstage/frontend-test-utils';
 import { configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 
 //mock config
@@ -65,7 +65,7 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
 
 describe('Web RCA Fetch Component', () => {
   it('renders the user table', async () => {
-    render(
+    await renderInTestApp(
       <TestApiProvider
         apis={[
           [configApiRef, mockConfig],

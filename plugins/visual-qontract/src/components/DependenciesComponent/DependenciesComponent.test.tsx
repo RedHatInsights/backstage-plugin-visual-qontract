@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderInTestApp } from '@backstage/frontend-test-utils';
 import { DependenciesComponent } from './DependenciesComponent';
 import QueryQontract from '../../common/QueryAppInterface';
 
@@ -18,7 +19,7 @@ describe('<DependenciesComponent />', () => {
       error: null,
     });
 
-    render(<DependenciesComponent />);
+    await renderInTestApp(<DependenciesComponent />);
 
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
@@ -31,7 +32,7 @@ describe('<DependenciesComponent />', () => {
       error: new Error('Failed to fetch'),
     });
 
-    render(<DependenciesComponent />);
+    await renderInTestApp(<DependenciesComponent />);
 
     expect(screen.getByText('Error loading the dependency information.')).toBeInTheDocument();
   });
@@ -44,7 +45,7 @@ describe('<DependenciesComponent />', () => {
       error: null,
     });
 
-    const { container } = render(<DependenciesComponent />);
+    const { container } = await renderInTestApp(<DependenciesComponent />);
     expect(container).toBeEmptyDOMElement();
   });
 
@@ -75,7 +76,7 @@ describe('<DependenciesComponent />', () => {
       error: null,
     });
 
-    render(<DependenciesComponent />);
+    await renderInTestApp(<DependenciesComponent />);
 
     // Verify table headers
     expect(screen.getByText('Name')).toBeInTheDocument();
