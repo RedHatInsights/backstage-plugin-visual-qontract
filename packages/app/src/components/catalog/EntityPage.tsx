@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, Grid } from '@material-ui/core';
 import {
   EntityApiDefinitionCard,
@@ -29,10 +28,6 @@ import {
   EntityRelationWarning,
 } from '@backstage/plugin-catalog';
 import {
-  isGithubActionsAvailable,
-  EntityGithubActionsContent,
-} from '@backstage/plugin-github-actions';
-import {
   EntityUserProfileCard,
   EntityGroupProfileCard,
   EntityMembersListCard,
@@ -58,16 +53,18 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 
-import { 
-  EntityVisualQontractContent,
-  EntityQontractDependenciesContent,
+import {
+  EntityKubernetesContent,
+  isKubernetesAvailable,
+} from '@backstage/plugin-kubernetes';
+import {
   EntityQontractNamespacesContent,
-  EntityQontractCodeComponentsContent,
   EntityQontractPipelinesComponent,
+  EntityQontractCodeComponentsContent,
+  EntityQontractEscalationPolicyComponent,
+  EntityQontractDependenciesContent,
   EntityQontractSLOComponent,
-  EntityQontractEscalationPolicyComponent
 } from '@redhatinsights/backstage-plugin-visual-qontract';
-
 import { WebRCAFetchComponent } from '@redhatinsights/backstage-plugin-webrca-frontend';
 
 const techdocsContent = (
@@ -82,10 +79,13 @@ const cicdContent = (
   // This is an example of how you can implement your company's logic in entity page.
   // You can for example enforce that all components of type 'service' should use GitHubActions
   <EntitySwitch>
-    <EntitySwitch.Case if={isGithubActionsAvailable}>
-      <EntityGithubActionsContent />
-    </EntitySwitch.Case>
-
+    {/*
+      Here you can add support for different CI/CD services, for example
+      using @backstage-community/plugin-github-actions as follows:
+      <EntitySwitch.Case if={isGithubActionsAvailable}>
+        <EntityGithubActionsContent />
+      </EntitySwitch.Case>
+     */}
     <EntitySwitch.Case>
       <EmptyState
         title="No CI/CD available for this entity"
@@ -149,27 +149,30 @@ const overviewContent = (
     <Grid item md={8} xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
-    <Grid item md={6}>
-      <EntityQontractDependenciesContent />
-    </Grid>
-    <Grid item md={6}>
-      <EntityQontractNamespacesContent />
-    </Grid>
-    <Grid item md={6}>
-      <EntityQontractCodeComponentsContent />
-    </Grid>
-    <Grid item md={6}>
-      <EntityQontractPipelinesComponent />
-    </Grid>
-    <Grid item md={6}>
-      <EntityQontractSLOComponent />
-    </Grid>
-    <Grid item md={6}>
-      <EntityQontractEscalationPolicyComponent />
-    </Grid>
-    <Grid item md={6}>
-      <WebRCAFetchComponent />
-    </Grid>
+
+    {/* Visual Qontract cards on overview for application-type components */}
+    <EntitySwitch>
+      <EntitySwitch.Case if={isComponentType('application')}>
+        <Grid item lg={4} md={6} xs={12}>
+          <EntityQontractNamespacesContent />
+        </Grid>
+        <Grid item lg={4} md={6} xs={12}>
+          <EntityQontractPipelinesComponent />
+        </Grid>
+        <Grid item lg={4} md={6} xs={12}>
+          <EntityQontractCodeComponentsContent />
+        </Grid>
+        <Grid item lg={4} md={6} xs={12}>
+          <EntityQontractEscalationPolicyComponent />
+        </Grid>
+        <Grid item lg={4} md={6} xs={12}>
+          <EntityQontractDependenciesContent />
+        </Grid>
+        <Grid item lg={6} md={6} xs={12}>
+          <EntityQontractSLOComponent />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
   </Grid>
 );
 
@@ -181,6 +184,14 @@ const serviceEntityPage = (
 
     <EntityLayout.Route path="/ci-cd" title="CI/CD">
       {cicdContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route
+      path="/kubernetes"
+      title="Kubernetes"
+      if={isKubernetesAvailable}
+    >
+      <EntityKubernetesContent />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/api" title="API">
@@ -205,6 +216,10 @@ const serviceEntityPage = (
       </Grid>
     </EntityLayout.Route>
 
+    <EntityLayout.Route path="/incidents" title="Incidents">
+      <WebRCAFetchComponent />
+    </EntityLayout.Route>
+
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
@@ -219,6 +234,14 @@ const websiteEntityPage = (
 
     <EntityLayout.Route path="/ci-cd" title="CI/CD">
       {cicdContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route
+      path="/kubernetes"
+      title="Kubernetes"
+      if={isKubernetesAvailable}
+    >
+      <EntityKubernetesContent />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">
@@ -254,11 +277,6 @@ const defaultEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
-
-    <EntityLayout.Route path="/visual-app-interface" title="Visual App Interface">
-      <EntityVisualQontractContent />
-    </EntityLayout.Route>
-
   </EntityLayout>
 );
 
@@ -272,12 +290,7 @@ const componentPage = (
       {websiteEntityPage}
     </EntitySwitch.Case>
 
-
-
     <EntitySwitch.Case>{defaultEntityPage}</EntitySwitch.Case>
-
-
-
   </EntitySwitch>
 );
 

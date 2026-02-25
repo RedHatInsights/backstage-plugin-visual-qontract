@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CircularProgress, Typography, Box } from '@mui/material';
 import { configApiRef, useApi, fetchApiRef } from '@backstage/core-plugin-api';
 
@@ -72,19 +72,16 @@ export const SLOGauge = ({ query }: { query: string }) => {
   }
 
   if (noResultsFound) {
-    return (
-      <Gauge
-        value={0}
-        color={'#343434'}
-        startAngle={-110}
-        endAngle={110}
-        height={200}
-        width={200}
-        valueField="value"
-        text={
-          ({value}) => `No Results`
-        }
-        sx={(theme) => ({
+    const noResultsGaugeProps = {
+      value: 0,
+      color: '#343434',
+      startAngle: -110,
+      endAngle: 110,
+      height: 200,
+      width: 200,
+      valueField: 'value',
+      text: (() => `No Results`) as (params: unknown) => string,
+      sx: (theme: { palette: { text: { disabled: string } } }) => ({
           [`& .${gaugeClasses.valueText}`]: {
             fontSize: 25,
           },
@@ -94,9 +91,9 @@ export const SLOGauge = ({ query }: { query: string }) => {
           [`& .${gaugeClasses.referenceArc}`]: {
             fill: theme.palette.text.disabled,
           },
-        })}
-      />
-    );
+        }),
+    };
+    return <Gauge {...noResultsGaugeProps} />;
   }
 
   if (loading) {
@@ -104,33 +101,30 @@ export const SLOGauge = ({ query }: { query: string }) => {
   }
 
   const SLIGuage = () => {
-    return (
-      <Gauge
-        value={percentage}
-        color={getColor(percentage)}
-        startAngle={-110}
-        endAngle={110}
-        height={200}
-        width={200}
-        valueField="value"
-        text={
-          ({value}) => `${value}%`
-        }
-        sx={(theme) => ({
-          [`& .${gaugeClasses.valueText}`]: {
-            fontSize: 40,
-            fill: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
-          },
-          [`& .${gaugeClasses.valueArc}`]: {
-            fill: getColor(percentage),
-          },
-          [`& .${gaugeClasses.referenceArc}`]: {
-            fill: theme.palette.text.disabled,
-          },
-        })}
-      />
-    );
-  }
+    const gaugeProps = {
+      value: percentage,
+      color: getColor(percentage),
+      startAngle: -110,
+      endAngle: 110,
+      height: 200,
+      width: 200,
+      valueField: 'value',
+      text: ((params: { value?: number }) => `${params.value ?? 0}%`) as (params: unknown) => string,
+      sx: (theme: { palette: { mode: string; common: { white: string; black: string }; text: { disabled: string } } }) => ({
+        [`& .${gaugeClasses.valueText}`]: {
+          fontSize: 40,
+          fill: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
+        },
+        [`& .${gaugeClasses.valueArc}`]: {
+          fill: getColor(percentage),
+        },
+        [`& .${gaugeClasses.referenceArc}`]: {
+          fill: theme.palette.text.disabled,
+        },
+      }),
+    };
+    return <Gauge {...gaugeProps} />;
+  };
 
   return (
     <Box>

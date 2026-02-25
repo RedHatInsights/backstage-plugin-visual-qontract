@@ -22,7 +22,7 @@ import { AccessWebRCA } from './IncidentResponse/AccessWebRCA';
 import { IncidentsTable } from './IncidentResponse/IncidentsTable';
 import { TabPanel } from './IncidentResponse/TabPanel';
 
-export const IncidentResponseCard = ({maxRows}:{maxRows: number}) => {
+export const IncidentResponseCard = ({ maxRows = 5 }: { maxRows?: number } = {}) => {
   // Get Backstage objects
   const config = useApi(configApiRef);
   // Constants

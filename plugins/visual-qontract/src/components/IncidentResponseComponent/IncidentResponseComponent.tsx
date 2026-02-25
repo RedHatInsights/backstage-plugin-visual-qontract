@@ -1,4 +1,3 @@
-import React from 'react';
 
 import { IncidentResponseCard } from '../HomeComponent/IncidentResponseCard';
 import { Page, Header, Content } from '@backstage/core-components';
@@ -7,7 +6,6 @@ import {
   CardContent,
   CardHeader,
   Grid,
-  Typography,
   Link,
 } from '@material-ui/core';
 import FloatingChat from './FloatingChat';

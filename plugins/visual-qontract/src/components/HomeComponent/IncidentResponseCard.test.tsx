@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { IncidentResponseCard } from './IncidentResponseCard';
 import { configApiRef, fetchApiRef } from '@backstage/core-plugin-api';

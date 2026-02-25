@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { CodeComponentsComponent } from './CodeComponentsComponent';
 import QueryQontract from '../../common/QueryAppInterface';
@@ -43,16 +43,16 @@ describe('<CodeComponentsComponent />', () => {
     },
   };
 
-  const renderWithEntityProvider = (ui) =>
+  const renderWithEntityProvider = (ui: React.ReactElement) =>
     render(<EntityProvider entity={mockEntity}>{ui}</EntityProvider>);
 
   it('displays a loading message initially', async () => {
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: null,
       loaded: false,
       error: null,
     });
-    useRelatedEntities.mockReturnValue({
+    (useRelatedEntities as jest.Mock).mockReturnValue({
       entities: [],
       loading: true,
       error: null,
@@ -63,12 +63,12 @@ describe('<CodeComponentsComponent />', () => {
   });
 
   it('displays an error message if there is a fetching error', async () => {
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: null,
       loaded: true,
       error: new Error('Failed to fetch data'),
     });
-    useRelatedEntities.mockReturnValue({
+    (useRelatedEntities as jest.Mock).mockReturnValue({
       entities: [],
       loading: false,
       error: new Error('Failed to fetch related entities'),
@@ -81,12 +81,12 @@ describe('<CodeComponentsComponent />', () => {
   });
 
   it('renders nothing if there are no code components', async () => {
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: { apps_v1: [{ codeComponents: [] }] },
       loaded: true,
       error: null,
     });
-    useRelatedEntities.mockReturnValue({
+    (useRelatedEntities as jest.Mock).mockReturnValue({
       entities: [],
       loading: false,
       error: null,
@@ -98,7 +98,7 @@ describe('<CodeComponentsComponent />', () => {
 
   it('renders a table of code components if data is available', async () => {
     // Mocking the data
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: {
         apps_v1: [
           {
@@ -122,8 +122,8 @@ describe('<CodeComponentsComponent />', () => {
       loaded: true,
       error: null,
     });
-  
-    useRelatedEntities.mockReturnValue({
+
+    (useRelatedEntities as jest.Mock).mockReturnValue({
       entities: [
         {
           metadata: {

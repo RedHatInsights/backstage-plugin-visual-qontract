@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { WebRCAFetchComponent } from './WebRCAFetchComponent';
 import { TestApiProvider } from '@backstage/test-utils';

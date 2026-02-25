@@ -1,4 +1,3 @@
-import React from 'react';
 import { WebRCAComponent } from './WebRCAComponent';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';

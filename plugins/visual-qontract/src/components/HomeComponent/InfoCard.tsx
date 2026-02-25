@@ -8,7 +8,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import OpenInNew from '@material-ui/icons/OpenInNew';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 export const InfoCard = ({
   title,
@@ -18,7 +18,7 @@ export const InfoCard = ({
   linkText,
 }: {
   title: string;
-  avatar: React.ReactNode;
+  avatar: ReactNode;
   body: string;
   link: string;
   linkText?: string;

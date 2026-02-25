@@ -1,5 +1,6 @@
 export type Change = {
   commit: string;
+  description?: string;
   merged_at: string;
   change_types: string[];
   error: boolean;

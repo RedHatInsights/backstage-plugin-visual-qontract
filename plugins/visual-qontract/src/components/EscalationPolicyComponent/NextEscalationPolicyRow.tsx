@@ -1,9 +1,7 @@
-import React from 'react';
 import {
   Typography,
   Grid,
   Link,
-  Box,
   Accordion,
   AccordionSummary,
   AccordionDetails,

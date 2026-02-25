@@ -1,15 +1,15 @@
-import React from 'react';
 import { TableColumn } from '@backstage/core-components';
 import { PillList } from './PillList';
+import type { Change } from './ChangeTypes';
 
 export const ColumnDefinitions = (
   addFilter: (field: string, value: string) => void,
   showUtcTimestamps: boolean
-): TableColumn[] => [
+): TableColumn<Change>[] => [
     {
       title: 'Commit',
       field: 'commit',
-      render: rowData => (
+      render: (rowData: Change) => (
         <a
           href={`https://gitlab.cee.redhat.com/service/app-interface/-/commit/${rowData.commit}`}
           target="_blank"
@@ -23,7 +23,7 @@ export const ColumnDefinitions = (
     {
       title: 'Merged At',
       field: 'merged_at',
-      render: rowData => {
+      render: (rowData: Change) => {
         if (showUtcTimestamps) {
           return rowData.merged_at
         }
@@ -42,14 +42,14 @@ export const ColumnDefinitions = (
     {
       title: 'Change Types',
       field: 'change_types',
-      render: rowData => (
+      render: (rowData: Change) => (
         <PillList items={rowData.change_types} field="type" onClick={addFilter} />
       ),
     },
     {
       title: 'Apps',
       field: 'apps',
-      render: rowData => (
+      render: (rowData: Change) => (
         <PillList items={rowData.apps} field="app" onClick={addFilter} />
       ),
     },

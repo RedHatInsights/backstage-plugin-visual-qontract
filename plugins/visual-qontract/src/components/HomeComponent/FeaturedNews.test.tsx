@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { FeaturedNews } from './FeaturedNews';
 import { useApi, fetchApiRef, configApiRef } from '@backstage/core-plugin-api';
@@ -16,13 +15,14 @@ describe('<FeaturedNews />', () => {
     jest.clearAllMocks();
 
     // Mock useApi based on the reference being requested
-    useApi.mockImplementation((apiRef) => {
+    (useApi as jest.Mock).mockImplementation((apiRef: unknown) => {
       if (apiRef === fetchApiRef) {
         return { fetch: mockFetch }; // Mock fetchApi
       }
       if (apiRef === configApiRef) {
         return { getString: () => 'http://localhost:7000' }; // Mock configApi
       }
+      return undefined;
     });
   });
 

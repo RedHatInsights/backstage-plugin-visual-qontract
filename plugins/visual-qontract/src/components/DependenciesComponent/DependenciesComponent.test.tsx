@@ -1,5 +1,4 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { DependenciesComponent } from './DependenciesComponent';
 import QueryQontract from '../../common/QueryAppInterface';
 
@@ -13,7 +12,7 @@ describe('<DependenciesComponent />', () => {
   
   it('displays a loading message initially', async () => {
     // Simulate loading state
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: null,
       loaded: false,
       error: null,
@@ -26,7 +25,7 @@ describe('<DependenciesComponent />', () => {
 
   it('displays an error message if fetching data fails', async () => {
     // Simulate error state
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: null,
       loaded: true,
       error: new Error('Failed to fetch'),
@@ -39,7 +38,7 @@ describe('<DependenciesComponent />', () => {
 
   it('renders nothing if there are no dependencies', async () => {
     // Simulate empty data state
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: { apps_v1: [{ dependencies: [] }] },
       loaded: true,
       error: null,
@@ -51,7 +50,7 @@ describe('<DependenciesComponent />', () => {
 
   it('renders a table of dependencies if data is available', async () => {
     // Simulate successful data fetch
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: {
         apps_v1: [
           {

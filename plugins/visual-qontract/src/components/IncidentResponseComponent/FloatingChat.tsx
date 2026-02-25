@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Button,
@@ -28,13 +28,13 @@ const FloatingChat = () => {
   ];
   const [open, setOpen] = useState(true);
   const [assistantId, setAssistantId] = useState(null);
-  const [showCloseButton, setShowCloseButton] = useState(false);
+  const [_showCloseButton, _setShowCloseButton] = useState(false);
   const [sessionId, setSessionId] = useState(uuidv4());
   const [conversation, setConversation] = useState(greetingMessage);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('You');
-  const chatEndRef = useRef(null);
+  const chatEndRef = useRef<HTMLDivElement>(null);
   const config = useApi(configApiRef);
   const identity = useApi(identityApiRef);
   const fetchApi = useApi(fetchApiRef);
@@ -47,7 +47,7 @@ const FloatingChat = () => {
         `${backendUrl}/api/proxy/tangerine/api/assistants`,
       );
       const assistants = await res.json();
-      const found = assistants.data.find(a =>
+      const found = assistants.data.find((a: { name: string }) =>
         a.name.toLowerCase().includes('incident-management'),
       );
       if (found) setAssistantId(found.id);
@@ -94,7 +94,12 @@ const FloatingChat = () => {
       },
     );
 
-    const reader = response.body.getReader();
+    const body = response.body;
+    if (!body) {
+      setLoading(false);
+      return;
+    }
+    const reader = body.getReader();
     const decoder = new TextDecoder('utf-8');
     let botContent = '';
     setConversation(prev => [
@@ -141,7 +146,7 @@ const FloatingChat = () => {
   };
 
   const CloseButton = () => {
-    if (showCloseButton) {
+    if (_showCloseButton) {
       return (
         <IconButton
           size="small"

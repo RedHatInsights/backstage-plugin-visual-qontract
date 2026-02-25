@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { CardHeader, Link, Typography } from '@material-ui/core';
 import {
   useStarredEntities,
@@ -157,9 +157,9 @@ export const HomeComponent = () => {
         {links.map(
           (
             group: { title: string; links: any[] },
-            index: React.Key | null | undefined,
+            index: number | undefined,
           ) => (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               <Grid item xs={12}>
                 <Typography variant="overline">{group.title}</Typography>
               </Grid>
@@ -175,7 +175,7 @@ export const HomeComponent = () => {
                   ))}
                 </Grid>
               </Grid>
-            </React.Fragment>
+            </Fragment>
           ),
         )}
       </Grid>
@@ -189,7 +189,7 @@ export const HomeComponent = () => {
     ));
     if (StarredEntities.length === 0) {
       Output = (
-        <React.Fragment>
+        <Fragment>
           <Grid item xs={3}></Grid>
           <Grid xs={6} item>
             <Typography variant="body1">
@@ -198,7 +198,7 @@ export const HomeComponent = () => {
             </Typography>
           </Grid>
           <Grid item xs={3}></Grid>
-        </React.Fragment>
+        </Fragment>
       );
     } else {
       Output = (

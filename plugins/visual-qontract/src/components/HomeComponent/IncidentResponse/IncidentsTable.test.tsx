@@ -1,11 +1,10 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { IncidentsTable } from './IncidentsTable';
 import '@testing-library/jest-dom';
 
 // Mock ExternalCoordinationButton component
 jest.mock('./ExternalCoordinationButton', () => ({
-  ExternalCoordinationButton: ({ link }) => (
+  ExternalCoordinationButton: ({ link }: { link: { label: string; url: string } }) => (
     <a href={link.url} target="_blank" rel="noopener noreferrer">
       {link.label}
     </a>
@@ -15,7 +14,7 @@ jest.mock('./ExternalCoordinationButton', () => ({
 // Mock TablePaginationActions
 jest.mock('@material-ui/core/TablePagination/TablePaginationActions', () => ({
   __esModule: true,
-  default: ({ onPageChange, page }) => (
+  default: ({ onPageChange, page }: { onPageChange: (e: unknown, p: number) => void; page: number }) => (
     <div>
       <button onClick={() => onPageChange({}, page - 1)} aria-label="previous page">Previous</button>
       <button onClick={() => onPageChange({}, page + 1)} aria-label="next page">Next</button>

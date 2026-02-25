@@ -3,27 +3,14 @@ import {
   Button,
   Card,
   CardContent,
-  CardHeader,
   Dialog,
   Typography,
 } from '@material-ui/core';
-import React from 'react';
-import { Modal } from '@material-ui/core';
+import { useState } from 'react';
 import { MarkdownContent } from '@backstage/core-components';
 
 export const IncidentModal = ({ incident }: { incident: any }) => {
-  const [open, setOpen] = React.useState(false);
-
-  const styles = theme => ({
-    modalStyle1: {
-      position: 'absolute',
-      top: '10%',
-      left: '10%',
-      overflow: 'scroll',
-      height: '100%',
-      display: 'block',
-    },
-  });
+  const [open, setOpen] = useState(false);
 
   if (!incident) {
     return null;

@@ -2,7 +2,6 @@ import { Link } from "@material-ui/core";
 import OpenInNew from "@material-ui/icons/OpenInNew";
 import { mdiSlack, mdiGoogle } from '@mdi/js';
 import Icon from '@mdi/react';
-import React from "react";
 
 
 

@@ -1,5 +1,4 @@
 import { Box, IconButton } from '@mui/material';
-import React from 'react';
 
 const stringToColor = (text: string) => {
   let hash = 0;
@@ -11,7 +10,7 @@ const stringToColor = (text: string) => {
 };
 
 const getTextColor = (bgColor: string) => {
-  const [h, s, l] = bgColor.match(/\d+/g)!.map(Number);
+  const [, , l] = bgColor.match(/\d+/g)!.map(Number);
   return l > 60 ? 'black' : 'white';
 };
 
