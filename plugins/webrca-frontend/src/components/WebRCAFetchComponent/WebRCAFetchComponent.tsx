@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Table,
   TableColumn,
@@ -100,7 +99,7 @@ export const DenseTable = ({
 
 const PRODUCT_ANNOTATION_KEY = 'web-rca/product-name';
 
-export const WebRCAFetchComponent = () => {
+export const WebRCAFetchComponent = ({ product: productProp }: { product?: string } = {}) => {
   const config = useApi(configApiRef);
   // const user = useApi(identityApiRef);
   const entity = useEntity();
@@ -114,7 +113,9 @@ export const WebRCAFetchComponent = () => {
 
       let products = '';
 
-      if (entity) {
+      if (productProp) {
+        products = productProp;
+      } else if (entity) {
         // Default to entity name
         products = entity.entity.metadata.name;
 

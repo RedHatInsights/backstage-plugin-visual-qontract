@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -250,14 +250,6 @@ export const NewsComponent = () => {
         </CardContent>
         <FilterCardActions />
       </Card>
-    );
-  };
-
-  const NewsStoryCardGridItem = (story: any) => {
-    return (
-      <Grid item key={story.id} xs={4}>
-        <NewsStoryCard story={story} />
-      </Grid>
     );
   };
 

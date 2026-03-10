@@ -9,43 +9,42 @@ import {
   Link,
   TableFooter,
   TablePagination,
-  Button,
-  Card,
-  CardContent,
-  Modal,
 } from '@material-ui/core';
 import TablePaginationActions from '@material-ui/core/TablePagination/TablePaginationActions';
 import OpenInNew from '@material-ui/icons/OpenInNew';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ExternalCoordinationButton } from './ExternalCoordinationButton';
-import React from 'react';
 import { IncidentModal } from './IncidentModal';
 
-// The component that displays the incidents in a table
+export interface IncidentRow {
+  incident_id: string;
+  summary: string;
+  severity: string;
+  external_coordination?: { label: string; url: string }[];
+}
+
 export const IncidentsTable = ({
   incidents,
-  maxRows,
+  maxRows = 5,
 }: {
-  incidents: any;
-  maxRows: number;
+  incidents: IncidentRow[];
+  maxRows?: number;
 }) => {
   if (incidents?.length === 0) {
     return null;
   }
 
   const rowsPerPage = maxRows || 5;
-  const [page, setPage] = React.useState(0);
-  const [maxPage, setMaxPage] = React.useState(0);
-  const [visibleRows, setVisibleRows] = React.useState([]);
+  const [page, setPage] = useState(0);
+  const [visibleRows, setVisibleRows] = useState<IncidentRow[]>([]);
 
   useEffect(() => {
-    setMaxPage(Math.floor(incidents.length / rowsPerPage));
     setVisibleRows(
       incidents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     );
-  }, [incidents]);
+  }, [incidents, page, rowsPerPage]);
 
-  const handleChangePage = (_event, newPage) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
     setVisibleRows(
       incidents.slice(
@@ -93,7 +92,7 @@ export const IncidentsTable = ({
               </TableCell>
               <TableCell align="center">{incident.severity}</TableCell>
               <TableCell align="center">
-                {incident.external_coordination?.map((link, linkIndex) => (
+                {incident.external_coordination?.map((link: { label: string; url: string }, linkIndex: number) => (
                   <ExternalCoordinationButton link={link} key={linkIndex} />
                 ))}
               </TableCell>

@@ -1,9 +1,17 @@
-import { getVoidLogger } from '@backstage/backend-common';
 import express from 'express';
 import request from 'supertest';
 
 import { createRouter } from './router';
 import { MockConfigApi } from '@backstage/test-utils';
+import { LoggerService } from '@backstage/backend-plugin-api';
+
+const createMockLogger = (): LoggerService => ({
+  error: () => {},
+  warn: () => {},
+  info: () => {},
+  debug: () => {},
+  child: () => createMockLogger(),
+});
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -19,7 +27,7 @@ describe('createRouter', () => {
 
   beforeAll(async () => {
     const router = await createRouter({
-      logger: getVoidLogger(),
+      logger: createMockLogger(),
       config: mockConfig,
     });
     app = express().use(router);

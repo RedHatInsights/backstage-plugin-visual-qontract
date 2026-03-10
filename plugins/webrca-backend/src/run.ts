@@ -1,14 +1,26 @@
-import { getRootLogger } from '@backstage/backend-common';
 import yn from 'yn';
+import winston from 'winston';
+import { ConfigSources } from '@backstage/config-loader';
 import { startStandaloneServer } from './service/standaloneServer';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 const port = process.env.PLUGIN_PORT ? Number(process.env.PLUGIN_PORT) : 7007;
 const enableCors = yn(process.env.PLUGIN_CORS, { default: false });
-const logger = getRootLogger();
-const config = useApi(configApiRef);
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL ?? 'info',
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.simple(),
+  ),
+  transports: [new winston.transports.Console()],
+});
 
-startStandaloneServer({ port, enableCors, logger, config }).catch(err => {
+async function main() {
+  const configSource = ConfigSources.default({ argv: process.argv });
+  const config = await ConfigSources.toConfig(configSource);
+  await startStandaloneServer({ port, enableCors, logger, config });
+}
+
+main().catch(err => {
   logger.error('Standalone server failed:', err);
   process.exit(1);
 });

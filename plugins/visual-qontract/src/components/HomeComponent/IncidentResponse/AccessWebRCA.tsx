@@ -1,5 +1,4 @@
 import { Box, Typography, List, ListItem, Link } from '@material-ui/core';
-import React from 'react';
 
 // The component that displays the instructions on how to get access to WebRCA
 export const AccessWebRCA = () => {
@@ -11,7 +10,7 @@ export const AccessWebRCA = () => {
 
       <List
         component="ol"
-        sx={{ listStyleType: 'decimal', paddingLeft: '20px' }}
+        style={{ listStyleType: 'decimal', paddingLeft: '20px' }}
       >
         <ListItem>
           <Typography>

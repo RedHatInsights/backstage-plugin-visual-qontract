@@ -1,14 +1,19 @@
-import React from 'react';
 import { WebRCAComponent } from './WebRCAComponent';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
 import {
-  registerMswTestHooks,
   renderInTestApp,
   TestApiProvider,
-} from '@backstage/test-utils';
+} from '@backstage/frontend-test-utils';
 import { configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
+
+// Import registerMswTestHooks from msw utilities
+const registerMswTestHooks = (server: any) => {
+  beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+  afterAll(() => server.close());
+  afterEach(() => server.resetHandlers());
+};
 
 //mock useEntity
 jest.mock('@backstage/plugin-catalog-react', () => ({

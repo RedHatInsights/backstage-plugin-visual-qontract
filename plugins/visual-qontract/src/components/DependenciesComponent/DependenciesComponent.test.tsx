@@ -1,5 +1,5 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderInTestApp } from '@backstage/frontend-test-utils';
 import { DependenciesComponent } from './DependenciesComponent';
 import QueryQontract from '../../common/QueryAppInterface';
 
@@ -13,45 +13,45 @@ describe('<DependenciesComponent />', () => {
   
   it('displays a loading message initially', async () => {
     // Simulate loading state
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: null,
       loaded: false,
       error: null,
     });
 
-    render(<DependenciesComponent />);
+    await renderInTestApp(<DependenciesComponent />);
 
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   it('displays an error message if fetching data fails', async () => {
     // Simulate error state
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: null,
       loaded: true,
       error: new Error('Failed to fetch'),
     });
 
-    render(<DependenciesComponent />);
+    await renderInTestApp(<DependenciesComponent />);
 
     expect(screen.getByText('Error loading the dependency information.')).toBeInTheDocument();
   });
 
   it('renders nothing if there are no dependencies', async () => {
     // Simulate empty data state
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: { apps_v1: [{ dependencies: [] }] },
       loaded: true,
       error: null,
     });
 
-    const { container } = render(<DependenciesComponent />);
+    const { container } = await renderInTestApp(<DependenciesComponent />);
     expect(container).toBeEmptyDOMElement();
   });
 
   it('renders a table of dependencies if data is available', async () => {
     // Simulate successful data fetch
-    QueryQontract.mockReturnValue({
+    (QueryQontract as jest.Mock).mockReturnValue({
       result: {
         apps_v1: [
           {
@@ -76,7 +76,7 @@ describe('<DependenciesComponent />', () => {
       error: null,
     });
 
-    render(<DependenciesComponent />);
+    await renderInTestApp(<DependenciesComponent />);
 
     // Verify table headers
     expect(screen.getByText('Name')).toBeInTheDocument();

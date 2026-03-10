@@ -1,5 +1,5 @@
-import { errorHandler } from '@backstage/backend-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { createErrorHandler } from './errorHandler';
 import { Config } from '@backstage/config';
 import express from 'express';
 import Router from 'express-promise-router';
@@ -28,7 +28,7 @@ async function getToken(config: Config, logger: LoggerService): Promise<string> 
 
     return token.access_token;
   } catch (e) {
-    logger.error('Error: ', e);
+    logger.error('Error: ', e as Error);
     return 'Invalid token';
   }
 }
@@ -80,7 +80,7 @@ export async function createRouter(
     response.json(incident_list);
   });
 
-  router.get('/incidents/public', async (req, response) => {
+  router.get('/incidents/public', async (_req, response) => {
     response.setHeader('Content-Type', 'application/json');
 
     const default_token = await getToken(config, logger);
@@ -101,6 +101,6 @@ export async function createRouter(
     response.json(incident_list);
   });
 
-  router.use(errorHandler());
+  router.use(createErrorHandler({ logger }));
   return router;
 }

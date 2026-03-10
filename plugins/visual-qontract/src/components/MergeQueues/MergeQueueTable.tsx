@@ -77,7 +77,6 @@ export const MergeQueueTable = () => {
               field="label"
               onClick={() => {}}
               clickable={false}
-              columns={columns}
             />
           ),
         },

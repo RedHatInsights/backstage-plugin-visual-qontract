@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import { apiDocsPlugin, ApiExplorerPage } from '@backstage/plugin-api-docs';
 import {
@@ -13,7 +12,6 @@ import {
 import { ScaffolderPage, scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import { orgPlugin } from '@backstage/plugin-org';
 import { SearchPage } from '@backstage/plugin-search';
-import { TechRadarPage } from '@backstage/plugin-tech-radar';
 import {
   TechDocsIndexPage,
   techdocsPlugin,
@@ -37,17 +35,14 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-
-import {
-  EntityQontractHomePageComponent,
-  EntityQontractNewsComponent,
-  ChangelogPageComponent,
-  IncidentResponseComponent,
-  AIShowcasePageComponent,
-} from '@redhatinsights/backstage-plugin-visual-qontract';
+import { NotificationsPage } from '@backstage/plugin-notifications';
+import { SignalsDisplay } from '@backstage/plugin-signals';
+import { visualQontractPlugin } from '@redhatinsights/backstage-plugin-visual-qontract';
+import { webRcaPlugin } from '@redhatinsights/backstage-plugin-webrca-frontend';
 
 const app = createApp({
   apis,
+  plugins: [visualQontractPlugin, webRcaPlugin],
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,
@@ -72,14 +67,7 @@ const app = createApp({
 
 const routes = (
   <FlatRoutes>
-    <Route path="/" element={<EntityQontractHomePageComponent />} />
-    <Route path="/home" element={<EntityQontractHomePageComponent />} />
-    <Route
-      path="/incident-response"
-      element={<IncidentResponseComponent />}/>
-    <Route path="/news" element={<EntityQontractNewsComponent />} />
-    <Route path="/changelog" element={<ChangelogPageComponent />} />
-    <Route path="/ai-showcase" element={<AIShowcasePageComponent />} />
+    <Route path="/" element={<Navigate to="catalog" />} />
     <Route path="/catalog" element={<CatalogIndexPage />} />
     <Route
       path="/catalog/:namespace/:kind/:name"
@@ -99,10 +87,6 @@ const routes = (
     <Route path="/create" element={<ScaffolderPage />} />
     <Route path="/api-docs" element={<ApiExplorerPage />} />
     <Route
-      path="/tech-radar"
-      element={<TechRadarPage width={1500} height={800} />}
-    />
-    <Route
       path="/catalog-import"
       element={
         <RequirePermission permission={catalogEntityCreatePermission}>
@@ -115,6 +99,7 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
+    <Route path="/notifications" element={<NotificationsPage />} />
   </FlatRoutes>
 );
 
@@ -122,6 +107,7 @@ export default app.createRoot(
   <>
     <AlertDisplay />
     <OAuthRequestDialog />
+    <SignalsDisplay />
     <AppRouter>
       <Root>{routes}</Root>
     </AppRouter>

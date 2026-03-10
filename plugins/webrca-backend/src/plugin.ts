@@ -1,4 +1,3 @@
-// import { loggerToWinstonLogger } from '@backstage/backend-common';
 import { coreServices, createBackendPlugin } from '@backstage/backend-plugin-api';
 
 import { createRouter } from './service/router';
@@ -19,12 +18,11 @@ export const web_rca_backendPlugin = createBackendPlugin({
       },
       async init({ config, logger, httpRouter }) {
         // http.use(() => createRouter({...config, logger: loggerToWinstonLogger(logger)}));
-        httpRouter.use(
-          await createRouter({
-            logger,
-            config,
-          }),
-        );
+        const router = await createRouter({
+          logger,
+          config,
+        });
+        httpRouter.use(router as unknown as Parameters<typeof httpRouter.use>[0]);
         httpRouter.addAuthPolicy({
           path: '/health',
           allow: 'user-cookie',

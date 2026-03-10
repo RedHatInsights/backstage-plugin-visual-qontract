@@ -1,9 +1,26 @@
-import React from 'react';
 import { Box, IconButton, Typography, Grid, TextField, Tooltip } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import { ActiveFilterPills } from './ActiveFilterPills';
 
 type Filter = { field: string; value: string };
+
+export interface FilterManagerProps {
+  filters: Filter[];
+  setFilters: (filters: Filter[]) => void;
+  startDate: string;
+  setStartDate: (v: string) => void;
+  utcStartDate: string;
+  setUtcStartDate: (v: string) => void;
+  startTime: string;
+  setStartTime: (v: string) => void;
+  endDate: string;
+  setEndDate: (v: string) => void;
+  utcEndDate: string;
+  setUtcEndDate: (v: string) => void;
+  endTime: string;
+  setEndTime: (v: string) => void;
+  showUtcTimestamps: boolean;
+}
 
 export const FilterManager = ({
   filters,
@@ -21,7 +38,7 @@ export const FilterManager = ({
   endTime,
   setEndTime,
   showUtcTimestamps
-}) => {
+}: FilterManagerProps) => {
   const clearAllFilters = () => {
     setFilters([]);
     setStartDate('');
@@ -34,7 +51,7 @@ export const FilterManager = ({
 
   const removeFilter = (filter: Filter) => {
     setFilters(
-      filters.filter(f => f.field !== filter.field || f.value !== filter.value),
+      filters.filter((f: Filter) => f.field !== filter.field || f.value !== filter.value),
     );
   };
 

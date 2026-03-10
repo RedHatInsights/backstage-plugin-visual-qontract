@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, TextField, IconButton } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 

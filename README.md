@@ -2,10 +2,10 @@
 
 This is a development mono-repo for multiple Red Hat Hybrid Cloud Management RHDH plugins. This mono-repo was created using @backstage/create-app to provide a backend and frontend for the plugin to integrate with.
 
-Included Plugins: 
+Included Plugins:
 * Visual Qontract: `plugins/visual-qontract` Presents data from App Interface
 * WebRCA Frontend: `plugins/webrca-frontend` A frontend plugin for Web RCA
-* WebRCA Backend: `plugins/webrca-backend` A backend plugin for Web RCA 
+* WebRCA Backend: `plugins/webrca-backend` A backend plugin for Web RCA
 
 ## Components
 
@@ -16,7 +16,7 @@ This plugin provides multiple info card components that can be mounted on a cata
 * `EntityQontractCodeComponentsContent`: Shows code repositories and build jobs
 * `EntityQontractPipelinesComponent`: Shows deploy pipelines with links out to the deploy privders
 * `EntityQontractSLOComponent`: Shows cards with gauges for SLIs
-* `EntityQontractEscalationPolicyComponent`: Show's escalation policies for an app
+* `EntityQontractEscalationPolicyComponent`: Shows escalation policies for an app
 
 ### Page Plugins
 We also provide 3 pages that can extend the functionality of Janus IDP / RHDH.
@@ -26,7 +26,7 @@ We also provide 3 pages that can extend the functionality of Janus IDP / RHDH.
 * `WebRCAFetchComponent`: A page to show WebRCA Incidents
 * `ChangelogPageComponent`: A page to show App SRE Changelog
 
-## Dependencies 
+## Dependencies
 You'll need to have the `inscope-resources` pod running. This pod contains the resources like new stories used on the front page.
 
 Running the following script will download the images from the Quay repository and run the `inscope-resources` pod locally.
@@ -58,7 +58,6 @@ metadata:
 data:
   config-map.json: '<--- COPY THIS INTO CONFIG-MAP.JSON FILE --->'
 ```
-
 Run the pod locally using the following script - this mounts the local `config-map.json` into the local pod to be served by the proxy.
 
 ```bash
@@ -79,7 +78,7 @@ In `app-config.yaml` first add the proxies:
 ```yaml
 proxy:
   endpoints:
-    '/visual-qontract': 
+    '/visual-qontract':
       target: 'https://app-interface.apps.rosa.appsrep09ue1.03r5.p3.openshiftapps.com/'
     '/prometheus':
       target: "https://prometheus.crcs02ue1.devshift.net/api/v1/"
@@ -116,13 +115,12 @@ proxy:
 ```
 
 ## RHDH Dynamic Plugin Config
-Here's an example of how to configure all of the various plugins in your dynmaic plugins config for RHDH.
+Here's an example of how to configure all of the various plugins in your dynamic plugins config for RHDH.
 
 ```yaml
   - package: "https://github.com/RedHatInsights/backstage-plugin-visual-qontract/releases/download/DEVELOPMENT-0.2/redhatinsights-backstage-plugin-webrca-backend-1.1.1.tgz"
     disabled: false
     integrity: "sha256-pqQaI2i1pNs5tfW8Sj1vG5Fx4KGqQfguxr0CPU6Fcvo="
-
   - package: "https://github.com/RedHatInsights/backstage-plugin-visual-qontract/releases/download/DEVELOPMENT-0.2/redhatinsights-backstage-plugin-webrca-frontend-1.1.2.tgz"
     integrity: "sha256-s1YJRO8AknX7fIg68zhHDTKW97HwIbY2CYBKTu/Zl68="
     disabled: false
@@ -144,7 +142,6 @@ Here's an example of how to configure all of the various plugins in your dynmaic
                     allOf:
                       - isKind: component
                       - isType: service
-
   - package: "https://github.com/RedHatInsights/backstage-plugin-visual-qontract/releases/download/DEVELOPMENT-0.1/redhatinsights-backstage-plugin-visual-qontract-1.3.6.tgz"
     disabled: false
     integrity: "sha256-AYIZ6vnhwAmtT/l6TARNtGJPeQUOfM4rY5zdtceffog="
@@ -233,6 +230,7 @@ Here's an example of how to configure all of the various plugins in your dynmaic
                     allOf:
                       - isType: application
 ```
+
 ## Development
 To start the app, run:
 
@@ -241,7 +239,7 @@ yarn install
 yarn dev
 ```
 
-Before you do, you'll likely want to have catalog entries to see the plugin working on. Check out AppStage for that. 
+Before you do, you'll likely want to have catalog entries to see the plugin working on. Check out AppStage for that.
 
 ## Updating Backstage Deps and Node Version
 Over time you'll need to upgrade deps, and those may require node version bumps too. To update backstage deps simply run:
@@ -250,7 +248,7 @@ Over time you'll need to upgrade deps, and those may require node version bumps 
 yarn backstage-cli versions:bump <Backstage Version>
 ```
 
-That will update the frontend and backend backstage code, as well as all of the deps for the frontend, backend, and plugins. 
+That will update the frontend and backend backstage code, as well as all of the deps for the frontend, backend, and plugins.
 
 Part of the upgrade process will install deps. If any fail you may need to change node versions. First install the version of node you need. I recommend using [NVM](https://github.com/nvm-sh/nvm) for that. Then edit the `engines.node` value in the monorepo `package.json`.
 

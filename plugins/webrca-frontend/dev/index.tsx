@@ -1,12 +1,11 @@
-import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { webrcaFrontendPlugin, WebrcaFrontendPage } from '../src/plugin';
+import { webRcaPlugin, WebRcaPage } from '../src/plugin';
 
 createDevApp()
-  .registerPlugin(webrcaFrontendPlugin)
+  .registerPlugin(webRcaPlugin)
   .addPage({
-    element: <WebrcaFrontendPage />,
-    title: 'Root Page',
-    path: '/webrca-frontend',
+    element: <WebRcaPage />,
+    title: 'Web RCA',
+    path: '/webrca',
   })
   .render();

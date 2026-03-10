@@ -5,6 +5,6 @@ export const dynamicPluginInstaller: BackendDynamicPluginInstaller = {
   kind: 'legacy',
   router: {
     pluginID: 'web-rca-backend',
-    createPlugin: createRouter,
+    createPlugin: createRouter as (options: unknown) => ReturnType<typeof createRouter>,
   },
 };

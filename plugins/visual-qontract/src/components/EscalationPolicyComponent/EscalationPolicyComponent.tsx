@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { EscalationPolicyQuery, NextEscalationPolicyQuery } from './query';

@@ -3,26 +3,25 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=20.17.0"
+    "node": "22 || 24"
   },
   "scripts": {
-    "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
-    "start": "yarn workspace app start",
-    "start-backend": "yarn workspace backend start",
+    "start": "backstage-cli repo start",
     "build:backend": "yarn workspace backend build",
     "build:all": "backstage-cli repo build --all",
+    "build:dynamic": "make build-all",
     "build-image": "yarn workspace backend build-image",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
-    "test": "backstage-cli repo test --silent",
+    "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
     "test:e2e": "playwright test",
     "fix": "backstage-cli repo fix",
-    "lint": "backstage-cli repo lint --since origin/master",
+    "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "new": "backstage-cli new --scope internal"
+    "new": "backstage-cli new"
   },
   "workspaces": {
     "packages": [
@@ -31,21 +30,22 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.6",
-    "@backstage/e2e-test-utils": "^0.1.1",
+    "@backstage/cli": "^0.35.4",
+    "@backstage/e2e-test-utils": "^0.1.2",
+    "@jest/environment-jsdom-abstract": "^30.0.0",
     "@playwright/test": "^1.32.3",
-    "@spotify/prettier-config": "^12.0.0",
-    "concurrently": "^8.0.0",
-    "lerna": "^7.3.0",
-    "node-gyp": "^9.0.0",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.2.0",
+    "jsdom": "^27.1.0",
+    "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.3.0"
+    "typescript": "~5.8.0"
   },
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",
@@ -54,5 +54,6 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { Table } from '@backstage/core-components';
 import { useNavigate, useLocation } from 'react-router-dom';

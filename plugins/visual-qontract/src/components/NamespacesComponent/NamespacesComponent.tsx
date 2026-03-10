@@ -1,7 +1,5 @@
-import React from 'react';
 import {
   Typography,
-  Grid,
   Link,
   Table,
   TableContainer,

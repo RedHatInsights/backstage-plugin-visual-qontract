@@ -1,4 +1,3 @@
-import React from 'react';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import {
   useApi,
