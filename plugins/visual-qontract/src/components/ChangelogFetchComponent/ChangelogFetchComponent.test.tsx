@@ -222,7 +222,7 @@ describe('ChangelogFetch component', () => {
   // This needs to be revisited with a different testing approach.
   it.skip('conditionally displays "Clear Filters" button when filters or dates are active', async () => {
     await renderInTestApp(<ChangeTable changes={mockChangelogData} />, {
-      routeEntries: ['/?filters=type:Update'],
+      initialRouteEntries: ['/?filters=type:Update'],
     });
 
     // Expect the clear button to be visible when filters are present
@@ -292,7 +292,7 @@ describe('ChangelogFetch component', () => {
   // TODO: This test currently fails due to renderInTestApp not properly handling URL query parameters.
   it.skip('removes a filter when the "x" icon is clicked on a filter pill', async () => {
     await renderInTestApp(<ChangeTable changes={mockChangelogData} />, {
-      routeEntries: ['/?filters=type:Update,app:App1'],
+      initialRouteEntries: ['/?filters=type:Update,app:App1'],
     });
 
     // Ensure both filter pills are present initially in the filter box
@@ -343,7 +343,7 @@ describe('ChangelogFetch component', () => {
   // TODO: This test currently fails due to renderInTestApp not properly handling URL query parameters.
   it.skip('loads initial filters from the URL query string', async () => {
     await renderInTestApp(<ChangeTable changes={mockChangelogData} />, {
-      routeEntries: ['/?filters=type:progressive-delivery,app:App1'],
+      initialRouteEntries: ['/?filters=type:progressive-delivery,app:App1'],
     });
 
     // Check if the initial filters are applied based on the URL
