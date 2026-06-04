@@ -1,0 +1,70 @@
+name: Release plugins
+
+on:
+  push:
+    tags:
+    - "v*"
+
+permissions: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: github.repository == 'RedHatInsights/backstage-plugin-visual-qontract'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        show-updates: false
+    - name: Set up Node.js
+      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+      with:
+        node-version-file: .tool-versions
+        cache: yarn
+    - name: Install dependencies
+      run: yarn install --immutable
+    - name: Build all
+      run: |
+        yarn tsc
+        yarn run build:dynamic
+    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: plugins-builds
+        overwrite: false
+        path: build/
+
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: github.repository == 'RedHatInsights/backstage-plugin-visual-qontract'
+    steps:
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      with:
+        name: plugins-builds
+        path: build/
+    - name: Generate checksums for release note
+      run: |
+        echo "## Checksums\n" > checksums.txt
+        echo "**Visual Qontract**: sha256-$(cat build/visual-qontract/*.txt)" >> checksums.txt
+        echo "**WebRCA Frontend**: sha256-$(cat build/webrca-frontend/*.txt)" >> checksums.txt
+        echo "**WebRCA Backend**: sha256-$(cat build/webrca-backend/*.txt)" >> checksums.txt
+    - name: Open GitHub Release
+      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+      with:
+        generate_release_notes: true
+        draft: true
+    - name: Update GitHub Release with Checksum and Attach Files
+      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+      with:
+        generate_relase_notes: false
+        body_path: checksums.txt
+        append_body: true
+        working_directory: build
+        draft: true # remove this once we confirmed that the process work
+        files: |
+          visual-qontract/*
+          webrca-backend/*
+          webrca-frontend/*

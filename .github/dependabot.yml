@@ -29,4 +29,9 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      minor-actions-dependencies:
+        update-types:
+          - "minor"
+          - "patch"
     open-pull-requests-limit: 5
