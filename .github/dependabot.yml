@@ -6,11 +6,13 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+    ignore:
+      # ignore backstage packages, we need to update them with backstage-cli in accordance
+      # with the backstage version supported by RHDH. You can see the version here
+      # https://github.com/redhat-developer/rhdh/blob/main/backstage.json selecting the correct
+      # branch or tag
+      - dependency-name: "@backstage/*"
     groups:
-      # Group Backstage packages together
-      backstage:
-        patterns:
-          - "@backstage/*"
       # Group testing packages together
       testing:
         patterns:
