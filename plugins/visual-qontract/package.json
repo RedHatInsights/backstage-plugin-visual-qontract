@@ -40,7 +40,7 @@
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
     "@mui/x-charts": "^7.4.0",
-    "graphql-request": "^6.1.0",
+    "graphql-request": "^7.4.0",
     "js-levenshtein": "^1.1.6",
     "react-use": "^17.2.4",
     "tss-react": "^4.9.10"
