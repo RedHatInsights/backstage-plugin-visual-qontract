@@ -1,38 +1,60 @@
-# Visual Qontract Dynamic Plugin
+# Visual Qontract Backstage Plugins
 
-This is a development mono-repo for multiple Red Hat Hybrid Cloud Management RHDH plugins. This mono-repo was created using @backstage/create-app to provide a backend and frontend for the plugin to integrate with.
+A monorepo of [Red Hat Developer Hub][rhdh] (RHDH) dynamic plugins for surfacing [App Interface][app-interface] data, [WebRCA][webrca] incidents, and operational tooling inside [Backstage][backstage]. Created with `@backstage/create-app` to provide a full backend and frontend development environment.
 
-Included Plugins:
-* Visual Qontract: `plugins/visual-qontract` Presents data from App Interface
-* WebRCA Frontend: `plugins/webrca-frontend` A frontend plugin for Web RCA
-* WebRCA Backend: `plugins/webrca-backend` A backend plugin for Web RCA
+For internal architecture details, see [ARCHITECTURE.md][architecture].
 
-## Components
+## Included Plugins
+
+| Plugin | Package | Version | Description |
+|--------|---------|---------|-------------|
+| Visual Qontract | `@redhatinsights/backstage-plugin-visual-qontract` | 1.6.8 | Frontend entity page cards and standalone pages for App Interface data |
+| WebRCA Frontend | `@redhatinsights/backstage-plugin-webrca-frontend` | 1.2.2 | Frontend WebRCA incident viewer |
+| WebRCA Backend | `@redhatinsights/backstage-plugin-webrca-backend` | 1.2.2 | Backend WebRCA API integration |
 
 ### Visual Qontract Entity Page Cards
+
 This plugin provides multiple info card components that can be mounted on a catalog entry page.
-* `EntityQontractDependenciesContent`: Shows CI and code dependencies along with links to status pages and SLOs
-* `EntityQontractNamespacesContent`: Shows namespaces and clusters, with links, where an app is running
-* `EntityQontractCodeComponentsContent`: Shows code repositories and build jobs
-* `EntityQontractPipelinesComponent`: Shows deploy pipelines with links out to the deploy privders
-* `EntityQontractSLOComponent`: Shows cards with gauges for SLIs
-* `EntityQontractEscalationPolicyComponent`: Shows escalation policies for an app
+
+- `EntityQontractDependenciesContent` -- Shows CI and code dependencies along with links to status pages and SLOs
+- `EntityQontractNamespacesContent` -- Shows namespaces and clusters, with links, where an app is running
+- `EntityQontractCodeComponentsContent` -- Shows code repositories and build jobs
+- `EntityQontractPipelinesComponent` -- Shows deploy pipelines with links out to the deploy providers
+- `EntityQontractSLOComponent` -- Shows cards with gauges for SLIs
+- `EntityQontractEscalationPolicyComponent` -- Shows escalation policies for an app
 
 ### Page Plugins
-We also provide 3 pages that can extend the functionality of Janus IDP / RHDH.
 
-* `EntityQontractHomePageComponent`: A more feature and information rich homepage than ships with Janus / RHDH by default
-* `EntityQontractNewsComponent`: A news page with searching, filters, etc
-* `WebRCAFetchComponent`: A page to show WebRCA Incidents
-* `ChangelogPageComponent`: A page to show App SRE Changelog
+Three standalone pages extend the functionality of Janus IDP / RHDH:
 
-## Dependencies
-You'll need to have the `inscope-resources` pod running. This pod contains the resources like new stories used on the front page.
+- `EntityQontractHomePageComponent` -- A more feature and information rich homepage than ships with Janus / RHDH by default
+- `EntityQontractNewsComponent` -- A news page with searching, filters, etc.
+- `ChangelogPageComponent` -- A page to show App SRE Changelog
+- `WebRcaPage` -- A page to show WebRCA Incidents
 
-Running the following script will download the images from the Quay repository and run the `inscope-resources` pod locally.
+## Prerequisites
 
-> NOTE: You may need to log in to the Quay resource prior to pulling the image.
-`podman login quay`
+- [Node.js][nodejs] 22 or 24
+- [Yarn][yarn] 4.15.0 (declared via `packageManager` in `package.json`)
+- [Podman][podman] or Docker (for the `inscope-resources` container)
+- Optionally, [NVM][nvm] for managing Node.js versions
+
+## Development
+
+### Quick Start
+
+```sh
+yarn install
+yarn dev
+```
+
+Before running, you will want to have catalog entries to see the plugin working on. Check out AppStage for that.
+
+### inscope-resources Container
+
+The homepage components require the `inscope-resources` pod running locally. This container provides resources like news stories used on the front page.
+
+> **Note:** You may need to log in to the Quay registry first: `podman login quay`
 
 ```bash
 if ! podman container exists resources &> /dev/null; then
@@ -46,9 +68,10 @@ fi
 ```
 
 ### Changelog Development
-In order to populate the changelog locally, [download the updated changelog from Openshift](https://console-openshift-console.apps.rosa.appsres09ue1.24ep.p3.openshiftapps.com/k8s/ns/backstage-stage/configmaps/change-log/yaml).
 
-Copy the contents from the `config-map.json` field into a separate JSON file named `config-map.json` in the root of the plugin directory.
+To populate the changelog locally, [download the updated changelog from OpenShift][changelog-configmap].
+
+Copy the contents from the `config-map.json` field into a separate JSON file named `config-map.json` in the root of the plugin directory:
 
 ```yaml
 kind: ConfigMap
@@ -58,7 +81,8 @@ metadata:
 data:
   config-map.json: '<--- COPY THIS INTO CONFIG-MAP.JSON FILE --->'
 ```
-Run the pod locally using the following script - this mounts the local `config-map.json` into the local pod to be served by the proxy.
+
+Run the pod locally using the following script -- this mounts the local `config-map.json` into the container to be served by the proxy:
 
 ```bash
 if ! podman container exists resources &> /dev/null; then
@@ -72,8 +96,71 @@ if ! podman container exists resources &> /dev/null; then
 fi
 ```
 
+### News Story Format
+
+The news stories are a single JSON file -- a collection of links surfaced on the front page, easily extendable without code changes or a CMS.
+
+```json
+[
+  {
+    "title": "Some Section",
+    "id": "some-section",
+    "stories": [
+      {
+        "title": "My Great Story",
+        "id": "great-story",
+        "date": "2024-05-31",
+        "image": "/resources/images/news/story.webp",
+        "featured": true,
+        "tags": ["great", "story"],
+        "link": {
+          "text": "Read More",
+          "url": "https://greatstorybro.com"
+        },
+        "body": "This is a great story!"
+      }
+    ]
+  }
+]
+```
+
+You can add as many sections or stories as you want. There is a simple full text search on the client as well as filters for sections and tags.
+
+## Build and Testing
+
+### Building Dynamic Plugins
+
+Run `make build-all` to build all three plugins as dynamic plugin tarballs. Output appears under `build/`, with a directory for each plugin containing the tarball and an integrity SHA text file.
+
+Individual plugins can be built separately:
+
+```sh
+make build-visual-qontract
+make build-webrca-frontend
+make build-webrca-backend
+```
+
+### Running Tests
+
+```sh
+yarn test          # Run tests for changed packages
+yarn test:all      # Run all tests with coverage
+yarn test:e2e      # Run Playwright E2E tests
+```
+
+### Linting and Formatting
+
+```sh
+yarn lint          # Lint changed packages (since origin/main)
+yarn lint:all      # Lint all packages
+yarn prettier:check  # Check formatting
+```
+
 ## Configuration
-In `app-config.yaml` first add the proxies:
+
+### Proxy Configuration
+
+In `app-config.yaml`, add the following proxy endpoints:
 
 ```yaml
 proxy:
@@ -114,8 +201,9 @@ proxy:
       secure: false
 ```
 
-## RHDH Dynamic Plugin Config
-Here's an example of how to configure all of the various plugins in your dynamic plugins config for RHDH.
+### RHDH Dynamic Plugin Config
+
+Here is an example of how to configure all of the plugins in your dynamic plugins config for RHDH:
 
 ```yaml
   - package: "https://github.com/RedHatInsights/backstage-plugin-visual-qontract/releases/download/DEVELOPMENT-0.2/redhatinsights-backstage-plugin-webrca-backend-1.1.1.tgz"
@@ -231,59 +319,41 @@ Here's an example of how to configure all of the various plugins in your dynamic
                       - isType: application
 ```
 
-## Development
-To start the app, run:
+## Updating Backstage Dependencies
+
+To update Backstage dependencies:
 
 ```sh
-yarn install
-yarn dev
-```
-
-Before you do, you'll likely want to have catalog entries to see the plugin working on. Check out AppStage for that.
-
-## Updating Backstage Deps and Node Version
-Over time you'll need to upgrade deps, and those may require node version bumps too. To update backstage deps simply run:
-
-```
 yarn backstage-cli versions:bump <Backstage Version>
 ```
 
-That will update the frontend and backend backstage code, as well as all of the deps for the frontend, backend, and plugins.
+This updates the frontend and backend Backstage code, as well as all dependencies for the frontend, backend, and plugins.
 
-Part of the upgrade process will install deps. If any fail you may need to change node versions. First install the version of node you need. I recommend using [NVM](https://github.com/nvm-sh/nvm) for that. Then edit the `engines.node` value in the monorepo `package.json`.
+If dependency installation fails, you may need to change Node versions. Install the required version using [NVM][nvm], then edit the `engines.node` value in the root `package.json`.
 
-After updating backstage I recommend you attempt building all plugins with `make build-all` and adjust the build script if anything changed like command output, paths, etc. You should also run all tests with `yarn test` to make sure all tests are still passing. Finally, don't forget to bump your node version in the `.github/workflows/test.yml` file!
+After updating Backstage, verify with `make build-all` and adjust the build script if anything changed (command output, paths, etc.). Run all tests with `yarn test` to confirm they still pass. Update the Node version matrix in `.github/workflows/test.yml` as needed.
 
-### Build the Dynamic Plugin
-Run `make build-all` - the plugin tarballs will appear under `builds/`. There will be a directory for each plugin, and 2 files for each: the plugin tarball and a text file with the integrity SHA.
+## CI/CD
 
-### News Story Format
-The news stories are just a single JSON file. It is mostly just supposed to be a collection of links, but the idea is to surface them on the front page, and to easily add more without code changes or a complex database or CMS.
+- **[Jest Unit Tests][ci-test]** -- Runs on every pull request against Node.js 22 and 24.
+- **[Release][ci-release]** -- Triggered by `v*` tags. Builds dynamic plugin tarballs, computes integrity checksums, and creates a draft GitHub release with all artifacts attached.
 
-For format is as follows:
+## License
 
-```json
-[
-  {
-    "title": "Some Section",
-    "id": "some-section",
-    "stories": [
-      {
-        "title": "My Great Story",
-        "id": "great-strory",
-        "date": "2024-05-31",
-        "image": "/resources/images/news/story.webp",
-        "featured": true,
-        "tags": ["great", "story"],
-        "link": {
-          "text": "Read More",
-          "url": "https://greatstorybro.com"
-        },
-        "body": "This is a great story!"
-      }
-    ]
-  }
-]
-```
+This project is licensed under [Apache-2.0][apache-license]. All three plugin packages declare the same license.
 
-You can add as many sections or stories as you want. There's a simple full text search on the client as well as filters for sections and tags.
+<!-- Reference-style link definitions -->
+
+[rhdh]: https://developers.redhat.com/rhdh
+[app-interface]: https://app-interface.apps.rosa.appsrep09ue1.03r5.p3.openshiftapps.com/
+[webrca]: https://webrca.devshift.net/
+[backstage]: https://backstage.io/
+[architecture]: ./ARCHITECTURE.md
+[nodejs]: https://nodejs.org/
+[yarn]: https://yarnpkg.com/
+[podman]: https://podman.io/
+[nvm]: https://github.com/nvm-sh/nvm
+[changelog-configmap]: https://console-openshift-console.apps.rosa.appsres09ue1.24ep.p3.openshiftapps.com/k8s/ns/backstage-stage/configmaps/change-log/yaml
+[ci-test]: ./.github/workflows/test.yml
+[ci-release]: ./.github/workflows/release.yml
+[apache-license]: https://www.apache.org/licenses/LICENSE-2.0
