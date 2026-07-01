@@ -52,12 +52,12 @@ jobs:
         echo "**WebRCA Frontend**: sha256-$(cat build/webrca-frontend/*.txt)" >> checksums.txt
         echo "**WebRCA Backend**: sha256-$(cat build/webrca-backend/*.txt)" >> checksums.txt
     - name: Open GitHub Release
-      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
       with:
         generate_release_notes: true
         draft: true
     - name: Update GitHub Release with Checksum and Attach Files
-      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
       with:
         generate_relase_notes: false
         body_path: checksums.txt
